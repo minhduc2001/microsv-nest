@@ -1,4 +1,4 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { Global, Module, OnModuleInit } from '@nestjs/common';
 import {
   TypeOrmModule,
   TypeOrmModuleAsyncOptions,
@@ -35,6 +35,7 @@ const typeOrmOptions: TypeOrmModuleAsyncOptions[] = [
   },
 ];
 
+@Global()
 @Module({
   imports: [
     ...typeOrmOptions.map((options) => TypeOrmModule.forRootAsync(options)),

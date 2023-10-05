@@ -5,8 +5,10 @@ import { EnvModule } from '@app/env';
 import { LoggerModule } from '@app/logger';
 import { RabbitModule } from '@app/rabbit';
 import { RabbitServiceName } from '@app/rabbit/enums/rabbit.enum';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseModule } from '@app/database';
 
-const globalModule = [EnvModule, LoggerModule];
+const globalModule = [EnvModule, LoggerModule, DatabaseModule];
 const coreModule = [];
 const rabbitModule = [
   RabbitModule.forClientProxy(RabbitServiceName.AUTH),

@@ -1,4 +1,4 @@
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import { GatewayService } from './gateway.service';
 import { ApiTags } from '@nestjs/swagger';
 import { RabbitServiceName } from '@app/rabbit/enums/rabbit.enum';
@@ -15,8 +15,8 @@ export class GatewayController {
     @Inject(RabbitServiceName.USER) private userClientProxy: ClientProxy,
   ) {}
 
-  @Get()
-  async getHello() {
+  @Post()
+  async getHello(@Body() data: any) {
     try {
       const resp = await this.authClientProxy
         .send<any>(AUTH_MESSAGE_PATTERNS.TEST, { a: 100 })
