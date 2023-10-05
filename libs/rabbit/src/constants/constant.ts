@@ -9,4 +9,7 @@ export const RABBIT_SERVICES: Record<RabbitServiceName, { queue: string }> = {
   AUTH_SERVICE: {
     queue: 'auth_queue',
   },
+  MUSIC_SERVICE: {
+    queue: 'music_queue',
+  },
 };

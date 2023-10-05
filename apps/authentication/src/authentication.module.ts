@@ -5,7 +5,10 @@ import { RabbitServiceName } from '@app/rabbit/enums/rabbit.enum';
 import { RabbitModule } from '@app/rabbit';
 
 @Module({
-  imports: [RabbitModule.forServerProxy(RabbitServiceName.AUTH)],
+  imports: [
+    RabbitModule.forServerProxy(RabbitServiceName.AUTH),
+    RabbitModule.forClientProxy(RabbitServiceName.USER),
+  ],
   controllers: [AuthenticationController],
   providers: [AuthenticationService],
 })

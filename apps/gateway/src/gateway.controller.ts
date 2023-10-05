@@ -18,8 +18,8 @@ export class GatewayController {
   @Get()
   async getHello() {
     try {
-      const resp = await this.userClientProxy
-        .send<any>('getAllUser', {})
+      const resp = await this.authClientProxy
+        .send<any>(AUTH_MESSAGE_PATTERNS.TEST, { a: 100 })
         .toPromise();
       console.log(resp);
 
