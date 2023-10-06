@@ -46,15 +46,6 @@
         "tsConfigPath": "libs/database/tsconfig.lib.json"
       }
     },
-    "authentication": {
-      "type": "library",
-      "root": "libs/authentication",
-      "entryFile": "index",
-      "sourceRoot": "libs/authentication/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/authentication/tsconfig.lib.json"
-      }
-    },
     "language": {
       "type": "library",
       "root": "libs/language",
@@ -98,15 +89,6 @@
       "sourceRoot": "libs/env/src",
       "compilerOptions": {
         "tsConfigPath": "libs/env/tsconfig.lib.json"
-      }
-    },
-    "auth": {
-      "type": "application",
-      "root": "apps/auth",
-      "entryFile": "main",
-      "sourceRoot": "apps/auth/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/auth/tsconfig.app.json"
       }
     },
     "user": {
