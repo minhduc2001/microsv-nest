@@ -1,4 +1,4 @@
-import { envService } from '@app/env';
+import { envService } from '@libs/env';
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 

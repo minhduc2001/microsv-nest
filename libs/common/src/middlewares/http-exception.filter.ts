@@ -5,10 +5,10 @@ import {
   HttpException,
 } from '@nestjs/common';
 
-import { LoggerService } from '@app/logger';
+import { LoggerService } from '@libs/logger';
 
 import * as exc from '../api';
-import { envService } from '@app/env';
+import { envService } from '@libs/env';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -31,10 +31,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
       const status = exception.getStatus();
 
       let excResponse = exception.getResponse();
+
       if (
         (envService.FIXED_STATUS_CODE && typeof excResponse !== 'object') ||
         !Object.getOwnPropertyDescriptor(excResponse, 'success')
       ) {
+        console.log('vao day');
+
         excResponse = new exc.BadRequest({
           errorCode: exc.STATUS_CODE_MAP[status] ?? exc.UNKNOWN,
           statusCode: status,

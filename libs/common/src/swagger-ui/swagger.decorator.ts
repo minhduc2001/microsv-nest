@@ -11,7 +11,7 @@ import { ApiPropertyOptions } from '@nestjs/swagger/dist/decorators/api-property
 import { applyDecorators, Type } from '@nestjs/common';
 import { ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
 
-import { envService } from '@app/env';
+import { envService } from '@libs/env';
 // import { PaginatedResult } from '@/base/api/paginated';
 
 export * from '@nestjs/swagger';

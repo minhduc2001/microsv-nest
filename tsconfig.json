@@ -18,66 +18,25 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@app/libs": [
-        "libs/libs/src"
-      ],
-      "@app/libs/*": [
-        "libs/libs/src/*"
-      ],
-      "@app/common": [
-        "libs/common/src"
-      ],
-      "@app/common/*": [
-        "libs/common/src/*"
-      ],
-      "@app/rabbit": [
-        "libs/rabbit/src"
-      ],
-      "@app/rabbit/*": [
-        "libs/rabbit/src/*"
-      ],
-      "@app/database": [
-        "libs/database/src"
-      ],
-      "@app/database/*": [
-        "libs/database/src/*"
-      ],
-      "@app/auth": [
-        "libs/auth/src"
-      ],
-      "@app/auth/*": [
-        "libs/auth/src/*"
-      ],
-      "@app/language": [
-        "libs/language/src"
-      ],
-      "@app/language/*": [
-        "libs/language/src/*"
-      ],
-      "@app/policy": [
-        "libs/policy/src"
-      ],
-      "@app/policy/*": [
-        "libs/policy/src/*"
-      ],
-      "@app/token": [
-        "libs/token/src"
-      ],
-      "@app/token/*": [
-        "libs/token/src/*"
-      ],
-      "@app/logger": [
-        "libs/logger/src"
-      ],
-      "@app/logger/*": [
-        "libs/logger/src/*"
-      ],
-      "@app/env": [
-        "libs/env/src"
-      ],
-      "@app/env/*": [
-        "libs/env/src/*"
-      ]
+      "@app/*": ["apps/*"],
+      "@libs/common": ["libs/common/src"],
+      "@libs/common/*": ["libs/common/src/*"],
+      "@libs/rabbit": ["libs/rabbit/src"],
+      "@libs/rabbit/*": ["libs/rabbit/src/*"],
+      "@libs/database": ["libs/database/src"],
+      "@libs/database/*": ["libs/database/src/*"],
+      "@libs/authentication": ["libs/authentication/src"],
+      "@libs/authentication/*": ["libs/authentication/src/*"],
+      "@libs/language": ["libs/language/src"],
+      "@libs/language/*": ["libs/language/src/*"],
+      "@libs/policy": ["libs/policy/src"],
+      "@libs/policy/*": ["libs/policy/src/*"],
+      "@libs/token": ["libs/token/src"],
+      "@libs/token/*": ["libs/token/src/*"],
+      "@libs/logger": ["libs/logger/src"],
+      "@libs/logger/*": ["libs/logger/src/*"],
+      "@libs/env": ["libs/env/src"],
+      "@libs/env/*": ["libs/env/src/*"]
     }
   }
 }

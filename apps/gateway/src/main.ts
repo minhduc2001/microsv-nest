@@ -7,13 +7,13 @@ import * as bodyParser from 'body-parser';
 import * as morgan from 'morgan';
 import * as cookieParser from 'cookie-parser';
 
-import { LoggerService } from '@app/logger';
-import { envService } from '@app/env';
+import { LoggerService } from '@libs/logger';
+import { envService } from '@libs/env';
 import { GatewayModule } from './gateway.module';
-import { ResponseTransformInterceptor } from '@app/common/middlewares/response.interceptor';
-import { HttpExceptionFilter, ValidationError } from '@app/common';
+import { ResponseTransformInterceptor } from '@libs/common/middlewares/response.interceptor';
+import { HttpExceptionFilter, ValidationError } from '@libs/common';
 import { ValidationPipe } from '@nestjs/common';
-import { initSwagger } from '@app/common/swagger-ui';
+import { initSwagger } from '@libs/common/swagger-ui';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(GatewayModule);

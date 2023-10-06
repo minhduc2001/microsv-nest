@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { configure, getLogger } from 'log4js';
 
-import { envService } from '@app/env';
+import { envService } from '@libs/env';
 
 const level = envService.DEBUG ? 'debug' : 'info';
 const appenders = {

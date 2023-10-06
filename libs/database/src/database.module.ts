@@ -5,8 +5,8 @@ import {
   TypeOrmModuleOptions,
 } from '@nestjs/typeorm';
 import { typeOrmOptionsGenerate } from './orm.config';
-import { LoggerService } from '@app/logger';
-import { envService } from '@app/env';
+import { LoggerService } from '@libs/logger';
+import { envService } from '@libs/env';
 import { getManager } from 'typeorm';
 
 const typeOrmOptions: TypeOrmModuleAsyncOptions[] = [

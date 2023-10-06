@@ -8,7 +8,7 @@ export const typeOrmOptionsGenerate = (config: any) =>
     username: config.DB_USERNAME,
     password: config.DB_PASSWORD,
     database: config.DB_DATABASE,
-    entities: ['/*.entity{.js, .ts}'],
+    entities: ['src/**/*.entity{.js, .ts}'],
     synchronize: false,
     idleTimeoutMillis: 0,
     connectTimeoutMS: 0,

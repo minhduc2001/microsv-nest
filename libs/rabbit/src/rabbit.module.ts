@@ -1,4 +1,4 @@
-import { DynamicModule } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { RabbitServiceName } from './enums/rabbit.enum';
 import {
   ClientsModule,
@@ -6,8 +6,13 @@ import {
   Transport,
 } from '@nestjs/microservices';
 import { RABBIT_SERVICE_OPTIONS, RABBIT_SERVICES } from './constants/constant';
-import { EnvModule, EnvService, envService } from '@app/env';
+import { EnvModule, EnvService, envService } from '@libs/env';
+import { RabbitService } from './rabbit.service';
 
+@Module({
+  providers: [RabbitService],
+  exports: [RabbitService],
+})
 export class RabbitModule {
   static forServerProxy(service: RabbitServiceName): DynamicModule {
     return {
@@ -35,18 +40,6 @@ export class RabbitModule {
   static forClientProxy(service: RabbitServiceName): DynamicModule {
     return {
       module: RabbitModule,
-      //   imports: [
-      //     ClientsModule.register([
-      //       {
-      //         name: service, // Tên của microservice client
-      //         transport: Transport.RMQ,
-      //         options: {
-      //           urls: [envService.RABBIT_MQ_URI], // Đảm bảo bạn đã inject EnvService
-      //           queue: RABBIT_SERVICES[RabbitServiceName.AUTH].queue, // Queue name
-      //         },
-      //       },
-      //     ]),
-      //   ],
       imports: [
         ClientsModule.registerAsync({
           clients: [

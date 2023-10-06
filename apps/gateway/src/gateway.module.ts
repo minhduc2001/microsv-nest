@@ -1,14 +1,12 @@
 import { Module } from '@nestjs/common';
 import { GatewayController } from './gateway.controller';
 import { GatewayService } from './gateway.service';
-import { EnvModule } from '@app/env';
-import { LoggerModule } from '@app/logger';
-import { RabbitModule } from '@app/rabbit';
-import { RabbitServiceName } from '@app/rabbit/enums/rabbit.enum';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { DatabaseModule } from '@app/database';
+import { EnvModule } from '@libs/env';
+import { LoggerModule } from '@libs/logger';
+import { RabbitModule } from '@libs/rabbit';
+import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 
-const globalModule = [EnvModule, LoggerModule, DatabaseModule];
+const globalModule = [EnvModule, LoggerModule];
 const coreModule = [];
 const rabbitModule = [
   RabbitModule.forClientProxy(RabbitServiceName.AUTH),
