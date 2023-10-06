@@ -8,7 +8,6 @@ import * as excRpc from '@libs/common/api/exception.reslove';
 
 // Apps
 import { AuthService } from './auth.service';
-import { CustomRpcExceptionFilter, HttpExceptionFilter } from '@libs/common';
 
 @Controller()
 export class AuthController {
