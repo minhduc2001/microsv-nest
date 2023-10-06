@@ -2,13 +2,13 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 export const typeOrmOptionsGenerate = (config: any) =>
   ({
-    type: config.DB_TYPE,
+    type: config.DB_TYPE ?? 'postgres',
     host: config.DB_HOST,
     port: config.DB_PORT,
     username: config.DB_USERNAME,
     password: config.DB_PASSWORD,
     database: config.DB_DATABASE,
-    entities: ['src/**/*.entity{.js, .ts}'],
+    entities: ['libs/common/**/*.entity{.js, .ts}'],
     synchronize: false,
     idleTimeoutMillis: 0,
     connectTimeoutMS: 0,
@@ -18,4 +18,5 @@ export const typeOrmOptionsGenerate = (config: any) =>
     autoLoadEntities: true,
     cli: { migrationsDir: 'src/migrations/migration/' },
     useNewUrlParser: true,
+    ssl: true,
   }) as TypeOrmModuleOptions;

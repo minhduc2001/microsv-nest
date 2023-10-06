@@ -1,5 +1,5 @@
-export const AUTH_MESSAGE_PATTERNS = {
-  TEST: 'test',
-  TEST1: 'test1',
-  LOGIN: 'AUTH_LOGIN',
+export const USER_MESSAGE_PATTERNS = {
+  LOGIN: 'USER.LOGIN',
+  REGISTER: 'USER.REGISTER',
+  GET_USER: 'USER.GET_USER',
 };

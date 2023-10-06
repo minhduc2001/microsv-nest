@@ -34,7 +34,9 @@
       "@libs/logger": ["libs/logger/src"],
       "@libs/logger/*": ["libs/logger/src/*"],
       "@libs/env": ["libs/env/src"],
-      "@libs/env/*": ["libs/env/src/*"]
+      "@libs/env/*": ["libs/env/src/*"],
+      "@libs/notification": ["libs/notification/src"],
+      "@libs/notification/*": ["libs/notification/src/*"]
     }
   }
 }

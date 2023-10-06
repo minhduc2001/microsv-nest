@@ -5,7 +5,7 @@ import {
   TypeOrmModuleOptions,
 } from '@nestjs/typeorm';
 import { typeOrmOptionsGenerate } from './orm.config';
-import { LoggerService } from '@libs/logger';
+import { LoggerModule, LoggerService } from '@libs/logger';
 import { envService } from '@libs/env';
 import { getManager } from 'typeorm';
 
@@ -35,14 +35,13 @@ const typeOrmOptions: TypeOrmModuleAsyncOptions[] = [
   },
 ];
 
-@Global()
 @Module({
   imports: [
     ...typeOrmOptions.map((options) => TypeOrmModule.forRootAsync(options)),
   ],
 })
-export class DatabaseModule implements OnModuleInit {
-  onModuleInit(): any {
-    void getManager().query('CREATE EXTENSION IF NOT EXISTS unaccent;');
-  }
+export class DatabaseModule {
+  // onModuleInit(): any {
+  //   void getManager().query('CREATE EXTENSION IF NOT EXISTS unaccent;');
+  // }
 }

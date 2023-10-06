@@ -6,7 +6,7 @@ import { firstValueFrom, lastValueFrom } from 'rxjs';
 // libs
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { IServiceResponse } from '@libs/rabbit/interfaces/rabbit-massage.interface';
-import { AUTH_MESSAGE_PATTERNS } from '@libs/common/constants/rabbit-patterns.constant';
+import { USER_MESSAGE_PATTERNS } from '@libs/common/constants/rabbit-patterns.constant';
 import * as exc from '@libs/common/api';
 import { ApiTagsAndBearer } from '@libs/common/swagger-ui';
 
@@ -25,7 +25,7 @@ export class GatewayController {
   async getHello(@Body() data: any) {
     try {
       const resp = await lastValueFrom(
-        this.userClientProxy.send<any>(AUTH_MESSAGE_PATTERNS.TEST, { a: 100 }),
+        this.userClientProxy.send<any>(USER_MESSAGE_PATTERNS.LOGIN, { a: 100 }),
       );
 
       console.log(resp);

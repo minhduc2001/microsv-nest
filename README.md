@@ -37,7 +37,7 @@ $ yarn run test:cov
 $ nest generate app app-name
 
 # generate libs
-$ nest generate libs lib-name
+$ nest g library lib-name
 ```
 
 ```typescript
