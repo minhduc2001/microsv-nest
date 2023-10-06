@@ -1,26 +1,31 @@
-import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
-import { GatewayService } from './gateway.service';
+import { Body, Controller, Get, Inject, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
+
+// libs
+import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { IServiceResponse } from '@libs/rabbit/interfaces/rabbit-massage.interface';
 import { AUTH_MESSAGE_PATTERNS } from '@libs/common/constants/rabbit-patterns.constant';
 import * as exc from '@libs/common/api';
-import { firstValueFrom, lastValueFrom } from 'rxjs';
-@ApiTags('Gateway')
+import { ApiTagsAndBearer } from '@libs/common/swagger-ui';
+
+// apps
+import { Auth } from './auth/decorators/auth.decorator';
+
+@ApiTagsAndBearer('Gateway')
 @Controller()
 export class GatewayController {
   constructor(
-    private readonly gatewayService: GatewayService,
-    @Inject(RabbitServiceName.AUTH) private authClientProxy: ClientProxy,
     @Inject(RabbitServiceName.USER) private userClientProxy: ClientProxy,
   ) {}
 
+  @Auth()
   @Post()
   async getHello(@Body() data: any) {
     try {
       const resp = await lastValueFrom(
-        this.authClientProxy.send<any>(AUTH_MESSAGE_PATTERNS.TEST, { a: 100 }),
+        this.userClientProxy.send<any>(AUTH_MESSAGE_PATTERNS.TEST, { a: 100 }),
       );
 
       console.log(resp);

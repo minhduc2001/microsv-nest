@@ -1,20 +1,30 @@
 import { Module } from '@nestjs/common';
-import { GatewayController } from './gateway.controller';
-import { GatewayService } from './gateway.service';
-import { EnvModule } from '@libs/env';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+
+// Libs
+import { EnvModule, envService } from '@libs/env';
 import { LoggerModule } from '@libs/logger';
 import { RabbitModule } from '@libs/rabbit';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 
-const globalModule = [EnvModule, LoggerModule];
-const coreModule = [];
-const rabbitModule = [
-  RabbitModule.forClientProxy(RabbitServiceName.AUTH),
-  RabbitModule.forClientProxy(RabbitServiceName.USER),
-];
+// Apps
+import { GatewayController } from './gateway.controller';
+import { JwtStrategy } from './auth/strategies/jwt.stategy';
+
+const coreModule = [EnvModule, LoggerModule];
+const rabbitModule = [RabbitModule.forClientProxy(RabbitServiceName.USER)];
 @Module({
-  imports: [...globalModule, ...rabbitModule],
+  imports: [
+    ...coreModule,
+    ...rabbitModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.register({
+      secret: envService.JWT_SECRET,
+      signOptions: { expiresIn: '10d' },
+    }),
+  ],
   controllers: [GatewayController],
-  providers: [GatewayService],
+  providers: [JwtStrategy],
 })
 export class GatewayModule {}
