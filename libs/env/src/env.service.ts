@@ -73,6 +73,7 @@ export class EnvService {
   EMAIL_CLIENT_SECRET = _process.env.EMAIL_CLIENT_SECRET;
   EMAIL_REDIRECT_URI = _process.env.EMAIL_REDIRECT_URI;
   EMAIL_REFRESH_TOKEN = _process.env.EMAIL_REFRESH_TOKEN;
+  EMAIL_PASSWORD = _process.env.EMAIL_PASSWORD;
 
   // file
   MAX_FILE_SIZE = 200000000; // 10MB;
