@@ -12,13 +12,9 @@ export class UserController {
   @MessagePattern(USER_MESSAGE_PATTERNS.LOGIN)
   async login(@Payload() body: LoginDto) {
     try {
-      console.log(body);
-      throw new excRpc.BadException({ message: 'loi roi' });
-      return body;
+      return this.userService.loginUser(body);
     } catch (e) {
-      throw new excRpc.BusinessException({ message: e.message });
+      throw new excRpc.BadException({ message: e.message });
     }
-
-    // return this.userService.getUserByUniqueKey({ email: 'haha' });
   }
 }

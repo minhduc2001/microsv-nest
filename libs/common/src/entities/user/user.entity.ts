@@ -3,6 +3,7 @@ import { AbstractEntity } from '../abstract.entity';
 import { Exclude } from 'class-transformer';
 import { ERole } from '@libs/common/enums/role.enum';
 import { Profile } from '@libs/common/entities/user/profile.entity';
+import * as bycrypt from 'bcrypt';
 
 @Entity()
 export class User extends AbstractEntity {
@@ -30,4 +31,13 @@ export class User extends AbstractEntity {
 
   @ManyToOne(() => Profile, (profile) => profile.user)
   profiles: Profile[];
+
+  setPassword(password: string) {
+    this.password = bycrypt.hashSync(password, 10);
+  }
+
+  comparePassword(rawPassword: string): boolean {
+    const userPassword = this.password;
+    return bycrypt.compareSync(rawPassword, userPassword);
+  }
 }

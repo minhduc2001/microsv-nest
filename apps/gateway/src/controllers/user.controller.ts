@@ -24,7 +24,6 @@ export class UserController {
       const resp = await firstValueFrom(
         this.userClientProxy.send<any>(USER_MESSAGE_PATTERNS.LOGIN, body),
       );
-
       return resp;
     } catch (e) {
       throw new exc.BadException({ message: e.message });
