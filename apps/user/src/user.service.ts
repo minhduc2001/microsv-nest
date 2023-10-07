@@ -31,17 +31,13 @@ export class UserService extends BaseService<User> {
     if (!user)
       throw new excRpc.NotFound({ message: 'Email does not existed!' });
 
-    if (user.comparePassword(password))
+    if (!user.comparePassword(password))
       throw new excRpc.BadRequest({ message: 'password incorrect' });
 
     if (!user.isActive)
       throw new excRpc.BadRequest({ message: 'Account is not activated' });
 
-    return {
-      user,
-      accessToken: 'abcabac',
-      refreshToken: 'abcabc',
-    };
+    return user;
   }
 
   async registerUser(newUser: RegisterDto) {
@@ -64,6 +60,13 @@ export class UserService extends BaseService<User> {
     this.userRepository.insert(saveUser);
 
     return 'Register Successful!';
+  }
+
+  async getUserById(id: number) {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user)
+      throw new excRpc.BadRequest({ message: 'Account does not existed!' });
+    return user;
   }
 
   private _getUserByUniqueKey(option: IUserGetByUniqueKey): Promise<User> {
