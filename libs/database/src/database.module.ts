@@ -26,7 +26,7 @@ const typeOrmOptions: TypeOrmModuleAsyncOptions[] = [
         //     Db: config.REDIS_STORAGE.DB,
         //   },
         // },
-        logging: true,
+        logging: false,
         // logger:
         //   config.NODE_ENV === config.JEST
         //     ? 'debug'

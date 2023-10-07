@@ -1,6 +1,8 @@
 # compiled output
 /dist
 /node_modules
+/docker/rabbitmq
+/docker/database/postgres/data
 
 # Logs
 logs

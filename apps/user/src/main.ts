@@ -13,7 +13,6 @@ async function bootstrap() {
 
   const loggerService = app.get(LoggerService);
 
-  app.useGlobalInterceptors(new ResponseTransformInterceptor());
   app.useGlobalFilters(new CustomRpcExceptionFilter(loggerService));
   app.useGlobalPipes(
     new ValidationPipe({

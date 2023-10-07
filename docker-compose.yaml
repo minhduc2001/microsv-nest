@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: db-doan
+    image: postgres:13.6-alpine
+    restart: always
+    environment:
+      TZ: 'Asia/Ho_Chi_Minh'
+      PGTZ: 'Asia/Ho_Chi_Minh'
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    command: postgres -c 'config_file=/etc/postgresql/postgresql.conf'
+    ports:
+      - ${DB_PORT:-5432}:5432
+    networks:
+      - do-an-network
+    volumes:
+      - ./docker/database/postgres/data/:/var/lib/postgresql/data
+      - ./docker/database/postgres/postgres.conf:/etc/postgresql/postgresql.conf
+      # - ./docker/database/postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf
+      - ./docker/database/postgres/init/:/docker-entrypoint-initdb.d
+    env_file:
+      - .env
+
+  rabbitmq:
+    container_name: rabbitmq-doan
+    image: rabbitmq:3-management-alpine
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_NAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./docker/rabbitmq/data/:/var/lib/rabbitmq/
+      - ./docker/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - do-an-network
+
+  # redis:
+  #   container_name: redis-doan
+  #   image: redis:6.2.5-alpine
+  #   restart: always
+  #   ports:
+  #     - ${REDIS_PORT}:6379
+  #   environment:
+  #     REDIS_PASSWORD: ${REDIS_PASSWORD}
+  #   volumes:
+  #     - ./docker/redis/init:/docker-entrypoint-initdb.d
+  #   networks:
+  #     - do-an-network
+  #   env_file:
+  #     - .env
+networks:
+  do-an-network:
+    driver: bridge
