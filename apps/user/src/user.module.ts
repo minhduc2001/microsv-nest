@@ -7,12 +7,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '@libs/common/entities/user/user.entity';
 import { RabbitModule } from '@libs/rabbit';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
+import { Profile } from '@libs/common/entities/user/profile.entity';
 
 @Module({
   imports: [
     DatabaseModule,
     LoggerModule,
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Profile]),
     RabbitModule.forServerProxy(RabbitServiceName.USER),
   ],
   controllers: [UserController],

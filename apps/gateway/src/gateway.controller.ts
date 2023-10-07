@@ -20,20 +20,4 @@ export class GatewayController {
   constructor(
     @Inject(RabbitServiceName.USER) private userClientProxy: ClientProxy,
   ) {}
-
-  @Auth()
-  @Post()
-  async getHello(@Body() data: any) {
-    try {
-      const resp = await lastValueFrom(
-        this.userClientProxy.send<any>(USER_MESSAGE_PATTERNS.LOGIN, { a: 100 }),
-      );
-
-      console.log(resp);
-
-      return resp;
-    } catch (e) {
-      throw new exc.BadException({ message: e.message });
-    }
-  }
 }

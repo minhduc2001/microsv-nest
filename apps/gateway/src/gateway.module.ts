@@ -14,6 +14,7 @@ import { LanguageModule } from '@libs/language';
 // Apps
 import { GatewayController } from './gateway.controller';
 import { JwtStrategy } from './auth/strategies/jwt.stategy';
+import { UserModule } from './modules/user.module';
 
 const coreModule = [EnvModule, LoggerModule, DatabaseModule];
 const rabbitModule = [RabbitModule.forClientProxy(RabbitServiceName.USER)];
@@ -26,7 +27,8 @@ const rabbitModule = [RabbitModule.forClientProxy(RabbitServiceName.USER)];
       secret: envService.JWT_SECRET,
       signOptions: { expiresIn: '10d' },
     }),
-    LanguageModule.register(path.join(process.cwd(), '/static/i18n')),
+    // LanguageModule.register(path.join(process.cwd(), '/static/i18n')),
+    UserModule,
   ],
   controllers: [GatewayController],
   providers: [JwtStrategy],

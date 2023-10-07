@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IUserGetByUniqueKey } from './user.interface';
 import { BaseService } from '@libs/common/services/base.service';
+import { PaginateConfig } from '@libs/common/services/paginate';
 
 @Injectable()
 export class UserService extends BaseService<User> {
@@ -12,10 +13,15 @@ export class UserService extends BaseService<User> {
   }
 
   async getAllUser(query: any) {
-    return this.listWithPage(query);
+    const config: PaginateConfig<User> = {
+      sortableColumns: ['id'],
+    };
+    return this.listWithPage(query, config);
   }
 
-  async getUserByUniqueKey(option: IUserGetByUniqueKey): Promise<User> {
+  async login() {}
+
+  private _getUserByUniqueKey(option: IUserGetByUniqueKey): Promise<User> {
     const findOption: Record<string, any>[] = Object.entries(option).map(
       ([key, value]) => ({ [key]: value }),
     );

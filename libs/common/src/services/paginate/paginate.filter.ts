@@ -23,7 +23,7 @@ import {
   fixColumnAlias,
   getPropertiesByColumnName,
 } from './paginate.helper';
-import { PaginateQuery } from '@base/service/paginate/paginate.interface';
+import { PaginateQuery } from './paginate.interface';
 
 export enum FilterOperator {
   EQ = '$eq',
