@@ -19,7 +19,7 @@ services:
     volumes:
       - ./docker/database/postgres/data/:/var/lib/postgresql/data
       - ./docker/database/postgres/postgres.conf:/etc/postgresql/postgresql.conf
-      # - ./docker/database/postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf
+      - ./docker/database/postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf
       - ./docker/database/postgres/init/:/docker-entrypoint-initdb.d
     env_file:
       - .env
