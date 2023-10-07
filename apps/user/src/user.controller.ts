@@ -26,4 +26,9 @@ export class UserController {
       throw new excRpc.BadException({ message: e.message });
     }
   }
+
+  @MessagePattern(USER_MESSAGE_PATTERNS.GET_USER)
+  async getUser(@Payload('id') id: number) {
+    return this.userService.findOne({ where: { id } });
+  }
 }

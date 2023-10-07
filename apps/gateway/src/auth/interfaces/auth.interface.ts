@@ -1,7 +1,7 @@
 export interface IJWTPayload {
   sub: number;
   uav?: number;
-  email?: number;
+  email?: string;
 }
 
 export interface IJwtPayloadWithRt extends IJWTPayload {

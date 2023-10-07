@@ -11,6 +11,7 @@ import { envService } from '@libs/env';
 import { IJWTPayload } from '../interfaces/auth.interface';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { ClientProxy } from '@nestjs/microservices';
+import { USER_MESSAGE_PATTERNS } from '@libs/common/constants/rabbit-patterns.constant';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -26,7 +27,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   async validate(payload: IJWTPayload) {
     try {
-      const user = await lastValueFrom(this.userClientProxy.send<any>('', {}));
+      const user = await lastValueFrom(
+        this.userClientProxy.send<any>(USER_MESSAGE_PATTERNS.GET_USER, {}),
+      );
       if (!user) throw new exc.Unauthorized({ message: 'Token is not valid' });
 
       delete user?.password;
