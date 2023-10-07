@@ -1,5 +1,5 @@
-import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
+import { ApiProperty, PickType } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { Trim } from '../decorators/common.decorator';
 
 export class LoginDto {
@@ -25,13 +25,12 @@ export class RegisterDto extends PickType(LoginDto, ['email', 'password']) {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsPhoneNumber()
+  @IsString()
   @Trim()
   phone: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsPhoneNumber()
   @Trim()
   address: string;
 }

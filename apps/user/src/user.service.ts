@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { IUserGetByUniqueKey } from './user.interface';
 import { BaseService } from '@libs/common/services/base.service';
 import { PaginateConfig } from '@libs/common/services/paginate';
-import { LoginDto } from '@libs/common/dtos/user.dto';
+import { LoginDto, RegisterDto } from '@libs/common/dtos/user.dto';
 import * as excRpc from '@libs/common/api';
 
 @Injectable()
@@ -42,6 +42,28 @@ export class UserService extends BaseService<User> {
       accessToken: 'abcabac',
       refreshToken: 'abcabc',
     };
+  }
+
+  async registerUser(newUser: RegisterDto) {
+    const { email, password, phone, address, username } = newUser;
+    const checkExisted = await this.userRepository.findOne({
+      where: { email: newUser.email },
+    });
+
+    if (checkExisted)
+      throw new excRpc.BadRequest({ message: 'Account has already exist!' });
+
+    const saveUser = Object.assign(new User(), {
+      username,
+      email,
+      phone,
+      address,
+    });
+    saveUser.setPassword(password);
+
+    this.userRepository.insert(saveUser);
+
+    return 'Register Successful!';
   }
 
   private _getUserByUniqueKey(option: IUserGetByUniqueKey): Promise<User> {

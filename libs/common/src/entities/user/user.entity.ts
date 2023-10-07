@@ -17,8 +17,11 @@ export class User extends AbstractEntity {
   @Column()
   password: string;
 
-  @Column()
+  @Column({ nullable: true })
   address: string;
+
+  @Column({ nullable: true })
+  phone: string;
 
   @Column({
     type: 'boolean',
