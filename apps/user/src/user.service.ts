@@ -5,11 +5,15 @@ import { Repository } from 'typeorm';
 import { IUserGetByUniqueKey } from './user.interface';
 import { BaseService } from '@libs/common/services/base.service';
 import { PaginateConfig } from '@libs/common/services/paginate';
+import { LoginDto, RegisterDto } from '@libs/common/dtos/user.dto';
+import * as excRpc from '@libs/common/api';
 
 @Injectable()
 export class UserService extends BaseService<User> {
-  constructor(@InjectRepository(User) protected repository: Repository<User>) {
-    super(repository);
+  constructor(
+    @InjectRepository(User) protected userRepository: Repository<User>,
+  ) {
+    super(userRepository);
   }
 
   async getAllUser(query: any) {
@@ -19,7 +23,48 @@ export class UserService extends BaseService<User> {
     return this.listWithPage(query, config);
   }
 
-  async login() {}
+  async loginUser(dto: LoginDto) {
+    const { email, password } = dto;
+
+    const user: User = await this.userRepository.findOne({ where: { email } });
+
+    if (!user)
+      throw new excRpc.NotFound({ message: 'Email does not existed!' });
+
+    if (user.comparePassword(password))
+      throw new excRpc.BadRequest({ message: 'password incorrect' });
+
+    if (!user.isActive)
+      throw new excRpc.BadRequest({ message: 'Account is not activated' });
+
+    return {
+      user,
+      accessToken: 'abcabac',
+      refreshToken: 'abcabc',
+    };
+  }
+
+  async registerUser(newUser: RegisterDto) {
+    const { email, password, phone, address, username } = newUser;
+    const checkExisted = await this.userRepository.findOne({
+      where: { email: newUser.email },
+    });
+
+    if (checkExisted)
+      throw new excRpc.BadRequest({ message: 'Account has already exist!' });
+
+    const saveUser = Object.assign(new User(), {
+      username,
+      email,
+      phone,
+      address,
+    });
+    saveUser.setPassword(password);
+
+    this.userRepository.insert(saveUser);
+
+    return 'Register Successful!';
+  }
 
   private _getUserByUniqueKey(option: IUserGetByUniqueKey): Promise<User> {
     const findOption: Record<string, any>[] = Object.entries(option).map(

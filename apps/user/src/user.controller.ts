@@ -3,7 +3,7 @@ import { UserService } from './user.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { USER_MESSAGE_PATTERNS } from '@libs/common/constants/rabbit-patterns.constant';
 import * as excRpc from '@libs/common/api';
-import { LoginDto } from '@libs/common/dtos/user.dto';
+import { LoginDto, RegisterDto } from '@libs/common/dtos/user.dto';
 
 @Controller()
 export class UserController {
@@ -12,13 +12,18 @@ export class UserController {
   @MessagePattern(USER_MESSAGE_PATTERNS.LOGIN)
   async login(@Payload() body: LoginDto) {
     try {
-      console.log(body);
-      throw new excRpc.BadException({ message: 'loi roi' });
-      return body;
+      return this.userService.loginUser(body);
     } catch (e) {
-      throw new excRpc.BusinessException({ message: e.message });
+      throw new excRpc.BadException({ message: e.message });
     }
+  }
 
-    // return this.userService.getUserByUniqueKey({ email: 'haha' });
+  @MessagePattern(USER_MESSAGE_PATTERNS.REGISTER)
+  async register(@Payload() body: RegisterDto) {
+    try {
+      return this.userService.registerUser(body);
+    } catch (e) {
+      throw new excRpc.BadException({ message: e.message });
+    }
   }
 }
