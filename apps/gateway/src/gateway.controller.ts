@@ -12,6 +12,7 @@ import { ApiTagsAndBearer } from '@libs/common/swagger-ui';
 
 // apps
 import { Auth } from './auth/decorators/auth.decorator';
+import { Public } from '@app/gateway/src/auth/decorators/public.decorator';
 
 @ApiTagsAndBearer('Gateway')
 @Controller()

@@ -2,6 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { UserService } from './user.service';
 import { MessagePattern } from '@nestjs/microservices';
 import { USER_MESSAGE_PATTERNS } from '@libs/common/constants/rabbit-patterns.constant';
+import * as excRpc from '@libs/common/api';
 
 @Controller()
 export class UserController {
@@ -9,6 +10,12 @@ export class UserController {
 
   @MessagePattern(USER_MESSAGE_PATTERNS.LOGIN)
   getHello() {
-    return this.userService.getUserByUniqueKey({ email: 'haha' });
+    try {
+      throw new excRpc.BadException({ message: '' });
+    } catch (e) {
+      throw new excRpc.BadException({ message: e.message });
+    }
+
+    // return this.userService.getUserByUniqueKey({ email: 'haha' });
   }
 }

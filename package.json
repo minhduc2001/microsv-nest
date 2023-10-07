@@ -20,7 +20,7 @@
     "test:e2e": "jest --config ./apps/microsv-nest/test/jest-e2e.json",
     "prepare": "husky install",
     "prettier": "prettier -c \"{src,apps,libs,test}/**/*.ts\" ",
-    "prettier:fix": "prettier --write \"src/**/*.ts\""
+    "prettier:fix": "prettier --write \"libs/**/**/*.ts\""
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -59,6 +59,7 @@
     "@types/express": "^4.17.17",
     "@types/ip": "^1.1.1",
     "@types/jest": "^29.5.2",
+    "@types/lodash": "^4.14.199",
     "@types/morgan": "^1.9.6",
     "@types/node": "^20.3.1",
     "@types/nodemailer": "^6.4.11",
