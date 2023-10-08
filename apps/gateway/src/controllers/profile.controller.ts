@@ -1,6 +1,14 @@
 import { ApiTagsAndBearer } from '@libs/common/swagger-ui';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
-import { Body, Controller, Inject, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import * as exc from '@libs/common/api';
 import { firstValueFrom } from 'rxjs';
@@ -20,6 +28,21 @@ export class ProfileController {
   constructor(
     @Inject(RabbitServiceName.USER) private userClientProxy: ClientProxy,
   ) {}
+
+  @Get()
+  async getAllProfileOfLoginUser(@GetUser('id') userId: number) {
+    try {
+      const resp = await firstValueFrom(
+        this.userClientProxy.send<any>(
+          USER_MESSAGE_PATTERNS.PROFILE.GET_ALL_PROFILE_BY_USER_ID,
+          userId,
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.BadException({ message: e.message });
+    }
+  }
 
   @Post()
   async createProfile(

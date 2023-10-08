@@ -1,8 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { USER_MESSAGE_PATTERNS } from '@libs/common/constants/rabbit-patterns.constant';
 import * as excRpc from '@libs/common/api';
-import { LoginDto, RegisterDto } from '@libs/common/dtos/user.dto';
 import { ProfileService } from '../services/profile.service';
 import {
   CreateProfileDto,
