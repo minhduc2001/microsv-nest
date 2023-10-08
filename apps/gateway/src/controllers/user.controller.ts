@@ -69,6 +69,22 @@ export class UserController {
     }
   }
 
+  @Patch('active')
+  @Public()
+  async activeAccount(@Query('email') email: string) {
+    try {
+      const resp = await firstValueFrom(
+        this.userClientProxy.send<any>(
+          USER_MESSAGE_PATTERNS.USER_ACTIVE_ACCOUNT,
+          email,
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.BadException({ message: e.message });
+    }
+  }
+
   @Patch(':id')
   async updateUser(
     @Param() param: ParamIdDto,
@@ -82,24 +98,6 @@ export class UserController {
         }),
       );
       return resp;
-    } catch (e) {
-      throw new exc.BadException({ message: e.message });
-    }
-  }
-
-  @Post('active')
-  @Public()
-  async activeAccount(@Query('email') email: string) {
-    // async activeAccount() {
-    try {
-      const resp = await firstValueFrom(
-        this.userClientProxy.send<any>(
-          USER_MESSAGE_PATTERNS.USER_ACTIVE_ACCOUNT,
-          email,
-        ),
-      );
-      return resp;
-      // return 'PPPPPP';
     } catch (e) {
       throw new exc.BadException({ message: e.message });
     }
