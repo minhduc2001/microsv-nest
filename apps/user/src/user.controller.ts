@@ -47,4 +47,13 @@ export class UserController {
       throw new excRpc.BadException({ message: e.message });
     }
   }
+
+  @MessagePattern(USER_MESSAGE_PATTERNS.USER_ACTIVE_ACCOUNT)
+  async activeAccount(@Payload() email: string) {
+    try {
+      return this.userService.activeAccount(email);
+    } catch (e) {
+      throw new excRpc.BadException({ message: e.message });
+    }
+  }
 }

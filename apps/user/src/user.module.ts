@@ -10,6 +10,7 @@ import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { Profile } from '@libs/common/entities/user/profile.entity';
 import { ProfileController } from './controllers/profile.controller';
 import { ProfileService } from './services/profile.service';
+import { MailerModule } from '@libs/mailer';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ProfileService } from './services/profile.service';
     LoggerModule,
     TypeOrmModule.forFeature([User, Profile]),
     RabbitModule.forServerProxy(RabbitServiceName.USER),
+    MailerModule,
   ],
   controllers: [UserController, ProfileController],
   providers: [UserService, ProfileService],
