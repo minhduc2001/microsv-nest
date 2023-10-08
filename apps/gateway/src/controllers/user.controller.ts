@@ -22,7 +22,7 @@ export class UserController {
   @Post('login')
   async login(@Body() body: LoginDto) {
     try {
-      const { data } = await firstValueFrom(
+      const data = await firstValueFrom(
         this.userClientProxy.send<any>(USER_MESSAGE_PATTERNS.LOGIN, body),
       );
 

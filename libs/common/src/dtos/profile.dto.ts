@@ -1,14 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 import { Trim } from '../decorators/common.decorator';
 
 export class CreateProfileDto {
-  @ApiProperty()
+  @ApiProperty({ example: 'Bé Bi' })
   @IsNotEmpty()
   @Trim()
   nickname: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: new Date() })
   @IsNotEmpty()
   birthday: Date;
 
@@ -21,9 +21,9 @@ export class CreateProfileDto {
   @Trim()
   avatar: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiHideProperty()
   @IsNumber()
+  @IsOptional()
   userId: number;
 }
 

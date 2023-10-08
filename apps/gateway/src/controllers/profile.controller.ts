@@ -11,6 +11,7 @@ import {
   UpdateProfileDto,
 } from '@libs/common/dtos/profile.dto';
 import { ParamIdDto } from '@libs/common/dtos/common.dto';
+import { GetUser } from '../auth/decorators/get-user.decorator';
 
 @ApiTagsAndBearer('Profile')
 @Controller('profile')
@@ -21,12 +22,15 @@ export class ProfileController {
   ) {}
 
   @Post()
-  async createProfile(@Body() body: CreateProfileDto) {
+  async createProfile(
+    @Body() body: CreateProfileDto,
+    @GetUser('id') userId: number,
+  ) {
     try {
       const resp = await firstValueFrom(
         this.userClientProxy.send<any>(
           USER_MESSAGE_PATTERNS.PROFILE.CREATE_PROFILE,
-          body,
+          { ...body, userId } as CreateProfileDto,
         ),
       );
       return resp;

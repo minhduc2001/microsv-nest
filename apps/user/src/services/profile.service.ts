@@ -22,7 +22,7 @@ export class ProfileService extends BaseService<Profile> {
   async createProfile(payload: CreateProfileDto) {
     const { nickname, birthday, avatar, userId } = payload;
 
-    this.userService.getUserById(userId); // validate check user existed
+    const user = await this.userService.getUserById(userId); // validate check user existed
 
     const checkExisted = await this.profileRepository.findOne({
       where: { nickname, user: { id: userId } },
@@ -36,17 +36,17 @@ export class ProfileService extends BaseService<Profile> {
       birthday,
       avatar,
     });
-    newProfile.user.id = userId;
+    newProfile.user = user;
 
-    this.profileRepository.insert(newProfile);
+    await this.profileRepository.insert(newProfile);
 
     return 'Create Profile Successful';
   }
 
   async updateProfile(profileId: number, payload: UpdateProfileDto) {
-    this.getProfileById(profileId);
+    await this.getProfileById(profileId);
 
-    this.profileRepository.update(profileId, { ...payload });
+    await this.profileRepository.update(profileId, { ...payload });
 
     return 'Update profile successful';
   }
