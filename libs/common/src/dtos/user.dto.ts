@@ -1,5 +1,11 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { Trim } from '../decorators/common.decorator';
 
 export class LoginDto {
@@ -33,4 +39,37 @@ export class RegisterDto extends PickType(LoginDto, ['email', 'password']) {
   @IsNotEmpty()
   @Trim()
   address: string;
+}
+
+export class UserUpdateDto {
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @Trim()
+  username: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @Trim()
+  address: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @Trim()
+  phone: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsBoolean()
+  isActive: boolean;
+}
+
+export class ForgotPassword {
+  @ApiProperty({ example: '123456' })
+  @IsString()
+  @IsNotEmpty()
+  @Trim()
+  password: string;
 }

@@ -17,7 +17,10 @@ export class ProfileService extends BaseService<Profile> {
     super(profileRepository);
   }
 
-  async getAllProfileByUserId(userId: number) {}
+  async getAllProfileByUserId(userId: number) {
+    const user = await this.userService.getUserById(userId);
+    return this.profileRepository.find({ where: { user: { id: user.id } } });
+  }
 
   async createProfile(payload: CreateProfileDto) {
     const { nickname, birthday, avatar, userId } = payload;
@@ -56,5 +59,16 @@ export class ProfileService extends BaseService<Profile> {
     if (!profile)
       throw new excRpc.BadRequest({ message: 'Profile does not exist!' });
     return profile;
+  }
+
+  async removeProfiles(ids: number[]) {
+    // check not existed
+    for (const id of ids) {
+      await this.getProfileById(id);
+    }
+
+    await this.profileRepository.delete(ids);
+
+    return 'Delete successful';
   }
 }

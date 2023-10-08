@@ -1,8 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { USER_MESSAGE_PATTERNS } from '@libs/common/constants/rabbit-patterns.constant';
 import * as excRpc from '@libs/common/api';
-import { LoginDto, RegisterDto } from '@libs/common/dtos/user.dto';
 import { ProfileService } from '../services/profile.service';
 import {
   CreateProfileDto,
@@ -17,6 +16,15 @@ export class ProfileController {
   async getAllProfileByUserId(@Payload() userId: number) {
     try {
       return this.profileService.getAllProfileByUserId(userId);
+    } catch (e) {
+      throw new excRpc.BadException({ message: e.message });
+    }
+  }
+
+  @MessagePattern(USER_MESSAGE_PATTERNS.PROFILE.GET_PROFILE)
+  async getProfileById(@Payload() profileId: number) {
+    try {
+      return this.profileService.getProfileById(profileId);
     } catch (e) {
       throw new excRpc.BadException({ message: e.message });
     }
@@ -38,6 +46,15 @@ export class ProfileController {
   ) {
     try {
       return this.profileService.updateProfile(profileId, body);
+    } catch (e) {
+      throw new excRpc.BadException({ message: e.message });
+    }
+  }
+
+  @MessagePattern(USER_MESSAGE_PATTERNS.PROFILE.DELETE_PROFILE)
+  async removeProfiles(@Payload() ids: number[]) {
+    try {
+      return this.profileService.removeProfiles(ids);
     } catch (e) {
       throw new excRpc.BadException({ message: e.message });
     }
