@@ -30,7 +30,7 @@ export class ProfileController {
       const resp = await firstValueFrom(
         this.userClientProxy.send<any>(
           USER_MESSAGE_PATTERNS.PROFILE.CREATE_PROFILE,
-          { ...body, userId } as CreateProfileDto,
+          { ...body, userId },
         ),
       );
       return resp;

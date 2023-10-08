@@ -26,7 +26,10 @@ export class UserService extends BaseService<User> {
   async loginUser(dto: LoginDto) {
     const { email, password } = dto;
 
-    const user: User = await this.userRepository.findOne({ where: { email } });
+    const user: User = await this.userRepository.findOne({
+      where: { email },
+      relations: { profiles: true },
+    });
 
     if (!user)
       throw new excRpc.NotFound({ message: 'Email does not existed!' });
