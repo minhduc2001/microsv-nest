@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Res,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
@@ -21,7 +22,6 @@ import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { USER_MESSAGE_PATTERNS } from '@libs/common/constants/rabbit-patterns.constant';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { Public } from '../auth/decorators/public.decorator';
-import { Response } from 'express';
 import { UserService } from '../services/user.service';
 import { ParamIdDto } from '@libs/common/dtos/common.dto';
 
@@ -82,6 +82,24 @@ export class UserController {
         }),
       );
       return resp;
+    } catch (e) {
+      throw new exc.BadException({ message: e.message });
+    }
+  }
+
+  @Post('active')
+  @Public()
+  async activeAccount(@Query('email') email: string) {
+    // async activeAccount() {
+    try {
+      const resp = await firstValueFrom(
+        this.userClientProxy.send<any>(
+          USER_MESSAGE_PATTERNS.USER_ACTIVE_ACCOUNT,
+          email,
+        ),
+      );
+      return resp;
+      // return 'PPPPPP';
     } catch (e) {
       throw new exc.BadException({ message: e.message });
     }
