@@ -27,6 +27,7 @@ export class UserService extends BaseService<User> {
     const { email, password } = dto;
 
     const user: User = await this.userRepository.findOne({
+      select: { profiles: { id: true, nickname: true, avatar: true } },
       where: { email },
       relations: { profiles: true },
     });
