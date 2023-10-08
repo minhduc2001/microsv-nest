@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsOptional, IsPositive } from 'class-validator';
-import { ToNumber } from '../decorators/common.decorator';
+import { IsArray, IsNotEmpty, IsOptional, IsPositive } from 'class-validator';
+import { ToNumber, ToNumbers } from '../decorators/common.decorator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class PaginationDto {
@@ -22,4 +22,13 @@ export class ParamIdDto {
   @ToNumber()
   @IsPositive()
   id: number;
+}
+
+export class IdsDto {
+  @ApiProperty({ type: Number, isArray: true })
+  @IsNotEmpty()
+  @IsArray({})
+  @IsPositive({ each: true })
+  @ToNumbers()
+  ids: number[];
 }

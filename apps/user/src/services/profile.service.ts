@@ -60,4 +60,15 @@ export class ProfileService extends BaseService<Profile> {
       throw new excRpc.BadRequest({ message: 'Profile does not exist!' });
     return profile;
   }
+
+  async removeProfiles(ids: number[]) {
+    // check not existed
+    for (const id of ids) {
+      await this.getProfileById(id);
+    }
+
+    await this.profileRepository.delete(ids);
+
+    return 'Delete successful';
+  }
 }

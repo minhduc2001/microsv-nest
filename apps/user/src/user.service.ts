@@ -5,7 +5,11 @@ import { Repository } from 'typeorm';
 import { IUserGetByUniqueKey } from './user.interface';
 import { BaseService } from '@libs/common/services/base.service';
 import { PaginateConfig } from '@libs/common/services/paginate';
-import { LoginDto, RegisterDto } from '@libs/common/dtos/user.dto';
+import {
+  LoginDto,
+  RegisterDto,
+  UserUpdateDto,
+} from '@libs/common/dtos/user.dto';
 import * as excRpc from '@libs/common/api';
 
 @Injectable()
@@ -73,13 +77,20 @@ export class UserService extends BaseService<User> {
     return user;
   }
 
-  private _getUserByUniqueKey(option: IUserGetByUniqueKey): Promise<User> {
-    const findOption: Record<string, any>[] = Object.entries(option).map(
-      ([key, value]) => ({ [key]: value }),
-    );
-    return this.repository
-      .createQueryBuilder('user')
-      .where(findOption)
-      .getOne();
+  async updateUserByUserId(userId: number, userUpdate: UserUpdateDto) {
+    const user = await this.getUserById(userId);
+    const newInfo = Object.assign(new User(), { ...userUpdate });
+    await this.userRepository.update(user.id, { ...newInfo });
+
+    return 'Update user info succesful';
+  }
+
+  async resetPassword(userId: number, password: string) {
+    const user = await this.getUserById(userId);
+    const newPass = Object.assign(new User(), { password });
+    newPass.setPassword(password);
+    await this.userRepository.update(user.id, { password: newPass.password });
+
+    return 'Reset Password Successful';
   }
 }

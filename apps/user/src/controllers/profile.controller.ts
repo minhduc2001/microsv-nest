@@ -21,6 +21,15 @@ export class ProfileController {
     }
   }
 
+  @MessagePattern(USER_MESSAGE_PATTERNS.PROFILE.GET_PROFILE)
+  async getProfileById(@Payload() profileId: number) {
+    try {
+      return this.profileService.getProfileById(profileId);
+    } catch (e) {
+      throw new excRpc.BadException({ message: e.message });
+    }
+  }
+
   @MessagePattern(USER_MESSAGE_PATTERNS.PROFILE.CREATE_PROFILE)
   async createProfile(@Payload() newProfile: CreateProfileDto) {
     try {
@@ -37,6 +46,15 @@ export class ProfileController {
   ) {
     try {
       return this.profileService.updateProfile(profileId, body);
+    } catch (e) {
+      throw new excRpc.BadException({ message: e.message });
+    }
+  }
+
+  @MessagePattern(USER_MESSAGE_PATTERNS.PROFILE.DELETE_PROFILE)
+  async removeProfiles(@Payload() ids: number[]) {
+    try {
+      return this.profileService.removeProfiles(ids);
     } catch (e) {
       throw new excRpc.BadException({ message: e.message });
     }

@@ -3,6 +3,7 @@ import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -18,7 +19,7 @@ import {
   CreateProfileDto,
   UpdateProfileDto,
 } from '@libs/common/dtos/profile.dto';
-import { ParamIdDto } from '@libs/common/dtos/common.dto';
+import { IdsDto, ParamIdDto } from '@libs/common/dtos/common.dto';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 
 @ApiTagsAndBearer('Profile')
@@ -36,6 +37,21 @@ export class ProfileController {
         this.userClientProxy.send<any>(
           USER_MESSAGE_PATTERNS.PROFILE.GET_ALL_PROFILE_BY_USER_ID,
           userId,
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.BadException({ message: e.message });
+    }
+  }
+
+  @Get(':id')
+  async getProfileById(@Param() params: ParamIdDto) {
+    try {
+      const resp = await firstValueFrom(
+        this.userClientProxy.send<any>(
+          USER_MESSAGE_PATTERNS.PROFILE.GET_PROFILE,
+          params.id,
         ),
       );
       return resp;
@@ -72,6 +88,21 @@ export class ProfileController {
         this.userClientProxy.send<any>(
           USER_MESSAGE_PATTERNS.PROFILE.UPDATE_PROFILE,
           { profileId: params.id, body },
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.BadException({ message: e.message });
+    }
+  }
+
+  @Delete()
+  async removeProfiles(@Body() payload: IdsDto) {
+    try {
+      const resp = await firstValueFrom(
+        this.userClientProxy.send<any>(
+          USER_MESSAGE_PATTERNS.PROFILE.DELETE_PROFILE,
+          payload.ids,
         ),
       );
       return resp;
