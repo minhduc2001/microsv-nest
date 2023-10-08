@@ -11,14 +11,23 @@ export class Profile extends AbstractEntity {
   @Column({ type: 'date' })
   birthday: Date;
 
-  @Column()
+  @Column({ default: 0 })
   golds: number;
 
-  @Column()
+  @Column({ nullable: true })
   avatar: string;
 
   @Column({ type: 'enum', enum: ERole, default: ERole.CHILDRENS })
   role: ERole;
+
+  @Column({ default: 0 })
+  progress: number;
+
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
+  isLocked: boolean;
 
   @ManyToOne(() => User, (user) => user.profiles)
   user: User;

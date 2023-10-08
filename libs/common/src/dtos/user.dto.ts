@@ -3,13 +3,13 @@ import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { Trim } from '../decorators/common.decorator';
 
 export class LoginDto {
-  @ApiProperty()
+  @ApiProperty({ example: 'parents@doan.com' })
   @IsEmail()
   @IsNotEmpty()
   @Trim()
   email: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: '123456' })
   @IsString()
   @IsNotEmpty()
   @Trim()
