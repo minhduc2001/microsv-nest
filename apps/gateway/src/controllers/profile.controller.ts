@@ -24,6 +24,7 @@ import {
 import { IdsDto, ParamIdDto } from '@libs/common/dtos/common.dto';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UploadService } from '@libs/upload';
 
 @ApiTagsAndBearer('Profile')
 @Controller('profile')
@@ -31,6 +32,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class ProfileController {
   constructor(
     @Inject(RabbitServiceName.USER) private userClientProxy: ClientProxy,
+    private uploadService: UploadService,
   ) {}
 
   @Get()
@@ -72,10 +74,11 @@ export class ProfileController {
     @GetUser('id') userId: number,
   ) {
     try {
+      const avatarUrl = await this.uploadService.uploadFile(file.filename);
       const resp = await firstValueFrom(
         this.userClientProxy.send<any>(
           USER_MESSAGE_PATTERNS.PROFILE.CREATE_PROFILE,
-          { ...body, userId, avatar: file.filename },
+          { ...body, userId, avatar: avatarUrl },
         ),
       );
       return resp;
