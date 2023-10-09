@@ -32,6 +32,8 @@ import { UserService } from '../services/user.service';
 import { ParamIdDto } from '@libs/common/dtos/common.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { CacheService } from '@libs/cache';
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { User } from '@libs/common/entities/user/user.entity';
 
 @ApiTagsAndBearer('User')
 @Controller('user')
@@ -60,6 +62,15 @@ export class UserController {
         ...data,
         ...tokens,
       };
+    } catch (e) {
+      throw new exc.BadException({ message: e.message });
+    }
+  }
+
+  @Get('me')
+  async getMe(@GetUser() user: User) {
+    try {
+      return user;
     } catch (e) {
       throw new exc.BadException({ message: e.message });
     }
