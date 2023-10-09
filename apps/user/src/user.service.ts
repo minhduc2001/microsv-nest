@@ -13,12 +13,19 @@ import {
 import * as excRpc from '@libs/common/api';
 import { MailerService } from '@libs/mailer';
 import { EProviderLogin } from '@libs/common/enums/user.enum';
+import { CacheService } from '@libs/cache';
+
+interface CacheOtp {
+  otp: string;
+  check: boolean;
+}
 
 @Injectable()
 export class UserService extends BaseService<User> {
   constructor(
     @InjectRepository(User) protected userRepository: Repository<User>,
-    private mailerService: MailerService,
+    private readonly mailerService: MailerService,
+    private readonly cacheService: CacheService,
   ) {
     super(userRepository);
   }
@@ -157,17 +164,49 @@ export class UserService extends BaseService<User> {
     }
   }
 
-  async sendOtp(user: User, otp: string) {
+  async sendOtp(email: string) {
+    const user = await this.getUserByEmail(email);
+
+    const cacheOtp: CacheOtp = {
+      otp: Math.floor(Math.random() * 899999 + 100000).toString(),
+      check: false,
+    };
+
+    await this.cacheService.setWithExpiration(email, cacheOtp, 10 * 60);
+
     await this.mailerService.sendMail({
       to: user.email,
-      subject: 'Quen mat khau Zappy.',
+      subject: 'Mã OTP thay đổi mật khẩu.',
       body: {
-        title: 'Xác OTP khoản Zappy.',
-        content: '',
-        username: '',
-        url: `http:localhost:8081/api/v1/user/active?email=${user.email}`,
+        title: 'Mã OTP thay đổi mật khẩu tài khoản Zappy.',
+        content:
+          'Vui lòng nhập mã OTP bên dưới để thực hiện thay đổi mật khẩu mới.',
+        otpCode: cacheOtp.otp,
       },
-      template: 'email-signup',
+      template: 'email-otp-code',
     });
+
+    return 'Sent OTP Code';
+  }
+
+  async checkOtp(email: string, otpCode: string) {
+    const user = await this.getUserByEmail(email);
+
+    const otpCache = await this.cacheService.get(user.email);
+
+    if (!otpCache) throw new excRpc.BadRequest({ message: 'OTP expired!' });
+
+    if (otpCache.check) throw new excRpc.BadRequest({ message: 'OTP olded!' });
+
+    if (otpCache.otp !== otpCode)
+      throw new excRpc.BadRequest({ message: 'Incorrect OTP!' });
+
+    await this.cacheService.setWithExpiration(
+      email,
+      { ...otpCache, check: true },
+      10 * 60,
+    );
+
+    return true;
   }
 }

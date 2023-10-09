@@ -66,10 +66,40 @@ export class UserUpdateDto {
   isActive: boolean;
 }
 
-export class ForgotPassword {
-  @ApiProperty({ example: '123456' })
+export class ForgotPasswordDto {
+  @ApiProperty()
+  @IsEmail()
+  @IsString()
+  @IsNotEmpty()
+  @Trim()
+  email: string;
+}
+
+export class ResetPasswordDto {
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @Trim()
   password: string;
+
+  @ApiProperty()
+  @IsEmail()
+  @IsString()
+  @IsNotEmpty()
+  @Trim()
+  email: string;
+}
+
+export class CheckOTPDto {
+  @ApiProperty()
+  @IsEmail()
+  @IsString()
+  @IsNotEmpty()
+  @Trim()
+  email: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  otpCode: string;
 }

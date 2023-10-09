@@ -4,6 +4,7 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { USER_MESSAGE_PATTERNS } from '@libs/common/constants/rabbit-patterns.constant';
 import * as excRpc from '@libs/common/api';
 import {
+  CheckOTPDto,
   LoginDto,
   RegisterDto,
   UserUpdateDto,
@@ -68,7 +69,20 @@ export class UserController {
 
   @MessagePattern(USER_MESSAGE_PATTERNS.CHECK_EMAIL_EXISTS)
   async checkEmailExists(@Payload('email') email: string) {
-    return this.userService.getUserByEmail(email);
+    try {
+      return this.userService.sendOtp(email);
+    } catch (e) {
+      throw new excRpc.BadException({ message: e.message });
+    }
+  }
+
+  @MessagePattern(USER_MESSAGE_PATTERNS.CHECK_OTP)
+  async checkOTP(@Payload() payload: CheckOTPDto) {
+    try {
+      return this.userService.checkOtp(payload.email, payload.otpCode);
+    } catch (e) {
+      throw new excRpc.BadException({ message: e.message });
+    }
   }
 
   @MessagePattern(USER_MESSAGE_PATTERNS.USER_RESET_PASSWORD)

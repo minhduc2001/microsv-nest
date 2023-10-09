@@ -16,8 +16,11 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import * as exc from '@libs/common/api';
 import {
+  CheckOTPDto,
+  ForgotPasswordDto,
   LoginDto,
   RegisterDto,
+  ResetPasswordDto,
   UserUpdateDto,
 } from '@libs/common/dtos/user.dto';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
@@ -29,11 +32,8 @@ import { UserService } from '../services/user.service';
 import { ParamIdDto } from '@libs/common/dtos/common.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { CacheService } from '@libs/cache';
-
-interface CacheOtp {
-  otp: string;
-  check: boolean;
-}
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { User } from '@libs/common/entities/user/user.entity';
 
 @ApiTagsAndBearer('User')
 @Controller('user')
@@ -62,6 +62,15 @@ export class UserController {
         ...data,
         ...tokens,
       };
+    } catch (e) {
+      throw new exc.BadException({ message: e.message });
+    }
+  }
+
+  @Get('me')
+  async getMe(@GetUser() user: User) {
+    try {
+      return user;
     } catch (e) {
       throw new exc.BadException({ message: e.message });
     }
@@ -139,52 +148,57 @@ export class UserController {
     }
   }
 
+  @Public()
   @Post('forgot-password')
-  async forgotPassword(@Body('email') email: string) {
+  async forgotPassword(@Body() body: ForgotPasswordDto) {
     try {
-      const data = await firstValueFrom(
+      const resp = await firstValueFrom(
         this.userClientProxy.send<any>(
           USER_MESSAGE_PATTERNS.CHECK_EMAIL_EXISTS,
-          {
-            email,
-          },
+          body,
         ),
       );
-
-      if (data) {
-        const cacheOtp: CacheOtp = {
-          otp: Math.floor(Math.random() * 899999 + 100000).toString(),
-          check: false,
-        };
-
-        await this.cacheService.setWithExpiration(email, cacheOtp, 10 * 60);
-      }
-      return true;
+      return resp;
     } catch (e) {
       throw new exc.BadException({ message: e.message });
     }
   }
 
+  @Public()
+  @Post('check-otp')
+  async checkOTP(@Body() payload: CheckOTPDto) {
+    try {
+      const resp = await firstValueFrom(
+        this.userClientProxy.send<any>(
+          USER_MESSAGE_PATTERNS.CHECK_OTP,
+          payload,
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.BadException({ message: e.message });
+    }
+  }
+
+  @Public()
   @Post('reset-password')
-  async resetPassword(@Body() body: any) {
+  async resetPassword(@Body() body: ResetPasswordDto) {
     try {
       const otp = await this.cacheService.get(body.email);
-      if (!otp) throw new exc.BadException({ message: '' });
+      if (!otp) throw new exc.BadException({ message: 'OTP does not exists!' });
 
       // @ts-ignore
-      if (!otp.check) throw new exc.BadException({ message: '' });
+      if (!otp.check)
+        throw new exc.BadException({ message: 'OTP has not been verified!' });
 
-      const data = await firstValueFrom(
+      const resp = await firstValueFrom(
         this.userClientProxy.send<any>(
           USER_MESSAGE_PATTERNS.USER_RESET_PASSWORD,
           { email: body.email, password: body.password },
         ),
       );
-
-      if (data) {
-        await this.cacheService.del(body.email);
-      }
-      return data;
+      if (resp) await this.cacheService.del(body.email);
+      return resp;
     } catch (e) {
       throw new exc.BadException({ message: e.message });
     }
