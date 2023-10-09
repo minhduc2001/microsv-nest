@@ -8,8 +8,10 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import * as exc from '@libs/common/api';
@@ -22,8 +24,10 @@ import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { USER_MESSAGE_PATTERNS } from '@libs/common/constants/rabbit-patterns.constant';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { Public } from '../auth/decorators/public.decorator';
+import { Request, Response } from 'express';
 import { UserService } from '../services/user.service';
 import { ParamIdDto } from '@libs/common/dtos/common.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTagsAndBearer('User')
 @Controller('user')
@@ -54,6 +58,31 @@ export class UserController {
     } catch (e) {
       throw new exc.BadException({ message: e.message });
     }
+  }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Req() req: Request) {}
+
+  @Get('google/redirect')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
+    const data = await firstValueFrom(
+      this.userClientProxy.send<any>(
+        USER_MESSAGE_PATTERNS.LOGIN_WITH_GOOGLE,
+        req.user,
+      ),
+    );
+
+    const tokens = this.userService.getTokens({
+      sub: data.id,
+      email: data.email,
+    });
+
+    return {
+      ...data,
+      ...tokens,
+    };
   }
 
   @Post('register')

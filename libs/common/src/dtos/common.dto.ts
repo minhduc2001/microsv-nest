@@ -1,4 +1,10 @@
-import { IsArray, IsNotEmpty, IsOptional, IsPositive } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+} from 'class-validator';
 import { ToNumber, ToNumbers } from '../decorators/common.decorator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -31,4 +37,49 @@ export class IdsDto {
   @IsPositive({ each: true })
   @ToNumbers()
   ids: number[];
+}
+
+export class ListDto {
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @ToNumber()
+  @IsNumber()
+  page?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @ToNumber()
+  @IsNumber()
+  limit?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  sortBy?: [string, string][];
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  searchBy?: string[];
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  search?: string;
+
+  @ApiProperty({ required: false, type: 'text' })
+  @IsOptional()
+  filter?: { [column: string]: string | string[] };
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  select?: string[];
+}
+
+export class UploadImageDto {
+  @ApiProperty({
+    required: false,
+    type: 'string',
+    format: 'binary',
+    description: 'File to upload',
+  })
+  @IsOptional()
+  image: string;
 }

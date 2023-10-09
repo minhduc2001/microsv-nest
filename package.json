@@ -46,6 +46,7 @@
     "nestjs-i18n": "^10.3.6",
     "nodemailer": "^6.9.5",
     "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
     "pg": "^8.11.3",
@@ -63,8 +64,10 @@
     "@types/jest": "^29.5.2",
     "@types/lodash": "^4.14.199",
     "@types/morgan": "^1.9.6",
+    "@types/multer": "^1.4.8",
     "@types/node": "^20.3.1",
     "@types/nodemailer": "^6.4.11",
+    "@types/passport-google-oauth20": "^2.0.12",
     "@types/passport-jwt": "^3.0.10",
     "@types/passport-local": "^1.0.36",
     "@types/supertest": "^2.0.12",
@@ -116,7 +119,8 @@
       "^@app/logger(|/.*)$": "<rootDir>/libs/logger/src/$1",
       "^@app/env(|/.*)$": "<rootDir>/libs/env/src/$1",
       "^libs/notification(|/.*)$": "<rootDir>/libs/notification/src/$1",
-      "^@libs/mailer(|/.*)$": "<rootDir>/libs/mailer/src/$1"
+      "^@libs/mailer(|/.*)$": "<rootDir>/libs/mailer/src/$1",
+      "^@libs/upload(|/.*)$": "<rootDir>/libs/upload/src/$1"
     }
   }
 }

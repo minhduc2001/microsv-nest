@@ -2,6 +2,7 @@ import { User } from '@libs/common/entities/user/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ICreateUser, IUserGetByUniqueKey } from './user.interface';
 import { BaseService } from '@libs/common/services/base.service';
 import { PaginateConfig } from '@libs/common/services/paginate';
 import {
@@ -117,5 +118,30 @@ export class UserService extends BaseService<User> {
     await this.userRepository.update(user.id, { password: newPass.password });
 
     return 'Reset Password Successful';
+  }
+
+  async createUser(data: ICreateUser) {
+    try {
+      const user: User = this.repository.create(data);
+      if (user.password) user.setPassword(data.password);
+      await user.save();
+
+      return user;
+    } catch (e) {
+      throw new excRpc.BadRequest({ message: e.message });
+    }
+  }
+
+  async thirdPartyLogin(data: any) {
+    if (data.provider == 'google') {
+      let user = await this.findOne({ where: { email: data.email } });
+
+      if (!user) {
+        user = await this.createUser({ ...data, isActive: true });
+      }
+      return user;
+    }
+    if (data.provider == 'facebook') {
+    }
   }
 }

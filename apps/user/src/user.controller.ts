@@ -22,6 +22,15 @@ export class UserController {
     }
   }
 
+  @MessagePattern(USER_MESSAGE_PATTERNS.LOGIN_WITH_GOOGLE)
+  async loginThirtParty(@Payload() data: any) {
+    try {
+      return this.userService.thirdPartyLogin(data);
+    } catch (e) {
+      throw new excRpc.BadException({ message: e.message });
+    }
+  }
+
   @MessagePattern(USER_MESSAGE_PATTERNS.REGISTER)
   async register(@Payload() body: RegisterDto) {
     try {

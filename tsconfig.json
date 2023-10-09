@@ -17,70 +17,31 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
+    "resolveJsonModule": true,
     "paths": {
-      "@app/*": [
-        "apps/*"
-      ],
-      "@libs/common": [
-        "libs/common/src"
-      ],
-      "@libs/common/*": [
-        "libs/common/src/*"
-      ],
-      "@libs/rabbit": [
-        "libs/rabbit/src"
-      ],
-      "@libs/rabbit/*": [
-        "libs/rabbit/src/*"
-      ],
-      "@libs/database": [
-        "libs/database/src"
-      ],
-      "@libs/database/*": [
-        "libs/database/src/*"
-      ],
-      "@libs/language": [
-        "libs/language/src"
-      ],
-      "@libs/language/*": [
-        "libs/language/src/*"
-      ],
-      "@libs/policy": [
-        "libs/policy/src"
-      ],
-      "@libs/policy/*": [
-        "libs/policy/src/*"
-      ],
-      "@libs/token": [
-        "libs/token/src"
-      ],
-      "@libs/token/*": [
-        "libs/token/src/*"
-      ],
-      "@libs/logger": [
-        "libs/logger/src"
-      ],
-      "@libs/logger/*": [
-        "libs/logger/src/*"
-      ],
-      "@libs/env": [
-        "libs/env/src"
-      ],
-      "@libs/env/*": [
-        "libs/env/src/*"
-      ],
-      "@libs/notification": [
-        "libs/notification/src"
-      ],
-      "@libs/notification/*": [
-        "libs/notification/src/*"
-      ],
-      "@libs/mailer": [
-        "libs/mailer/src"
-      ],
-      "@libs/mailer/*": [
-        "libs/mailer/src/*"
-      ]
+      "@app/*": ["apps/*"],
+      "@libs/common": ["libs/common/src"],
+      "@libs/common/*": ["libs/common/src/*"],
+      "@libs/rabbit": ["libs/rabbit/src"],
+      "@libs/rabbit/*": ["libs/rabbit/src/*"],
+      "@libs/database": ["libs/database/src"],
+      "@libs/database/*": ["libs/database/src/*"],
+      "@libs/language": ["libs/language/src"],
+      "@libs/language/*": ["libs/language/src/*"],
+      "@libs/policy": ["libs/policy/src"],
+      "@libs/policy/*": ["libs/policy/src/*"],
+      "@libs/token": ["libs/token/src"],
+      "@libs/token/*": ["libs/token/src/*"],
+      "@libs/logger": ["libs/logger/src"],
+      "@libs/logger/*": ["libs/logger/src/*"],
+      "@libs/env": ["libs/env/src"],
+      "@libs/env/*": ["libs/env/src/*"],
+      "@libs/notification": ["libs/notification/src"],
+      "@libs/notification/*": ["libs/notification/src/*"],
+      "@libs/mailer": ["libs/mailer/src"],
+      "@libs/mailer/*": ["libs/mailer/src/*"],
+      "@libs/upload": ["libs/upload/src"],
+      "@libs/upload/*": ["libs/upload/src/*"]
     }
   }
 }

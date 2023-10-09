@@ -2,7 +2,18 @@ import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 import { Trim } from '../decorators/common.decorator';
 
-export class CreateProfileDto {
+export class UploadAvatarDto {
+  @ApiProperty({
+    required: false,
+    type: 'string',
+    format: 'binary',
+    description: 'File to upload',
+  })
+  @IsOptional()
+  avatar: string;
+}
+
+export class CreateProfileDto extends UploadAvatarDto {
   @ApiProperty({ example: 'Bé Bi' })
   @IsNotEmpty()
   @Trim()
@@ -12,22 +23,13 @@ export class CreateProfileDto {
   @IsNotEmpty()
   birthday: Date;
 
-  @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    description: 'File to upload',
-  })
-  @IsOptional()
-  @Trim()
-  avatar: string;
-
   @ApiHideProperty()
   @IsNumber()
   @IsOptional()
   userId: number;
 }
 
-export class UpdateProfileDto {
+export class UpdateProfileDto extends UploadAvatarDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsOptional()
@@ -38,15 +40,6 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsNotEmpty()
   birthday: Date;
-
-  @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    description: 'File to upload',
-  })
-  @IsOptional()
-  @Trim()
-  avatar: string;
 
   @ApiProperty()
   @IsOptional()

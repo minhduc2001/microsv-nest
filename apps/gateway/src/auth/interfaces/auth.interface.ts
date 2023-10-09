@@ -17,7 +17,7 @@ export interface IDataThirdParty {
   id?: string;
   email?: string;
   username: string;
-  picture?: string;
+  avatar?: string;
   locale?: string;
   provider: string;
 }

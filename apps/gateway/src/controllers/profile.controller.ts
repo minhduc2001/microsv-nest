@@ -1,4 +1,4 @@
-import { ApiTagsAndBearer } from '@libs/common/swagger-ui';
+import { ApiConsumes, ApiTagsAndBearer } from '@libs/common/swagger-ui';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import {
   Body,
@@ -9,6 +9,8 @@ import {
   Param,
   Patch,
   Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import * as exc from '@libs/common/api';
@@ -21,6 +23,7 @@ import {
 } from '@libs/common/dtos/profile.dto';
 import { IdsDto, ParamIdDto } from '@libs/common/dtos/common.dto';
 import { GetUser } from '../auth/decorators/get-user.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTagsAndBearer('Profile')
 @Controller('profile')
@@ -60,16 +63,19 @@ export class ProfileController {
     }
   }
 
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('avatar'))
   @Post()
   async createProfile(
     @Body() body: CreateProfileDto,
+    @UploadedFile() file: Express.Multer.File,
     @GetUser('id') userId: number,
   ) {
     try {
       const resp = await firstValueFrom(
         this.userClientProxy.send<any>(
           USER_MESSAGE_PATTERNS.PROFILE.CREATE_PROFILE,
-          { ...body, userId },
+          { ...body, userId, avatar: file.filename },
         ),
       );
       return resp;

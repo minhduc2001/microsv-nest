@@ -16,8 +16,9 @@ import { GatewayController } from './gateway.controller';
 import { JwtStrategy } from './auth/strategies/jwt.stategy';
 import { UserModule } from './modules/user.module';
 import { GatewayService } from './gateway.service';
+import { UploadModule } from '@libs/upload';
 
-const coreModule = [EnvModule, LoggerModule, DatabaseModule];
+const coreModule = [EnvModule, LoggerModule, DatabaseModule, UploadModule];
 const rabbitModule = [RabbitModule.forClientProxy(RabbitServiceName.USER)];
 @Module({
   imports: [
