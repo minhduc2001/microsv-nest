@@ -96,6 +96,9 @@ export class EnvService {
 
   // rabbitmq
   RABBIT_MQ_URI = _process.env.RABBIT_MQ_URI;
+
+  // firebase
+  STOGARE_BUCKET = _process.env.STOGARE_BUCKET;
 }
 
 export const envService = new EnvService();
