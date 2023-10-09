@@ -99,6 +99,10 @@ export class EnvService {
 
   // firebase
   STOGARE_BUCKET = _process.env.STOGARE_BUCKET;
+
+  // redis
+  REDIS_HOST = _process.env.REDIS_HOST;
+  REDIS_PORT = +_process.env.REDIS_PORT;
 }
 
 export const envService = new EnvService();

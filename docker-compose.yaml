@@ -40,20 +40,20 @@ services:
     networks:
       - do-an-network
 
-  # redis:
-  #   container_name: redis-doan
-  #   image: redis:6.2.5-alpine
-  #   restart: always
-  #   ports:
-  #     - ${REDIS_PORT}:6379
-  #   environment:
-  #     REDIS_PASSWORD: ${REDIS_PASSWORD}
-  #   volumes:
-  #     - ./docker/redis/init:/docker-entrypoint-initdb.d
-  #   networks:
-  #     - do-an-network
-  #   env_file:
-  #     - .env
+  redis:
+    container_name: redis-doan
+    image: redis:6.2.5-alpine
+    restart: always
+    ports:
+      - ${REDIS_PORT}:6379
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    volumes:
+      - ./docker/redis/init:/docker-entrypoint-initdb.d
+    networks:
+      - do-an-network
+    env_file:
+      - .env
 networks:
   do-an-network:
     driver: bridge

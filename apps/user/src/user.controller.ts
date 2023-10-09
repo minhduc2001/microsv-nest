@@ -65,4 +65,21 @@ export class UserController {
       throw new excRpc.BadException({ message: e.message });
     }
   }
+
+  @MessagePattern(USER_MESSAGE_PATTERNS.CHECK_EMAIL_EXISTS)
+  async checkEmailExists(@Payload('email') email: string) {
+    return this.userService.getUserByEmail(email);
+  }
+
+  @MessagePattern(USER_MESSAGE_PATTERNS.USER_RESET_PASSWORD)
+  async resetPassword(
+    @Payload('email') email: string,
+    @Payload('password') password: string,
+  ) {
+    try {
+      return this.userService.resetPassword(email, password);
+    } catch (e) {
+      throw new excRpc.BadException({ message: e.message });
+    }
+  }
 }

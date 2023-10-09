@@ -28,6 +28,12 @@ import { Request, Response } from 'express';
 import { UserService } from '../services/user.service';
 import { ParamIdDto } from '@libs/common/dtos/common.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { CacheService } from '@libs/cache';
+
+interface CacheOtp {
+  otp: string;
+  check: boolean;
+}
 
 @ApiTagsAndBearer('User')
 @Controller('user')
@@ -36,6 +42,7 @@ export class UserController {
   constructor(
     private readonly userService: UserService,
     @Inject(RabbitServiceName.USER) private userClientProxy: ClientProxy,
+    private readonly cacheService: CacheService,
   ) {}
 
   @Post('login')
@@ -127,6 +134,57 @@ export class UserController {
         }),
       );
       return resp;
+    } catch (e) {
+      throw new exc.BadException({ message: e.message });
+    }
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body('email') email: string) {
+    try {
+      const data = await firstValueFrom(
+        this.userClientProxy.send<any>(
+          USER_MESSAGE_PATTERNS.CHECK_EMAIL_EXISTS,
+          {
+            email,
+          },
+        ),
+      );
+
+      if (data) {
+        const cacheOtp: CacheOtp = {
+          otp: Math.floor(Math.random() * 899999 + 100000).toString(),
+          check: false,
+        };
+
+        await this.cacheService.setWithExpiration(email, cacheOtp, 10 * 60);
+      }
+      return true;
+    } catch (e) {
+      throw new exc.BadException({ message: e.message });
+    }
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() body: any) {
+    try {
+      const otp = await this.cacheService.get(body.email);
+      if (!otp) throw new exc.BadException({ message: '' });
+
+      // @ts-ignore
+      if (!otp.check) throw new exc.BadException({ message: '' });
+
+      const data = await firstValueFrom(
+        this.userClientProxy.send<any>(
+          USER_MESSAGE_PATTERNS.USER_RESET_PASSWORD,
+          { email: body.email, password: body.password },
+        ),
+      );
+
+      if (data) {
+        await this.cacheService.del(body.email);
+      }
+      return data;
     } catch (e) {
       throw new exc.BadException({ message: e.message });
     }

@@ -4,6 +4,7 @@ import { Exclude } from 'class-transformer';
 import { ERole } from '@libs/common/enums/role.enum';
 import { Profile } from '@libs/common/entities/user/profile.entity';
 import * as bycrypt from 'bcrypt';
+import { EProviderLogin } from '@libs/common/enums/user.enum';
 
 @Entity()
 export class User extends AbstractEntity {
@@ -35,6 +36,13 @@ export class User extends AbstractEntity {
   @OneToMany(() => Profile, (profile) => profile.user)
   @JoinColumn()
   profiles: Profile[];
+
+  @Column({
+    type: 'enum',
+    enum: EProviderLogin,
+    default: EProviderLogin.Normal,
+  })
+  provider: EProviderLogin;
 
   setPassword(password: string) {
     this.password = bycrypt.hashSync(password, 10);

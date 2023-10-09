@@ -12,6 +12,7 @@ import {
 } from '@libs/common/dtos/user.dto';
 import * as excRpc from '@libs/common/api';
 import { MailerService } from '@libs/mailer';
+import { EProviderLogin } from '@libs/common/enums/user.enum';
 
 @Injectable()
 export class UserService extends BaseService<User> {
@@ -93,6 +94,13 @@ export class UserService extends BaseService<User> {
     return user;
   }
 
+  async getUserByEmail(email: string) {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user)
+      throw new excRpc.BadRequest({ message: 'Account does not existed!' });
+    return user;
+  }
+
   async updateUserByUserId(userId: number, userUpdate: UserUpdateDto) {
     const user = await this.getUserById(userId);
     const newInfo = Object.assign(new User(), { ...userUpdate });
@@ -111,8 +119,8 @@ export class UserService extends BaseService<User> {
     return 'Active successful';
   }
 
-  async resetPassword(userId: number, password: string) {
-    const user = await this.getUserById(userId);
+  async resetPassword(email: string, password: string) {
+    const user = await this.getUserByEmail(email);
     const newPass = Object.assign(new User(), { password });
     newPass.setPassword(password);
     await this.userRepository.update(user.id, { password: newPass.password });
@@ -137,11 +145,29 @@ export class UserService extends BaseService<User> {
       let user = await this.findOne({ where: { email: data.email } });
 
       if (!user) {
-        user = await this.createUser({ ...data, isActive: true });
+        user = await this.createUser({
+          ...data,
+          isActive: true,
+          provider: EProviderLogin.Google,
+        });
       }
       return user;
     }
     if (data.provider == 'facebook') {
     }
+  }
+
+  async sendOtp(user: User, otp: string) {
+    await this.mailerService.sendMail({
+      to: user.email,
+      subject: 'Quen mat khau Zappy.',
+      body: {
+        title: 'Xác OTP khoản Zappy.',
+        content: '',
+        username: '',
+        url: `http:localhost:8081/api/v1/user/active?email=${user.email}`,
+      },
+      template: 'email-signup',
+    });
   }
 }

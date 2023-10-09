@@ -23,6 +23,7 @@
     "prettier:fix": "prettier --write \"libs/**/**/*.ts\""
   },
   "dependencies": {
+    "@nestjs/cache-manager": "^2.1.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^10.1.1",
@@ -34,11 +35,13 @@
     "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.3",
     "bcrypt": "^5.1.1",
+    "cache-manager": "^5.2.4",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
     "firebase-admin": "^11.11.0",
     "handlebars": "^4.7.8",
+    "ioredis": "^5.3.2",
     "ip": "^1.1.8",
     "log4js": "^6.9.1",
     "morgan": "^1.10.0",
@@ -120,7 +123,8 @@
       "^@app/env(|/.*)$": "<rootDir>/libs/env/src/$1",
       "^libs/notification(|/.*)$": "<rootDir>/libs/notification/src/$1",
       "^@libs/mailer(|/.*)$": "<rootDir>/libs/mailer/src/$1",
-      "^@libs/upload(|/.*)$": "<rootDir>/libs/upload/src/$1"
+      "^@libs/upload(|/.*)$": "<rootDir>/libs/upload/src/$1",
+      "^@libs/cache(|/.*)$": "<rootDir>/libs/cache/src/$1"
     }
   }
 }
