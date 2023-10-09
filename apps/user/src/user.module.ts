@@ -11,6 +11,7 @@ import { Profile } from '@libs/common/entities/user/profile.entity';
 import { ProfileController } from './controllers/profile.controller';
 import { ProfileService } from './services/profile.service';
 import { MailerModule } from '@libs/mailer';
+import { CacheModule } from '@libs/cache';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { MailerModule } from '@libs/mailer';
     TypeOrmModule.forFeature([User, Profile]),
     RabbitModule.forServerProxy(RabbitServiceName.USER),
     MailerModule,
+    CacheModule,
   ],
   controllers: [UserController, ProfileController],
   providers: [UserService, ProfileService],
