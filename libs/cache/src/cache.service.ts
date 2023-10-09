@@ -20,15 +20,19 @@ export class CacheService {
     });
   }
 
-  async get(key: string): Promise<string> {
+  async get(key: string): Promise<Record<string, any>> {
     return JSON.parse(await this.client.get(key));
   }
 
-  async set(key: string, value: string) {
-    return this.client.set(key, value);
+  async set(key: string, value: Record<string, any>) {
+    return this.client.set(key, JSON.stringify(value));
   }
 
-  async setWithExpiration(key: string, value: any, seconds: number) {
+  async setWithExpiration(
+    key: string,
+    value: Record<string, any>,
+    seconds: number,
+  ) {
     return this.client.set(key, JSON.stringify(value), 'EX', seconds);
   }
 
