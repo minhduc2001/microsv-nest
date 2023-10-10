@@ -1,0 +1,24 @@
+import { Module } from '@nestjs/common';
+import { PaymentSystemController } from './payment-system.controller';
+import { PaymentSystemService } from './payment-system.service';
+import { LoggerModule } from '@libs/logger';
+import { DatabaseModule } from '@libs/database';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Package } from '@libs/common/entities/payment-system/package.entity';
+import { Payment } from '@libs/common/entities/payment-system/payment.entity';
+import { RabbitModule } from '@libs/rabbit';
+import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
+import { PackageController } from './controllers/package.controller';
+import { PackageService } from './services/package.service';
+
+@Module({
+  imports: [
+    RabbitModule.forServerProxy(RabbitServiceName.PAYMENT_SYSTEM),
+    LoggerModule,
+    DatabaseModule,
+    TypeOrmModule.forFeature([Package, Payment]),
+  ],
+  controllers: [PaymentSystemController, PackageController],
+  providers: [PaymentSystemService, PackageService],
+})
+export class PaymentSystemModule {}

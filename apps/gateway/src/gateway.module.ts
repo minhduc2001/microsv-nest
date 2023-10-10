@@ -17,6 +17,7 @@ import { UserModule } from './modules/user.module';
 import { GatewayService } from './gateway.service';
 import { UploadModule } from '@libs/upload';
 import { CacheModule } from '@libs/cache';
+import { PaymentSystemModule } from './modules/payment-system.module';
 
 const coreModule = [
   EnvModule,
@@ -25,7 +26,10 @@ const coreModule = [
   UploadModule,
   CacheModule,
 ];
-const rabbitModule = [RabbitModule.forClientProxy(RabbitServiceName.USER)];
+const rabbitModule = [
+  RabbitModule.forClientProxy(RabbitServiceName.USER),
+  // RabbitModule.forClientProxy(RabbitServiceName.PAYMENT_SYSTEM),
+];
 @Module({
   imports: [
     ...coreModule,
@@ -33,6 +37,7 @@ const rabbitModule = [RabbitModule.forClientProxy(RabbitServiceName.USER)];
 
     // LanguageModule.register(path.join(process.cwd(), '/static/i18n')),
     UserModule,
+    PaymentSystemModule,
   ],
   controllers: [GatewayController],
   providers: [GatewayService],

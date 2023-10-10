@@ -34,7 +34,7 @@ export { FilterOperator, FilterSuffix };
 
 export class Paginated<T> {
   results: T[];
-  meta: {
+  metadata: {
     itemsPerPage: number;
     totalItems: number;
     currentPage: number;
@@ -326,7 +326,7 @@ export async function paginate<T extends ObjectLiteral>(
 
   const results: Paginated<T> = {
     results: items,
-    meta: {
+    metadata: {
       itemsPerPage: isPaginated ? limit : items.length,
       totalItems: isPaginated ? totalItems : items.length,
       currentPage: page,

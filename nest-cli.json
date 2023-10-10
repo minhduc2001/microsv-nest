@@ -135,6 +135,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/cache/tsconfig.lib.json"
       }
+    },
+    "payment-system": {
+      "type": "application",
+      "root": "apps/payment-system",
+      "entryFile": "main",
+      "sourceRoot": "apps/payment-system/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/payment-system/tsconfig.app.json"
+      }
     }
   }
 }
