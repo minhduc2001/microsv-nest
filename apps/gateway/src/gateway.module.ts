@@ -13,7 +13,6 @@ import { LanguageModule } from '@libs/language';
 
 // Apps
 import { GatewayController } from './gateway.controller';
-import { JwtStrategy } from './auth/strategies/jwt.stategy';
 import { UserModule } from './modules/user.module';
 import { GatewayService } from './gateway.service';
 import { UploadModule } from '@libs/upload';
@@ -36,6 +35,6 @@ const rabbitModule = [RabbitModule.forClientProxy(RabbitServiceName.USER)];
     UserModule,
   ],
   controllers: [GatewayController],
-  providers: [JwtStrategy, GatewayService],
+  providers: [GatewayService],
 })
 export class GatewayModule {}

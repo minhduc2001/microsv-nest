@@ -77,10 +77,12 @@ export class UserController {
   }
 
   @Get('google')
+  @Public()
   @UseGuards(AuthGuard('google'))
   async googleAuth(@Req() req: Request) {}
 
   @Get('google/redirect')
+  @Public()
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
     const data = await firstValueFrom(

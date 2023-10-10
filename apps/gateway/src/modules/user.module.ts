@@ -7,6 +7,8 @@ import { PassportModule } from '@nestjs/passport';
 import { envService } from '@libs/env';
 import { UserService } from '../services/user.service';
 import { ProfileController } from '../controllers/profile.controller';
+import { JwtStrategy } from '../auth/strategies/jwt.stategy';
+import { GoogleStrategy } from '../auth/strategies/google.strategy';
 
 @Module({
   imports: [
@@ -18,6 +20,6 @@ import { ProfileController } from '../controllers/profile.controller';
     }),
   ],
   controllers: [UserController, ProfileController],
-  providers: [UserService],
+  providers: [UserService, JwtStrategy, GoogleStrategy],
 })
 export class UserModule {}
