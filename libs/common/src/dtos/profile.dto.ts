@@ -1,6 +1,6 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
-import { Trim } from '../decorators/common.decorator';
+import { ToNumber, Trim } from '../decorators/common.decorator';
 
 export class UploadAvatarDto {
   @ApiProperty({
@@ -11,6 +11,14 @@ export class UploadAvatarDto {
   })
   @IsOptional()
   avatar: string;
+}
+
+export class LoginProfileDto {
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  @ToNumber()
+  id: number;
 }
 
 export class CreateProfileDto extends UploadAvatarDto {

@@ -55,10 +55,24 @@ export class ProfileService extends BaseService<Profile> {
   }
 
   async getProfileById(id: number) {
-    const profile = await this.profileRepository.findOne({ where: { id } });
+    const profile = await this.profileRepository.findOne({
+      where: { id },
+      relations: { user: true },
+    });
     if (!profile)
       throw new excRpc.BadRequest({ message: 'Profile does not exist!' });
     return profile;
+  }
+
+  async loginWithProfile(profileId: number, parentsId: number) {
+    const children = await this.getProfileById(profileId);
+
+    if (children.user.id !== parentsId)
+      throw new excRpc.BadRequest({
+        message: 'Cannot access Profiles that do not belong to you',
+      });
+
+    return children;
   }
 
   async removeProfiles(ids: number[]) {

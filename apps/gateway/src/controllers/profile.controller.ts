@@ -19,18 +19,22 @@ import { USER_MESSAGE_PATTERNS } from '@libs/common/constants/rabbit-patterns.co
 import { Auth } from '../auth/decorators/auth.decorator';
 import {
   CreateProfileDto,
+  LoginProfileDto,
   UpdateProfileDto,
 } from '@libs/common/dtos/profile.dto';
 import { IdsDto, ParamIdDto } from '@libs/common/dtos/common.dto';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from '@libs/upload';
+import { UserService } from '../services/user.service';
+import { User } from '@libs/common/entities/user/user.entity';
 
 @ApiTagsAndBearer('Profile')
 @Controller('profile')
 @Auth()
 export class ProfileController {
   constructor(
+    private readonly userService: UserService,
     @Inject(RabbitServiceName.USER) private userClientProxy: ClientProxy,
     private uploadService: UploadService,
   ) {}
@@ -82,6 +86,33 @@ export class ProfileController {
         ),
       );
       return resp;
+    } catch (e) {
+      throw new exc.BadException({ message: e.message });
+    }
+  }
+
+  @Post('login')
+  async loginWithProfile(
+    @Body() payload: LoginProfileDto,
+    @GetUser() user: User,
+  ) {
+    try {
+      const data = await firstValueFrom(
+        this.userClientProxy.send<any>(
+          USER_MESSAGE_PATTERNS.PROFILE.LOGIN_WITH_PROFILE,
+          { profileId: payload.id, parentsId: user.id },
+        ),
+      );
+
+      const tokens = await this.userService.getTokens({
+        sub: data.id,
+        parentId: user.id,
+      });
+
+      return {
+        ...data,
+        ...tokens,
+      };
     } catch (e) {
       throw new exc.BadException({ message: e.message });
     }
