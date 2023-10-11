@@ -59,4 +59,16 @@ export class ProfileController {
       throw new excRpc.BadException({ message: e.message });
     }
   }
+
+  @MessagePattern(USER_MESSAGE_PATTERNS.PROFILE.LOGIN_WITH_PROFILE)
+  async loginWithProfile(
+    @Payload('profileId') profileId: number,
+    @Payload('parentsId') parentsId: number,
+  ) {
+    try {
+      return this.profileService.loginWithProfile(profileId, parentsId);
+    } catch (e) {
+      throw new excRpc.BadException({ message: e.message });
+    }
+  }
 }
