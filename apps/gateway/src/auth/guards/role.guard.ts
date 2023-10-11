@@ -19,7 +19,7 @@ export class RolesGuard implements CanActivate {
     }
     const { user } = context.switchToHttp().getRequest();
     const check = requiredRoles.some((role) => user.role?.includes(role));
-    if (!check) throw new exc.Forbidden({ message: 'you are not admin' });
+    if (!check) throw new exc.Forbidden({ message: 'truy cap khong phu hop' });
     return check;
   }
 }

@@ -27,6 +27,20 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   async validate(payload: IJWTPayload) {
     try {
+      if (payload.parentId) {
+        const profile = await lastValueFrom(
+          this.userClientProxy.send<any>(
+            USER_MESSAGE_PATTERNS.PROFILE.GET_PROFILE,
+            { id: payload.sub },
+          ),
+        );
+        if (!profile)
+          throw new exc.Unauthorized({ message: 'Token is not valid' });
+
+        delete profile?.password;
+        return profile;
+      }
+
       const user = await lastValueFrom(
         this.userClientProxy.send<any>(USER_MESSAGE_PATTERNS.GET_USER, {
           id: payload.sub,
