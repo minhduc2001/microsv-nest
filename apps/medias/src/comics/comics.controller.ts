@@ -13,4 +13,9 @@ export class ComicsController {
   async listComics(@Payload() query: ListComicsDto) {
     return this.comicsService.listComics(query);
   }
+
+  @MessagePattern(MEDIAS_MESSAGE_PATTERN.COMICS.CREATE_COMIC)
+  async createComic(@Payload() payload: any) {
+    console.log(payload);
+  }
 }
