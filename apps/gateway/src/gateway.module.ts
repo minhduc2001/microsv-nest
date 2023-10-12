@@ -18,6 +18,7 @@ import { GatewayService } from './gateway.service';
 import { UploadModule } from '@libs/upload';
 import { CacheModule } from '@libs/cache';
 import { PaymentSystemModule } from './modules/payment-system.module';
+import { MediasModule } from './modules/medias.module';
 
 const coreModule = [
   EnvModule,
@@ -38,6 +39,7 @@ const rabbitModule = [
     // LanguageModule.register(path.join(process.cwd(), '/static/i18n')),
     UserModule,
     PaymentSystemModule,
+    MediasModule,
   ],
   controllers: [GatewayController],
   providers: [GatewayService],

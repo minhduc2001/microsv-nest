@@ -83,3 +83,15 @@ export class UploadImageDto {
   @IsOptional()
   image: string;
 }
+
+export class UploadImagesDto {
+  @ApiProperty({
+    required: false,
+    type: 'array',
+    // format: 'binary',
+    description: 'File to upload',
+    items: { type: 'string', format: 'binary' },
+  })
+  @IsOptional()
+  images: string[];
+}
