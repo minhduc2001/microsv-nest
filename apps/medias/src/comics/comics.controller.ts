@@ -11,10 +11,6 @@ export class ComicsController {
 
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.COMICS.LIST_COMICS)
   async listComics(@Payload() query: ListComicsDto) {
-    try {
-      return this.comicsService.listComics(query);
-    } catch (e) {
-      throw new excRpc.BadRequest({ message: e.message });
-    }
+    return this.comicsService.listComics(query);
   }
 }

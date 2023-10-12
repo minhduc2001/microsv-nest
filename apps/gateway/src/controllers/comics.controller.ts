@@ -38,14 +38,11 @@ export class ComicsController {
   async listComics(@Query() query: ListComicsDto) {
     try {
       const data = await lastValueFrom(
-        this.comicsClientProxy.send<any>(
-          MEDIAS_MESSAGE_PATTERN.COMICS.LIST_COMICS,
-          query,
-        ),
+        this.comicsClientProxy.send<any>(MEDIAS_MESSAGE_PATTERN.COMICS, query),
       );
       return data;
     } catch (e) {
-      throw new exc.BadException({ message: e.message });
+      throw new exc.BadException({ message: e.message ?? e });
     }
   }
 }
