@@ -35,6 +35,7 @@ const typeOrmOptions: TypeOrmModuleAsyncOptions[] = [
   },
 ];
 
+@Global()
 @Module({
   imports: [
     ...typeOrmOptions.map((options) => TypeOrmModule.forRootAsync(options)),
