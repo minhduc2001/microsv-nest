@@ -12,4 +12,7 @@ export const RABBIT_SERVICES: Record<RabbitServiceName, { queue: string }> = {
   PAYMENT_SYSTEM_SERVICE: {
     queue: 'payment-system_queue',
   },
+  MEDIA_SERVICE: {
+    queue: 'media_queue',
+  },
 };

@@ -2,4 +2,5 @@ export enum RabbitServiceName {
   USER = 'USER_SERVICE',
   MUCSIC = 'MUSIC_SERVICE',
   PAYMENT_SYSTEM = 'PAYMENT_SYSTEM_SERVICE',
+  MEDIA = 'MEDIA_SERVICE',
 }
