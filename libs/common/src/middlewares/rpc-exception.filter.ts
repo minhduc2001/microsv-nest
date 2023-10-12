@@ -41,12 +41,15 @@ export class CustomRpcExceptionFilter
     if ('response' in exception) {
       // @ts-ignore
       const response = exception.response;
+      console.log(response, 'response');
 
       return throwError(
         () =>
-          new excRpc.BadException({
+          new excRpc.CustomError({
             message: response.message,
             data: response.data ?? null,
+            // @ts-ignore
+            statusCode: exception?.status ?? 200,
           }),
       );
     }

@@ -87,7 +87,9 @@ export abstract class BaseException<TData> extends HttpException {
 
 export class CustomError<TData> extends BaseException<TData> {
   constructor(payload: Payload<TData>) {
-    super(payload, payload.statusCode);
+    console.log(payload);
+
+    super(payload, payload.statusCode ?? 200);
   }
 }
 
