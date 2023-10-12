@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { MediaModule } from './../src/media.module';
+import { MediasModule } from '../src/medias.module';
 
 describe('MediaController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [MediaModule],
+      imports: [MediasModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();

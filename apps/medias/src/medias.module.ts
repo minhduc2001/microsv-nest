@@ -1,27 +1,26 @@
 import { LoggerModule } from '@libs/logger';
 import { Module } from '@nestjs/common';
-import { MediaController } from './media.controller';
-import { MediaService } from './media.service';
+import { MediasController } from './medias.controller';
+import { MediasService } from './medias.service';
 import { ComicsModule } from './comics/comics.module';
-import { MoviesModule } from './movies/movies.module';
-import { MusicModule } from './music/music.module';
 import { RabbitModule } from '@libs/rabbit';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { DatabaseModule } from '@libs/database';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Genre } from '@libs/common/entities/media/genre.entity';
+import { Genre } from '@libs/common/entities/medias/genre.entity';
+import { MediaModule } from './media/media.module';
+import { Author } from '@libs/common/entities/medias/author.entity';
 
 @Module({
   imports: [
     LoggerModule,
     RabbitModule.forServerProxy(RabbitServiceName.MEDIA),
     DatabaseModule,
-    TypeOrmModule.forFeature([Genre]),
+    TypeOrmModule.forFeature([Genre, Author]),
     ComicsModule,
-    MoviesModule,
-    MusicModule,
+    MediaModule,
   ],
-  controllers: [MediaController],
-  providers: [MediaService],
+  controllers: [MediasController],
+  providers: [MediasService],
 })
-export class MediaModule {}
+export class MediasModule {}

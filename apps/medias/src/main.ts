@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { MediaModule } from './media.module';
+import { MediasModule } from './medias.module';
 import { MicroserviceOptions } from '@nestjs/microservices';
 import { RABBIT_SERVICE_OPTIONS } from '@libs/rabbit/constants/constant';
 import { ValidationError as NestValidationError } from 'class-validator';
@@ -8,7 +8,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { LoggerService } from '@libs/logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(MediaModule);
+  const app = await NestFactory.create(MediasModule);
   const loggerService = app.get(LoggerService);
 
   app.useGlobalFilters(new CustomRpcExceptionFilter(loggerService));

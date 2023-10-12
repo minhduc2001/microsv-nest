@@ -8,6 +8,8 @@ import {
 } from 'typeorm';
 import { AbstractEntity } from '../abstract.entity';
 import { Author } from './author.entity';
+import { Genre } from './genre.entity';
+import { ETypeGenreMedia } from '@libs/common/enums/media.enum';
 
 @Entity()
 export class Media extends AbstractEntity {
@@ -38,7 +40,14 @@ export class Media extends AbstractEntity {
   @Column({ nullable: true, type: 'boolean', default: true })
   isAccess: boolean;
 
+  @Column({ type: 'enum', enum: ETypeGenreMedia })
+  type: ETypeGenreMedia;
+
   @ManyToOne(() => Author, (author) => author.media)
   @JoinColumn()
-  author?: Author[];
+  author: Author[];
+
+  @ManyToMany(() => Genre, (genre) => genre.media)
+  @JoinTable()
+  genre: Genre[];
 }

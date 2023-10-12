@@ -3,6 +3,7 @@ import { AbstractEntity } from '../abstract.entity';
 import { ComicsImageurl } from '@libs/common/interfaces/common.interface';
 import { ETypeGenreMedia } from '@libs/common/enums/media.enum';
 import { Comics } from './comics.entity';
+import { Media } from './media.entity';
 
 @Entity()
 export class Genre extends AbstractEntity {
@@ -14,4 +15,7 @@ export class Genre extends AbstractEntity {
 
   @ManyToMany(() => Comics, (comics) => comics.genres)
   comics: Comics[];
+
+  @ManyToMany(() => Media, (media) => media.genre)
+  media: Media[];
 }

@@ -145,13 +145,13 @@
         "tsConfigPath": "apps/payment-system/tsconfig.app.json"
       }
     },
-    "media": {
+    "medias": {
       "type": "application",
-      "root": "apps/media",
+      "root": "apps/medias",
       "entryFile": "main",
-      "sourceRoot": "apps/media/src",
+      "sourceRoot": "apps/medias/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/media/tsconfig.app.json"
+        "tsConfigPath": "apps/medias/tsconfig.app.json"
       }
     }
   }
