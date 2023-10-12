@@ -4,12 +4,14 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
 } from 'typeorm';
 import { AbstractEntity } from '../abstract.entity';
 import { EState } from '@libs/common/enums/common.enum';
 import { Genre } from './genre.entity';
 import { Chapter } from './chapter.entity';
+import { Author } from './author.entity';
 
 @Entity()
 export class Comics extends AbstractEntity {
@@ -28,6 +30,9 @@ export class Comics extends AbstractEntity {
   @Column()
   views: number;
 
+  @Column()
+  isAccess: boolean;
+
   @Column({ type: 'enum', enum: EState, default: EState.InActive })
   state: EState;
 
@@ -38,4 +43,8 @@ export class Comics extends AbstractEntity {
   @OneToMany(() => Chapter, (chapter) => chapter.comics)
   @JoinColumn()
   chapters: Chapter[];
+
+  @ManyToOne(() => Author, (author) => author.comics)
+  @JoinColumn()
+  author?: Author[];
 }
