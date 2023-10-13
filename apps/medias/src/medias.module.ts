@@ -11,6 +11,7 @@ import { Genre } from '@libs/common/entities/medias/genre.entity';
 import { MediaModule } from './media/media.module';
 import { Author } from '@libs/common/entities/medias/author.entity';
 import { GenreModule } from './genre/genre.module';
+import { AuthorModule } from './author/author.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { GenreModule } from './genre/genre.module';
     ComicsModule,
     MediaModule,
     GenreModule,
+    AuthorModule,
   ],
   controllers: [MediasController],
   providers: [MediasService],

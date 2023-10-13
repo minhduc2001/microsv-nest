@@ -3,10 +3,11 @@ import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { Module } from '@nestjs/common';
 import { ComicsController } from '../controllers/comics.controller';
 import { GenreController } from '../controllers/genre.controller';
+import { AuthorController } from '../controllers/author.controller';
 
 @Module({
   imports: [RabbitModule.forClientProxy(RabbitServiceName.MEDIA)],
-  controllers: [ComicsController, GenreController],
+  controllers: [ComicsController, GenreController, AuthorController],
   providers: [],
 })
 export class MediasModule {}
