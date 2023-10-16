@@ -15,10 +15,11 @@ export class UploadService {
     });
   }
 
-  async uploadFile(fileName: string) {
+  async uploadFile(fileName: string, folder: string = '') {
     const bucket = admin.storage().bucket();
     const link = path.join(process.cwd(), 'uploads', fileName);
 
+    const fileDestination = folder ? `${folder}/${fileName}` : fileName;
     const metadata = {
       metadata: {
         // This line is very important. It's to create a download token.
@@ -31,6 +32,7 @@ export class UploadService {
     // Uploads a local file to the bucket
     const [file] = await bucket.upload(link, {
       // Support for HTTP requests made with `Accept-Encoding: gzip`
+      destination: fileDestination,
       gzip: true,
       metadata: metadata,
     });
