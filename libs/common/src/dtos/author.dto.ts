@@ -1,12 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsPositive,
   IsString,
 } from 'class-validator';
-import { ToNumbers, Trim } from '../decorators/common.decorator';
+import { ToNumber, ToNumbers, Trim } from '../decorators/common.decorator';
+import { ETypeGenreMedia } from '../enums/media.enum';
 
 export class AuthorIdsDto {
   @ApiProperty({ type: Number, isArray: true })
@@ -40,4 +42,10 @@ export class CreateAuthorDto extends UploadImageAuthorDto {
   @IsString()
   @Trim()
   description: string;
+
+  @ApiProperty({ example: ETypeGenreMedia.Comics })
+  @IsEnum(ETypeGenreMedia)
+  @ToNumber()
+  @IsNotEmpty()
+  type: ETypeGenreMedia;
 }

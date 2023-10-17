@@ -47,4 +47,12 @@ export class UploadService {
 
     return publicUrl[0];
   }
+
+  async uploadMultipeFile(fileNames: string[]) {
+    const promises = fileNames.map(async (filename) => {
+      return await this.uploadFile(filename);
+    });
+
+    return await Promise.all(promises);
+  }
 }

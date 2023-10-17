@@ -24,6 +24,24 @@ export class AuthorController {
     return await this.service.getListAuthors(query);
   }
 
+  @MessagePattern(MEDIAS_MESSAGE_PATTERN.AUTHOR.GET_LIST_AUTHOR_COMIC)
+  async getListAuthorComic(@Payload() query: ListDto) {
+    query.filter = JSON.stringify({ type: '0' }) as any;
+    return await this.service.getListAuthors(query);
+  }
+
+  @MessagePattern(MEDIAS_MESSAGE_PATTERN.AUTHOR.GET_LIST_AUTHOR_MUSIC)
+  async getListAuthorMusic(@Payload() query: ListDto) {
+    query.filter = JSON.stringify({ type: '1' }) as any;
+    return await this.service.getListAuthors(query);
+  }
+
+  @MessagePattern(MEDIAS_MESSAGE_PATTERN.AUTHOR.GET_LIST_AUTHOR_MOVIE)
+  async getListAuthorMovie(@Payload() query: ListDto) {
+    query.filter = JSON.stringify({ type: '2' }) as any;
+    return await this.service.getListAuthors(query);
+  }
+
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.AUTHOR.UPDATE_AUTHOR)
   async updateGenre() {
     console.log('TBD');

@@ -17,6 +17,7 @@ import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.c
 import * as exc from '@libs/common/api';
 import { CreateGenreDto, UpdateGenreDto } from '@libs/common/dtos/genre.dto';
 import { ListDto, ParamIdDto } from '@libs/common/dtos/common.dto';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTagsAndBearer('Genre')
 @Controller('genre')
@@ -32,6 +33,60 @@ export class GenreController {
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.GENRE.GET_LIST_GENRES,
+          query,
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
+
+  @Get('/comic')
+  async getListGenreComic(@Query() query: ListDto) {
+    try {
+      const resp = await firstValueFrom(
+        this.mediaClientProxy.send<any>(
+          MEDIAS_MESSAGE_PATTERN.GENRE.GET_LIST_GENRES_COMIC,
+          query,
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
+
+  @Get('movie')
+  async getListGenreMovie(@Query() query: ListDto) {
+    try {
+      const resp = await firstValueFrom(
+        this.mediaClientProxy.send<any>(
+          MEDIAS_MESSAGE_PATTERN.GENRE.GET_LIST_GENRES_MOVIE,
+          query,
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
+
+  @Get('music')
+  async getListGenreMusic(@Query() query: ListDto) {
+    try {
+      const resp = await firstValueFrom(
+        this.mediaClientProxy.send<any>(
+          MEDIAS_MESSAGE_PATTERN.GENRE.GET_LIST_GENRES_MUSIC,
           query,
         ),
       );
@@ -63,6 +118,7 @@ export class GenreController {
   }
 
   @Post()
+  @Public()
   async createGenre(@Body() payload: CreateGenreDto) {
     try {
       const resp = await firstValueFrom(
@@ -81,6 +137,7 @@ export class GenreController {
   }
 
   @Patch(':id')
+  @Public()
   async updateGenre(
     @Param() param: ParamIdDto,
     @Body() payload: UpdateGenreDto,

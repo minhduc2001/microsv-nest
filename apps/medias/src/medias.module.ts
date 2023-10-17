@@ -12,17 +12,20 @@ import { MediaModule } from './media/media.module';
 import { Author } from '@libs/common/entities/medias/author.entity';
 import { GenreModule } from './genre/genre.module';
 import { AuthorModule } from './author/author.module';
+import { Chapter } from '@libs/common/entities/medias/chapter.entity';
+import { ChapterModule } from './chapter/chapter.module';
 
 @Module({
   imports: [
     LoggerModule,
     RabbitModule.forServerProxy(RabbitServiceName.MEDIA),
     DatabaseModule,
-    TypeOrmModule.forFeature([Genre, Author]),
+    TypeOrmModule.forFeature([Genre, Author, Chapter]),
     ComicsModule,
     MediaModule,
     GenreModule,
     AuthorModule,
+    ChapterModule,
   ],
   controllers: [MediasController],
   providers: [MediasService],

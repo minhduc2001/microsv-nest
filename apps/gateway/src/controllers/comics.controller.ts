@@ -8,18 +8,20 @@ import {
   Get,
   Inject,
   Param,
+  Patch,
   Post,
   Query,
-  UploadedFiles,
+  UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import * as exc from '@libs/common/api';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
 import { Auth } from '../auth/decorators/auth.decorator';
-import { CreateComicDto } from '@libs/common/dtos/comics.dto';
+import { CreateComicDto, UpdateComicDto } from '@libs/common/dtos/comics.dto';
+import { UploadService } from '@libs/upload';
 
 @Controller('comics')
 @ApiTagsAndBearer('Comics')
@@ -28,6 +30,7 @@ export class ComicsController {
   constructor(
     @Inject(RabbitServiceName.MEDIA)
     private readonly comicsClientProxy: ClientProxy,
+    private readonly uploadService: UploadService,
   ) {}
 
   // @Post()
@@ -69,12 +72,42 @@ export class ComicsController {
   }
 
   @Post()
-  async createComic(@Body() payload: CreateComicDto) {
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('thumbnail'))
+  async createComic(
+    @Body() payload: CreateComicDto,
+    @UploadedFile() thumbnail: Express.Multer.File,
+  ) {
+    const url = await this.uploadService.uploadFile(thumbnail.filename, 'img');
     try {
       const resp = await lastValueFrom(
         this.comicsClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.COMICS.CREATE_COMIC,
-          payload,
+          { ...payload, thumbnail: url },
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.BadException({ message: e.message ?? e });
+    }
+  }
+
+  @Patch(':id')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('thumbnail'))
+  async updateComic(
+    @UploadedFile() thumbnail: Express.Multer.File,
+    @Param() params: ParamIdDto,
+    @Body() payload: UpdateComicDto,
+  ) {
+    const url = thumbnail
+      ? await this.uploadService.uploadFile(thumbnail.filename, 'img')
+      : undefined;
+    try {
+      const resp = await lastValueFrom(
+        this.comicsClientProxy.send<any>(
+          MEDIAS_MESSAGE_PATTERN.COMICS.UPDATE_COMIC,
+          { id: params.id, body: { ...payload, thumbnail: url } },
         ),
       );
       return resp;

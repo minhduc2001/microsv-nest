@@ -35,6 +35,14 @@ export class AuthorService extends BaseService<Author> {
     return author;
   }
 
+  async getListAuthorByIds(ids: number[]) {
+    const authors = ids.map(async (id) => {
+      return await this.getAuthorById(id);
+    });
+    const result = await Promise.all(authors);
+    return result;
+  }
+
   async getListAuthors(query: ListDto) {
     const config: PaginateConfig<Author> = {
       sortableColumns: ['id'],

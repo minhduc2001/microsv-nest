@@ -30,6 +30,9 @@ export class User extends AbstractEntity {
   })
   isActive: boolean;
 
+  @Column({ default: 0 })
+  golds: number;
+
   @Column({ type: 'enum', enum: ERole, default: ERole.PARENTS })
   role: ERole;
 

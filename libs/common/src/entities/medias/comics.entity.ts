@@ -21,17 +21,20 @@ export class Comics extends AbstractEntity {
   @Column({ default: 2 })
   minAge: number;
 
-  @Column()
+  @Column({ nullable: true })
   desc: string;
 
   @Column()
   thumbnail: string;
 
-  @Column()
+  @Column({ default: 0 })
   views: number;
 
-  @Column()
+  @Column({ default: true })
   isAccess: boolean;
+
+  @Column({ default: 0 })
+  price: number;
 
   @Column({ type: 'enum', enum: EState, default: EState.InActive })
   state: EState;
@@ -46,5 +49,5 @@ export class Comics extends AbstractEntity {
 
   @ManyToOne(() => Author, (author) => author.comics)
   @JoinColumn()
-  author?: Author[];
+  author?: Author;
 }

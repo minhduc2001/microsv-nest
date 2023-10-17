@@ -3,6 +3,7 @@ import {
   IsBoolean,
   IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -53,6 +54,11 @@ export class UserUpdateDto {
   @IsString()
   @Trim()
   address: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  golds: number;
 
   @ApiProperty()
   @IsOptional()

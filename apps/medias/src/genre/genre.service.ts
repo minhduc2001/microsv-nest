@@ -41,6 +41,14 @@ export class GenreService extends BaseService<Genre> {
     return genre;
   }
 
+  async getListGenreByIds(ids: number[]) {
+    const genres = ids.map(async (id) => {
+      return await this.getGenreById(id);
+    });
+    const result = await Promise.all(genres);
+    return result;
+  }
+
   //   async updateGenre(id: number, payload: UpdateGenreDto) {
   //     const exists = await this.repository.findOne({
   //       where: { name: payload.name, type: payload.type },

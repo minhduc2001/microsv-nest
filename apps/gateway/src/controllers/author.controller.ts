@@ -23,6 +23,7 @@ import { ListDto, ParamIdDto } from '@libs/common/dtos/common.dto';
 import { CreateAuthorDto } from '@libs/common/dtos/author.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from '@libs/upload';
+import { Public } from '../auth/decorators/public.decorator';
 
 @Controller('author')
 @ApiTagsAndBearer('Author')
@@ -39,6 +40,60 @@ export class AuthorController {
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.AUTHOR.GET_LIST_AUTHOR,
+          query,
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
+
+  @Get('/comic')
+  async getListAuthorComic(@Query() query: ListDto) {
+    try {
+      const resp = await firstValueFrom(
+        this.mediaClientProxy.send<any>(
+          MEDIAS_MESSAGE_PATTERN.AUTHOR.GET_LIST_AUTHOR_COMIC,
+          query,
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
+
+  @Get('movie')
+  async getListAuthorMovie(@Query() query: ListDto) {
+    try {
+      const resp = await firstValueFrom(
+        this.mediaClientProxy.send<any>(
+          MEDIAS_MESSAGE_PATTERN.AUTHOR.GET_LIST_AUTHOR_MOVIE,
+          query,
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
+
+  @Get('music')
+  async getListAuthorMusic(@Query() query: ListDto) {
+    try {
+      const resp = await firstValueFrom(
+        this.mediaClientProxy.send<any>(
+          MEDIAS_MESSAGE_PATTERN.AUTHOR.GET_LIST_AUTHOR_MUSIC,
           query,
         ),
       );
@@ -70,6 +125,7 @@ export class AuthorController {
   }
 
   @Post()
+  @Public()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
   async createAuthor(
@@ -77,7 +133,8 @@ export class AuthorController {
     @UploadedFile() image: Express.Multer.File,
   ) {
     try {
-      const imageUrl = await this.uploadService.uploadFile(image.filename);
+      const imageUrl =
+        image && (await this.uploadService.uploadFile(image.filename));
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.AUTHOR.CREATE_AUTHOR,
@@ -94,6 +151,7 @@ export class AuthorController {
   }
 
   @Patch(':id')
+  @Public()
   async updateAuthor() {
     try {
       const resp = await firstValueFrom(
