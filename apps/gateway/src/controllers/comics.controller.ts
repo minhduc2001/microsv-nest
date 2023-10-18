@@ -38,7 +38,10 @@ export class ComicsController {
   async listComics(@Query() query: ListComicsDto) {
     try {
       const data = await lastValueFrom(
-        this.comicsClientProxy.send<any>(MEDIAS_MESSAGE_PATTERN.COMICS, query),
+        this.comicsClientProxy.send<any>(
+          MEDIAS_MESSAGE_PATTERN.COMICS.LIST_COMICS,
+          query,
+        ),
       );
       return data;
     } catch (e) {
