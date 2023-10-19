@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
   IsBoolean,
@@ -125,19 +125,25 @@ export class CreateChapterDto {
   @ApiProperty({ example: 0 })
   @IsNotEmpty()
   @IsNumber()
+  @ToNumber()
   chap: number;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
+  @ToNumber()
   comicId: number;
 
   @ApiProperty({
     required: false,
-    type: 'string',
-    format: 'binary',
+    type: 'array',
+    // format: 'binary',
     description: 'File to upload',
+    items: { type: 'string', format: 'binary' },
   })
-  @IsNotEmpty()
-  imageUrls: ComicsImageurl[];
+  @IsOptional()
+  images: string[];
+
+  @ApiHideProperty()
+  imageUrl: ComicsImageurl[];
 }
