@@ -11,9 +11,6 @@ export class Profile extends AbstractEntity {
   @Column({ type: 'date' })
   birthday: Date;
 
-  @Column({ default: 0 })
-  golds: number;
-
   @Column({ nullable: true })
   avatar: string;
 

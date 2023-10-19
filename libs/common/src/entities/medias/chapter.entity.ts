@@ -5,7 +5,7 @@ import { Comics } from './comics.entity';
 
 @Entity()
 export class Chapter extends AbstractEntity {
-  @Column()
+  @Column({ nullable: true })
   name: string;
 
   @Column()
@@ -14,7 +14,7 @@ export class Chapter extends AbstractEntity {
   @Column('jsonb', { nullable: true })
   imageUrl: ComicsImageurl[];
 
-  @Column()
+  @Column({ default: 0 })
   views: number;
 
   @ManyToOne(() => Comics, (comics) => comics.chapters)
