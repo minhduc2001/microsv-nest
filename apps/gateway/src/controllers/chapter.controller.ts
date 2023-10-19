@@ -71,19 +71,28 @@ export class ChapterController {
   @Post()
   @Public()
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FilesInterceptor('imageUrls', 20))
+  @UseInterceptors(FilesInterceptor('images', 20))
   async createChapter(
     @Body() payload: CreateChapterDto,
-    @UploadedFiles() imageUrls: Array<Express.Multer.File>,
+    @UploadedFiles() images: Array<Express.Multer.File>,
   ) {
     try {
       const urls = await this.uploadService.uploadMultipeFile(
-        imageUrls.map((image) => image.fieldname),
+        images.map((image) => image.filename),
       );
+
+      delete payload.images;
+
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.CHAPTER.CREATE_CHAPTER,
-          { ...payload, imageUrls: urls.map((url, index) => ({ url, index })) },
+          {
+            ...payload,
+            imageUrl: urls.map((url) => ({
+              url,
+              index: Number(url.split('?')[0].split('.')[4].split('-').pop()),
+            })),
+          },
         ),
       );
       return resp;

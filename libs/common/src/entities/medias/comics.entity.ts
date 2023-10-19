@@ -49,5 +49,5 @@ export class Comics extends AbstractEntity {
 
   @ManyToOne(() => Author, (author) => author.comics)
   @JoinColumn()
-  author?: Author;
+  author: Author;
 }

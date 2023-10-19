@@ -24,9 +24,28 @@ export class ComicsService extends BaseService<Comics> {
   async listComics(query: ListComicsDto) {
     const config: PaginateConfig<Comics> = {
       sortableColumns: ['id'],
-      relations: { genres: true, author: true },
+      // relations: { genres: true, author: true },
     };
-    return this.listWithPage(query, config);
+    const queryB = this.repository
+      .createQueryBuilder('comics')
+      .select([
+        'comics.id',
+        'comics.title',
+        'comics.minAge',
+        'comics.desc',
+        'comics.thumbnail',
+        'comics.isAccess',
+        'comics.price',
+        'comics.views',
+        'author.id',
+        'author.name',
+        'author.image',
+        'genres.id',
+        'genres.name',
+      ])
+      .leftJoin('comics.author', 'author')
+      .leftJoin('comics.genres', 'genres');
+    return this.listWithPage(query, config, queryB);
   }
 
   async getComicById(id: number) {

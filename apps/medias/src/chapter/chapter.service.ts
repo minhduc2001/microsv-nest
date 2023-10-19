@@ -28,21 +28,23 @@ export class ChapterService extends BaseService<Chapter> {
   async getChapterById(id: number) {
     const chapter = await this.repository.findOne({ where: { id } });
     if (!chapter)
-      return new excRpc.BadRequest({ message: 'Chapter does not exists' });
+      throw new excRpc.BadRequest({ message: 'Chapter does not exists' });
     return chapter;
   }
 
   async createChapter(dto: CreateChapterDto) {
-    const comic = await this.comicsService.getComic(dto.comicId);
+    const comic = await this.comicsService.getComicById(dto.comicId);
     const exists = await this.repository.findOne({
       where: { chap: dto.chap, comics: { id: dto.comicId } },
     });
     if (exists)
-      return new excRpc.BadRequest({ message: 'Chapter has already exist!' });
+      throw new excRpc.BadRequest({ message: 'Chapter has already exist!' });
+
+    if (dto.images) delete dto.images;
 
     const chapter = Object.assign(new Chapter(), { ...dto });
     chapter.comics = comic;
-    this.repository.save({ ...chapter });
+    await this.repository.save({ ...chapter });
 
     return 'Create Chapter successful';
   }
