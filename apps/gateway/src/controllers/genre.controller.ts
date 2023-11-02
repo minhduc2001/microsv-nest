@@ -137,7 +137,6 @@ export class GenreController {
   }
 
   @Patch(':id')
-  @Public()
   async updateGenre(
     @Param() param: ParamIdDto,
     @Body() payload: UpdateGenreDto,

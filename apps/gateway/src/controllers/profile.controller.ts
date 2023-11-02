@@ -50,7 +50,10 @@ export class ProfileController {
       );
       return resp;
     } catch (e) {
-      throw new exc.BadException({ message: e.message });
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
     }
   }
 
@@ -65,7 +68,10 @@ export class ProfileController {
       );
       return resp;
     } catch (e) {
-      throw new exc.BadException({ message: e.message });
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
     }
   }
 
@@ -117,7 +123,10 @@ export class ProfileController {
         ...tokens,
       };
     } catch (e) {
-      throw new exc.BadException({ message: e.message });
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
     }
   }
 
@@ -135,7 +144,10 @@ export class ProfileController {
       );
       return resp;
     } catch (e) {
-      throw new exc.BadException({ message: e.message });
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
     }
   }
 
@@ -150,7 +162,10 @@ export class ProfileController {
       );
       return resp;
     } catch (e) {
-      throw new exc.BadException({ message: e.message });
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
     }
   }
 }

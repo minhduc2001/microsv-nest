@@ -19,6 +19,7 @@ export class GenreService extends BaseService<Genre> {
   async getListGenres(query: ListDto) {
     const config: PaginateConfig<Genre> = {
       sortableColumns: ['id'],
+      searchableColumns: ['name'],
     };
     return this.listWithPage(query, config);
   }
@@ -49,13 +50,19 @@ export class GenreService extends BaseService<Genre> {
     return result;
   }
 
-  //   async updateGenre(id: number, payload: UpdateGenreDto) {
-  //     const exists = await this.repository.findOne({
-  //       where: { name: payload.name, type: payload.type },
-  //     });
-  //     if (exists)
-  //       throw new excRpc.BadRequest({ message: 'Genre had been exist' });
-  //     const genre = await this.getGenreById(id);
+  async updateGenre(id: number, payload: UpdateGenreDto) {
+    const exists = await this.repository.findOne({
+      where: { name: payload.name, type: payload.type },
+    });
+    if (exists)
+      throw new excRpc.BadRequest({ message: 'Genre had been exist' });
+    const genre = await this.getGenreById(id);
 
-  //   }
+    genre.name = payload.name;
+    genre.type = payload.type;
+
+    await this.repository.save(genre);
+
+    return 'Update genre successful!';
+  }
 }

@@ -49,3 +49,23 @@ export class CreateAuthorDto extends UploadImageAuthorDto {
   @IsNotEmpty()
   type: ETypeGenreMedia;
 }
+
+export class UpdateAuthorDto extends UploadImageAuthorDto {
+  @ApiProperty({ example: 'Hàn Mặc Tử', required: false })
+  @Trim()
+  @IsString()
+  @IsOptional()
+  name: string;
+
+  @ApiProperty({ example: 'Nhà văn', required: false })
+  @IsOptional()
+  @IsString()
+  @Trim()
+  description: string;
+
+  @ApiProperty({ example: ETypeGenreMedia.Comics, required: false })
+  @IsEnum(ETypeGenreMedia)
+  @ToNumber()
+  @IsOptional()
+  type: ETypeGenreMedia;
+}

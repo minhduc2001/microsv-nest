@@ -48,8 +48,6 @@ export class GenreController {
     @Payload('id') id: number,
     @Payload('payload') payload: UpdateGenreDto,
   ) {
-    console.log('TBD');
-
-    // return await this.service.
+    return await this.service.updateGenre(id, payload);
   }
 }

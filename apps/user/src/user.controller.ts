@@ -9,6 +9,7 @@ import {
   RegisterDto,
   UserUpdateDto,
 } from '@libs/common/dtos/user.dto';
+import { ListDto } from '@libs/common/dtos/common.dto';
 
 @Controller()
 export class UserController {
@@ -39,6 +40,16 @@ export class UserController {
     } catch (e) {
       throw new excRpc.BadException({ message: e.message });
     }
+  }
+
+  @MessagePattern(USER_MESSAGE_PATTERNS.GET_USER_LISTS)
+  async getAllUser(@Payload() query: ListDto) {
+    return this.userService.getAllUser(query);
+  }
+
+  @MessagePattern(USER_MESSAGE_PATTERNS.GET_USER_ACCOUNT)
+  async getUserWithRelationship(@Payload() id: number) {
+    return this.userService.getUserByIdWithRelationship(id);
   }
 
   @MessagePattern(USER_MESSAGE_PATTERNS.GET_USER)

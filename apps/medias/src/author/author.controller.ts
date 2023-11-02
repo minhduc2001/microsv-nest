@@ -2,7 +2,7 @@ import { Controller } from '@nestjs/common';
 import { AuthorService } from './author.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
-import { CreateAuthorDto } from '@libs/common/dtos/author.dto';
+import { CreateAuthorDto, UpdateAuthorDto } from '@libs/common/dtos/author.dto';
 import { ListDto } from '@libs/common/dtos/common.dto';
 
 @Controller()
@@ -43,9 +43,10 @@ export class AuthorController {
   }
 
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.AUTHOR.UPDATE_AUTHOR)
-  async updateGenre() {
-    console.log('TBD');
-
-    // return await this.service.
+  async updateGenre(
+    @Payload('id') id: number,
+    @Payload('payload') payload: UpdateAuthorDto,
+  ) {
+    return await this.service.updateAuthor(id, payload);
   }
 }
