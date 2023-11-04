@@ -29,7 +29,7 @@ import { Auth } from '../auth/decorators/auth.decorator';
 import { Public } from '../auth/decorators/public.decorator';
 import { Request, Response } from 'express';
 import { UserService } from '../services/user.service';
-import { ParamIdDto } from '@libs/common/dtos/common.dto';
+import { ListDto, ParamIdDto } from '@libs/common/dtos/common.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { CacheService } from '@libs/cache';
 import { GetUser } from '../auth/decorators/get-user.decorator';
@@ -63,7 +63,29 @@ export class UserController {
         ...tokens,
       };
     } catch (e) {
-      throw new exc.BadException({ message: e.message });
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
+
+  @Get()
+  async getAllUsers(@Query() query: ListDto) {
+    try {
+      const data = await firstValueFrom(
+        this.userClientProxy.send<any>(
+          USER_MESSAGE_PATTERNS.GET_USER_LISTS,
+          query,
+        ),
+      );
+
+      return data;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
     }
   }
 
@@ -72,7 +94,10 @@ export class UserController {
     try {
       return user;
     } catch (e) {
-      throw new exc.BadException({ message: e.message });
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
     }
   }
 
@@ -103,6 +128,25 @@ export class UserController {
     };
   }
 
+  @Get(':id')
+  async getUserWithRelationship(@Param() params: ParamIdDto) {
+    try {
+      const data = await firstValueFrom(
+        this.userClientProxy.send<any>(
+          USER_MESSAGE_PATTERNS.GET_USER_ACCOUNT,
+          params.id,
+        ),
+      );
+
+      return data;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
+
   @Post('register')
   @Public()
   async register(@Body() body: RegisterDto) {
@@ -112,7 +156,10 @@ export class UserController {
       );
       return resp;
     } catch (e) {
-      throw new exc.BadException({ message: e.message });
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
     }
   }
 
@@ -128,7 +175,10 @@ export class UserController {
       );
       return resp;
     } catch (e) {
-      throw new exc.BadException({ message: e.message });
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
     }
   }
 
@@ -146,7 +196,10 @@ export class UserController {
       );
       return resp;
     } catch (e) {
-      throw new exc.BadException({ message: e.message });
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
     }
   }
 
@@ -162,7 +215,10 @@ export class UserController {
       );
       return resp;
     } catch (e) {
-      throw new exc.BadException({ message: e.message });
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
     }
   }
 
@@ -178,7 +234,10 @@ export class UserController {
       );
       return resp;
     } catch (e) {
-      throw new exc.BadException({ message: e.message });
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
     }
   }
 
@@ -202,7 +261,10 @@ export class UserController {
       if (resp) await this.cacheService.del(body.email);
       return resp;
     } catch (e) {
-      throw new exc.BadException({ message: e.message });
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
     }
   }
 }

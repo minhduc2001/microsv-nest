@@ -1,5 +1,5 @@
 import * as excRpc from '@libs/common/api';
-import { CreateAuthorDto } from '@libs/common/dtos/author.dto';
+import { CreateAuthorDto, UpdateAuthorDto } from '@libs/common/dtos/author.dto';
 import { ListDto } from '@libs/common/dtos/common.dto';
 import { Author } from '@libs/common/entities/medias/author.entity';
 import { BaseService } from '@libs/common/services/base.service';
@@ -46,7 +46,34 @@ export class AuthorService extends BaseService<Author> {
   async getListAuthors(query: ListDto) {
     const config: PaginateConfig<Author> = {
       sortableColumns: ['id'],
+      searchableColumns: ['name', 'description'],
     };
     return this.listWithPage(query, config);
+  }
+
+  async updateAuthor(id: number, payload: UpdateAuthorDto) {
+    const author = await this.getAuthorById(id);
+    console.log(payload);
+
+    if (payload.name || payload.type) {
+      const exists = await this.repository.findOne({
+        where: {
+          name: payload.name ? payload.name : author.name,
+          type: payload.type ? payload.type : author.type,
+        },
+      });
+
+      if (exists)
+        throw new excRpc.BadRequest({ message: 'Author had been exist' });
+    }
+
+    const authorUpdated = Object.assign(new Author(), {
+      ...author,
+      ...payload,
+    });
+
+    await this.repository.update({ id: author.id }, authorUpdated);
+
+    return 'Cập nhật thông tin tác giả thành công!';
   }
 }
