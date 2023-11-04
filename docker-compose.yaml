@@ -46,8 +46,8 @@ services:
     restart: always
     ports:
       - ${REDIS_PORT}:6379
-    environment:
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    # environment:
+    # REDIS_PASSWORD: ${REDIS_PASSWORD}
     volumes:
       - ./docker/redis/init:/docker-entrypoint-initdb.d
     networks:

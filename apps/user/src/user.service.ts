@@ -14,6 +14,7 @@ import * as excRpc from '@libs/common/api';
 import { MailerService } from '@libs/mailer';
 import { EProviderLogin } from '@libs/common/enums/user.enum';
 import { CacheService } from '@libs/cache';
+import { ListDto } from '@libs/common/dtos/common.dto';
 
 interface CacheOtp {
   otp: string;
@@ -30,9 +31,10 @@ export class UserService extends BaseService<User> {
     super(userRepository);
   }
 
-  async getAllUser(query: any) {
+  async getAllUser(query: ListDto) {
     const config: PaginateConfig<User> = {
       sortableColumns: ['id'],
+      searchableColumns: ['email', 'username', 'phone'],
     };
     return this.listWithPage(query, config);
   }
@@ -92,6 +94,16 @@ export class UserService extends BaseService<User> {
     });
 
     return 'Register Successful!';
+  }
+
+  async getUserByIdWithRelationship(id: number) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: { profiles: true },
+    });
+    if (!user)
+      throw new excRpc.BadRequest({ message: 'Account does not existed!' });
+    return user;
   }
 
   async getUserById(id: number) {

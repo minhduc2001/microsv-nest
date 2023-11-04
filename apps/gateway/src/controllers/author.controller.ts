@@ -20,7 +20,7 @@ import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { ClientProxy } from '@nestjs/microservices';
 import { query } from 'express';
 import { ListDto, ParamIdDto } from '@libs/common/dtos/common.dto';
-import { CreateAuthorDto } from '@libs/common/dtos/author.dto';
+import { CreateAuthorDto, UpdateAuthorDto } from '@libs/common/dtos/author.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from '@libs/upload';
 import { Public } from '../auth/decorators/public.decorator';
@@ -152,12 +152,21 @@ export class AuthorController {
 
   @Patch(':id')
   @Public()
-  async updateAuthor() {
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('image'))
+  async updateAuthor(
+    @Param() param: ParamIdDto,
+    @Body() payload: UpdateAuthorDto,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
     try {
+      const imageUrl =
+        image &&
+        (await this.uploadService.uploadFile(image.filename, 'medias'));
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.AUTHOR.UPDATE_AUTHOR,
-          null,
+          { id: param.id, payload: { ...payload, image: imageUrl } },
         ),
       );
       return resp;
