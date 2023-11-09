@@ -36,8 +36,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
         (envService.FIXED_STATUS_CODE && typeof excResponse !== 'object') ||
         !Object.getOwnPropertyDescriptor(excResponse, 'success')
       ) {
-        console.log('vao day');
-
         excResponse = new exc.BadRequest({
           errorCode: exc.STATUS_CODE_MAP[status] ?? exc.UNKNOWN,
           statusCode: status,

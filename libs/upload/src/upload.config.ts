@@ -19,7 +19,9 @@ export const multerOptions = {
   fileFilter: (req: any, file: any, cb: any) => {
     if (
       file.mimetype.match(/\/(jpg|jpeg|png|gif)$/) ||
-      file.mimetype.match(/\.xlsx$/i)
+      file.mimetype.match(/\.xlsx$/i) ||
+      file.mimetype.match(/video/) ||
+      file.mimetype.match(/audio/)
     ) {
       // Allow storage of file
       cb(null, true);

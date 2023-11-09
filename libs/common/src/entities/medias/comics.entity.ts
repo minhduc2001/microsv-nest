@@ -1,4 +1,5 @@
 import {
+  AfterLoad,
   Column,
   Entity,
   JoinColumn,
@@ -50,4 +51,14 @@ export class Comics extends AbstractEntity {
   @ManyToOne(() => Author, (author) => author.comics)
   @JoinColumn()
   author: Author;
+
+  chapter: number;
+
+  @AfterLoad()
+  afterLoad() {
+    if (this.chapters) {
+      this.chapter = this.chapters.length;
+      delete this.chapters;
+    }
+  }
 }

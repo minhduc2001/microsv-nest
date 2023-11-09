@@ -42,9 +42,11 @@ export class ComicsService extends BaseService<Comics> {
         'author.image',
         'genres.id',
         'genres.name',
+        'chapter.id',
       ])
       .leftJoin('comics.author', 'author')
-      .leftJoin('comics.genres', 'genres');
+      .leftJoin('comics.genres', 'genres')
+      .leftJoin('comics.chapters', 'chapter');
     return this.listWithPage(query, config, queryB);
   }
 
@@ -55,7 +57,7 @@ export class ComicsService extends BaseService<Comics> {
         author: { id: true, name: true },
       },
       where: { id },
-      relations: { genres: true, author: true, chapters: true },
+      relations: { genres: true, author: true },
     });
     if (!comic)
       throw new excRpc.BadRequest({ message: 'Comic does not exists' });

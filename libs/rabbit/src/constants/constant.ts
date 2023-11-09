@@ -15,4 +15,7 @@ export const RABBIT_SERVICES: Record<RabbitServiceName, { queue: string }> = {
   MEDIA_SERVICE: {
     queue: 'media_queue',
   },
+  FILE_SERVICE: {
+    queue: 'file_queue',
+  },
 };

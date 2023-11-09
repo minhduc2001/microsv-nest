@@ -6,6 +6,8 @@ import * as serviceAccount from 'firebase-key.json';
 import { generateUUID } from '@libs/common/utils/function';
 import { removeFile } from '@libs/common/utils/file-reslove';
 import { envService } from '@libs/env';
+import chokidar from 'chokidar';
+
 @Injectable()
 export class UploadService {
   constructor() {
@@ -55,4 +57,47 @@ export class UploadService {
 
     return await Promise.all(promises);
   }
+
+  // startWatching(uploadDirectory: string) {
+  //   const watcher = chokidar.watch(uploadDirectory, {
+  //     ignored: /(^|[\/\\])\../,
+  //     persistent: true,
+  //   });
+
+  //   watcher.on('add', (filePath) => {
+  //     if (this.isAllowedFile(filePath)) {
+  //       const destinationPath = this.getDestinationPath(filePath);
+  //       const bucket = admin.storage().bucket();
+  //       const file = bucket.file(destinationPath);
+
+  //       file
+  //         .save(destinationPath, {
+  //           gzip: true,
+  //           metadata: {
+  //             contentType: this.getContentType(filePath),
+  //           },
+  //         })
+  //         .then(() => {
+  //           console.log('File đã được đẩy lên Firebase Storage.');
+  //         })
+  //         .catch((error) => {
+  //           console.error('Lỗi khi đẩy file lên Firebase Storage:', error);
+  //         });
+  //     }
+  //   });
+  // }
+
+  // private isAllowedFile(filePath: string): boolean {
+  //   return filePath.match(/\.(ts|m3u8)$/i) !== null;
+  // }
+
+  // private getDestinationPath(filePath: string): string {
+  //   return filePath.replace(this.uploadDirectory, this.destinationDirectory);
+  // }
+
+  // private getContentType(filePath: string): string {
+  //   return path.extname(filePath) === '.ts'
+  //     ? 'video/mp2t'
+  //     : 'application/x-mpegURL';
+  // }
 }
