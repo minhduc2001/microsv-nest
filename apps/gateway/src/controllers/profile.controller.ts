@@ -84,7 +84,9 @@ export class ProfileController {
     @GetUser('id') userId: number,
   ) {
     try {
-      const avatarUrl = await this.uploadService.uploadFile(file.filename);
+      const avatarUrl = file
+        ? await this.uploadService.uploadFile(file.filename, 'user')
+        : null;
       const resp = await firstValueFrom(
         this.userClientProxy.send<any>(
           USER_MESSAGE_PATTERNS.PROFILE.CREATE_PROFILE,

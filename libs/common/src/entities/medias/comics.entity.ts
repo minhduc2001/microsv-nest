@@ -53,12 +53,4 @@ export class Comics extends AbstractEntity {
   author: Author;
 
   chapter: number;
-
-  @AfterLoad()
-  afterLoad() {
-    if (this.chapters) {
-      this.chapter = this.chapters.length;
-      delete this.chapters;
-    }
-  }
 }

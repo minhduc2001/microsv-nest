@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToMany } from 'typeorm';
+import { AfterLoad, Column, Entity, JoinColumn, OneToMany } from 'typeorm';
 import { AbstractEntity } from '../abstract.entity';
 import { Exclude } from 'class-transformer';
 import { ERole } from '@libs/common/enums/role.enum';
@@ -46,6 +46,8 @@ export class User extends AbstractEntity {
     default: EProviderLogin.Normal,
   })
   provider: EProviderLogin;
+
+  profilesCount: number;
 
   setPassword(password: string) {
     this.password = bycrypt.hashSync(password, 10);
