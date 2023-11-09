@@ -111,7 +111,7 @@ export async function paginate<T extends ObjectLiteral>(
   }
 
   if (isPaginated) {
-    queryBuilder.limit(limit).offset((page - 1) * limit);
+    queryBuilder.take(limit).skip((page - 1) * limit);
   }
 
   if (config.relations) {
