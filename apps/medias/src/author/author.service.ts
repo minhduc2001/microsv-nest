@@ -45,6 +45,7 @@ export class AuthorService extends BaseService<Author> {
 
   async getListAuthors(query: ListDto) {
     const config: PaginateConfig<Author> = {
+      defaultSortBy: [['updatedAt', 'DESC']],
       sortableColumns: ['id'],
       searchableColumns: ['name', 'description'],
     };
@@ -74,6 +75,6 @@ export class AuthorService extends BaseService<Author> {
 
     await this.repository.update({ id: author.id }, authorUpdated);
 
-    return 'Cập nhật thông tin tác giả thành công!';
+    return authorUpdated;
   }
 }
