@@ -18,6 +18,7 @@ export class GenreService extends BaseService<Genre> {
 
   async getListGenres(query: ListDto) {
     const config: PaginateConfig<Genre> = {
+      defaultSortBy: [['updatedAt', 'DESC']],
       sortableColumns: ['id'],
       searchableColumns: ['name'],
     };

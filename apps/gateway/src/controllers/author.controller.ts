@@ -134,7 +134,8 @@ export class AuthorController {
   ) {
     try {
       const imageUrl =
-        image && (await this.uploadService.uploadFile(image.filename));
+        image &&
+        (await this.uploadService.uploadFile(image.filename, 'medias'));
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.AUTHOR.CREATE_AUTHOR,
