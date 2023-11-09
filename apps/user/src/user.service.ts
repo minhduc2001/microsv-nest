@@ -53,7 +53,7 @@ export class UserService extends BaseService<User> {
         'user.updatedAt',
       ])
       .leftJoin('user.profiles', 'profile')
-      .loadRelationCountAndMap('user.profilesCount', 'user.profiles')
+      .loadRelationCountAndMap('user.profilesCount', 'user.profiles');
 
     return this.listWithPage(query, config, querySql);
   }
