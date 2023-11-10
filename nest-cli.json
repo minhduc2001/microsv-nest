@@ -153,6 +153,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/medias/tsconfig.app.json"
       }
+    },
+    "actions": {
+      "type": "application",
+      "root": "apps/actions",
+      "entryFile": "main",
+      "sourceRoot": "apps/actions/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/actions/tsconfig.app.json"
+      }
     }
   }
 }
