@@ -47,8 +47,6 @@ export class User extends AbstractEntity {
   })
   provider: EProviderLogin;
 
-  profilesCount: number;
-
   setPassword(password: string) {
     this.password = bycrypt.hashSync(password, 10);
   }

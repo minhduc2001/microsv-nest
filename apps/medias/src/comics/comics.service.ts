@@ -46,7 +46,7 @@ export class ComicsService extends BaseService<Comics> {
       .leftJoin('comics.author', 'author')
       .leftJoin('comics.genres', 'genres')
       .leftJoin('comics.chapters', 'chapter')
-      .loadRelationCountAndMap('comics.chapter', 'comics.chapters');
+      .loadRelationCountAndMap('comics.chaptersCount', 'comics.chapters');
     return this.listWithPage(query, config, queryB);
   }
 
