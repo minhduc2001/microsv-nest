@@ -18,8 +18,9 @@ export class ResponseTransformInterceptor<T>
     next: CallHandler,
   ): Observable<Payload<T>> {
     return next.handle().pipe(
-      map((data) =>
-        data?.meta
+      map((data) => {
+        delete data?.password;
+        return data?.meta
           ? {
               ...defaultPayload,
               data: data.data,
@@ -28,8 +29,8 @@ export class ResponseTransformInterceptor<T>
           : {
               ...defaultPayload,
               data: data ?? null,
-            },
-      ),
+            };
+      }),
     );
   }
 }

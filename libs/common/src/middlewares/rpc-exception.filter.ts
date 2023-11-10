@@ -22,8 +22,6 @@ export class CustomRpcExceptionFilter
     exception: RpcException | HttpException,
     host: ArgumentsHost,
   ): Observable<any> {
-    console.log('vl luon dau cat moi');
-
     const _data = host.switchToRpc().getData();
     const data = _data.value;
     const meta = _data.headers;
@@ -47,7 +45,7 @@ export class CustomRpcExceptionFilter
         data: response.data ?? null,
         errorCode: response.errorCode ?? '000000',
         // @ts-ignore
-        statusCode: exception?.status ?? 200,
+        status: exception?.status ?? 200,
       }));
     }
 
@@ -56,6 +54,7 @@ export class CustomRpcExceptionFilter
     return throwError(() => ({
       errorCode: excRpc.UNKNOWN,
       message: exception.message,
+      status: 500,
     }));
   }
 }
