@@ -42,11 +42,11 @@ export class ComicsService extends BaseService<Comics> {
         'author.image',
         'genres.id',
         'genres.name',
-        'chapter.id',
       ])
       .leftJoin('comics.author', 'author')
       .leftJoin('comics.genres', 'genres')
-      .leftJoin('comics.chapters', 'chapter');
+      .leftJoin('comics.chapters', 'chapter')
+      .loadRelationCountAndMap('comics.chaptersCount', 'comics.chapters');
     return this.listWithPage(query, config, queryB);
   }
 

@@ -36,7 +36,26 @@ export class UserService extends BaseService<User> {
       sortableColumns: ['id'],
       searchableColumns: ['email', 'username', 'phone'],
     };
-    return this.listWithPage(query, config);
+
+    const querySql = this.userRepository
+      .createQueryBuilder('user')
+      .select([
+        'user.id',
+        'user.username',
+        'user.email',
+        'user.address',
+        'user.phone',
+        'user.isActive',
+        'user.golds',
+        'user.role',
+        'user.provider',
+        'user.createdAt',
+        'user.updatedAt',
+      ])
+      .leftJoin('user.profiles', 'profile')
+      .loadRelationCountAndMap('user.profilesCount', 'user.profiles');
+
+    return this.listWithPage(query, config, querySql);
   }
 
   async loginUser(dto: LoginDto) {
