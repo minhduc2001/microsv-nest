@@ -41,24 +41,21 @@ export class CustomRpcExceptionFilter
     if ('response' in exception) {
       // @ts-ignore
       const response = exception.response;
-      console.log(response, 'response');
 
-      return throwError(
-        () =>
-          new excRpc.CustomError({
-            message: response.message,
-            data: response.data ?? null,
-            // @ts-ignore
-            statusCode: exception?.status ?? 200,
-          }),
-      );
+      return throwError(() => ({
+        message: response.message,
+        data: response.data ?? null,
+        errorCode: response.errorCode ?? '000000',
+        // @ts-ignore
+        statusCode: exception?.status ?? 200,
+      }));
     }
 
-    const error = new excRpc.BadException({
+    // const error = new excRpc.BadException();
+
+    return throwError(() => ({
       errorCode: excRpc.UNKNOWN,
       message: exception.message,
-    });
-
-    return throwError(() => error);
+    }));
   }
 }
