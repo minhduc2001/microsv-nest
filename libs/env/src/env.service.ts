@@ -103,6 +103,10 @@ export class EnvService {
   // redis
   REDIS_HOST = _process.env.REDIS_HOST;
   REDIS_PORT = +_process.env.REDIS_PORT;
+
+  // Messaging
+  SENDER_ID = _process.env.SENDER_ID;
+  SERVER_KEY = _process.env.SERVER_KEY;
 }
 
 export const envService = new EnvService();

@@ -93,6 +93,12 @@
       ],
       "@libs/cache/*": [
         "libs/cache/src/*"
+      ],
+      "@libs/api": [
+        "libs/api/src"
+      ],
+      "@libs/api/*": [
+        "libs/api/src/*"
       ]
     }
   }
