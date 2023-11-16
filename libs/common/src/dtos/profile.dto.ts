@@ -1,6 +1,7 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 import { ToNumber, Trim } from '../decorators/common.decorator';
+import { Transform } from 'class-transformer';
 
 export class UploadAvatarDto {
   @ApiProperty({
@@ -31,6 +32,12 @@ export class CreateProfileDto extends UploadAvatarDto {
   @IsNotEmpty()
   birthday: Date;
 
+  @ApiProperty({ example: false })
+  @IsNotEmpty()
+  @IsBoolean()
+  @Transform(({ value }) => value?.toLowerCase?.() === 'true')
+  isLocked: boolean;
+
   @ApiHideProperty()
   @IsNumber()
   @IsOptional()
@@ -38,28 +45,27 @@ export class CreateProfileDto extends UploadAvatarDto {
 }
 
 export class UpdateProfileDto extends UploadAvatarDto {
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
   @IsOptional()
   @Trim()
   nickname: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
-  @IsNotEmpty()
   birthday: Date;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsNumber()
   golds: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsNumber()
   progress: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
+  @Transform(({ value }) => value?.toLowerCase?.() === 'true')
   @IsBoolean()
   @IsOptional()
   isLocked: boolean;

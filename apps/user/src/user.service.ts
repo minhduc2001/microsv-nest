@@ -15,6 +15,7 @@ import { MailerService } from '@libs/mailer';
 import { EProviderLogin } from '@libs/common/enums/user.enum';
 import { CacheService } from '@libs/cache';
 import { ListDto } from '@libs/common/dtos/common.dto';
+import { ERole } from '@libs/common/enums/role.enum';
 
 interface CacheOtp {
   otp: string;
@@ -31,8 +32,11 @@ export class UserService extends BaseService<User> {
     super(userRepository);
   }
 
+  // get user lists of Parents role
   async getAllUser(query: ListDto) {
+    query.filter = JSON.stringify({ role: ERole.PARENTS }) as any;
     const config: PaginateConfig<User> = {
+      defaultSortBy: [['updatedAt', 'DESC']],
       sortableColumns: ['id'],
       searchableColumns: ['email', 'username', 'phone'],
     };
@@ -121,14 +125,17 @@ export class UserService extends BaseService<User> {
       relations: { profiles: true },
     });
     if (!user)
-      throw new excRpc.BadRequest({ message: 'Account does not existed!' });
+      throw new excRpc.NotFound({
+        message: 'Account does not existed!',
+        errorCode: 'user_not_found',
+      });
     return user;
   }
 
   async getUserById(id: number) {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user)
-      throw new excRpc.BadRequest({ message: 'Account does not existed!' });
+      throw new excRpc.NotFound({ message: 'Account does not existed!' });
     return user;
   }
 

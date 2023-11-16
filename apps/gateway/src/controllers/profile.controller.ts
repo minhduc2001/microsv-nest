@@ -75,6 +75,24 @@ export class ProfileController {
     }
   }
 
+  @Get('user/:id')
+  async getAllProfileByUserId(@Param() params: ParamIdDto) {
+    try {
+      const resp = await firstValueFrom(
+        this.userClientProxy.send<any>(
+          USER_MESSAGE_PATTERNS.PROFILE.GET_ALL_PROFILE_BY_USER_ID,
+          params.id,
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
+
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('avatar'))
   @Post()
@@ -132,16 +150,22 @@ export class ProfileController {
     }
   }
 
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('avatar'))
   @Patch(':id')
   async updateProfile(
     @Param() params: ParamIdDto,
     @Body() body: UpdateProfileDto,
+    @UploadedFile() avatar: Express.Multer.File,
   ) {
     try {
+      const avatarUrl = avatar
+        ? await this.uploadService.uploadFile(avatar.filename, 'user')
+        : undefined;
       const resp = await firstValueFrom(
         this.userClientProxy.send<any>(
           USER_MESSAGE_PATTERNS.PROFILE.UPDATE_PROFILE,
-          { profileId: params.id, body },
+          { profileId: params.id, body: { ...body, avatar: avatarUrl } },
         ),
       );
       return resp;

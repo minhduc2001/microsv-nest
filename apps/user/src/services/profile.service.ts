@@ -47,11 +47,11 @@ export class ProfileService extends BaseService<Profile> {
   }
 
   async updateProfile(profileId: number, payload: UpdateProfileDto) {
-    await this.getProfileById(profileId);
+    const profile = await this.getProfileById(profileId);
 
     await this.profileRepository.update(profileId, { ...payload });
 
-    return 'Update profile successful';
+    return { ...profile, ...payload };
   }
 
   async getProfileById(id: number) {
