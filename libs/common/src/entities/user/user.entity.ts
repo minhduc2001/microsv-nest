@@ -28,7 +28,7 @@ export class User extends AbstractEntity {
     type: 'boolean',
     default: false,
   })
-  isActive: boolean;
+  isActive?: boolean;
 
   @Column({ default: 0 })
   golds: number;
@@ -38,14 +38,14 @@ export class User extends AbstractEntity {
 
   @OneToMany(() => Profile, (profile) => profile.user)
   @JoinColumn()
-  profiles: Profile[];
+  profiles?: Profile[];
 
   @Column({
     type: 'enum',
     enum: EProviderLogin,
     default: EProviderLogin.Normal,
   })
-  provider: EProviderLogin;
+  provider?: EProviderLogin;
 
   setPassword(password: string) {
     this.password = bycrypt.hashSync(password, 10);

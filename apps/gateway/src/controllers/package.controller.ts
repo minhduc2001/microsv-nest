@@ -61,6 +61,8 @@ export class PackageController {
   @Get(':id')
   async getOne(@Param() param: ParamIdDto, @GetUser() user: User) {
     try {
+      console.log({ ...param, user: user });
+
       const data = await firstValueFrom(
         this.paymentSystemClientProxy.send<any>(
           PAYMENT_SYSTEM_MESSAGE_PATTERN.PACKAGE.GET_PACKAGE,
@@ -78,7 +80,7 @@ export class PackageController {
   @Post()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
-  async createComic(
+  async create(
     @Body() payload: CreatePackageDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
@@ -130,7 +132,7 @@ export class PackageController {
     try {
       const resp = await firstValueFrom(
         this.paymentSystemClientProxy.send<any>(
-          PAYMENT_SYSTEM_MESSAGE_PATTERN.PACKAGE.UPDATE_PACKAGE,
+          PAYMENT_SYSTEM_MESSAGE_PATTERN.PACKAGE.UPDATE_STATE_PACKAGE,
           { state: payload.state },
         ),
       );
@@ -149,7 +151,7 @@ export class PackageController {
     try {
       const resp = await firstValueFrom(
         this.paymentSystemClientProxy.send<any>(
-          PAYMENT_SYSTEM_MESSAGE_PATTERN.PACKAGE.UPDATE_PACKAGE,
+          PAYMENT_SYSTEM_MESSAGE_PATTERN.PACKAGE.BULK_DELETE_PACKAGE,
           payload,
         ),
       );

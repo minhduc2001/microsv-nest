@@ -28,6 +28,7 @@ export class PackageService extends BaseService<Package> {
   async listPackage(query: ListPackageDto) {
     const config: PaginateConfig<Package> = {
       sortableColumns: ['id'],
+      searchableColumns: ['name', 'golds', 'desc', 'endDate', 'startDate'],
     };
 
     let queryB = this.repository
@@ -79,26 +80,9 @@ export class PackageService extends BaseService<Package> {
     return pk.save();
   }
 
-  async bulkDelete(ids: number[]): Promise<boolean> {
-    const queryRunner = this.dataSource.createQueryRunner();
-
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      for (const id of ids) {
-        const pk = await this._getPackage(id);
-        pk.state = EState.Deleted;
-
-        await queryRunner.manager.save(pk);
-      }
-
-      await queryRunner.commitTransaction();
-    } catch (e) {
-      await queryRunner.rollbackTransaction();
-      throw new excRpc.BadRequest({ message: e.message });
-    } finally {
-      await queryRunner.release();
+  async bulkDelete(ids: number[]) {
+    for (const id of ids) {
+      await this.repository.update(id, { state: EState.Deleted });
     }
 
     return true;

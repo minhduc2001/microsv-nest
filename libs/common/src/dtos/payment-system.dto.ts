@@ -1,6 +1,7 @@
 import {
   ApiHideProperty,
   ApiProperty,
+  ApiPropertyOptional,
   PartialType,
   PickType,
 } from '@nestjs/swagger';
@@ -9,6 +10,7 @@ import {
   IsDate,
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsPositive,
   IsString,
@@ -17,6 +19,7 @@ import { User } from '../entities/user/user.entity';
 import { EState } from '../enums/common.enum';
 import { ToNumber, Trim } from '../decorators/common.decorator';
 import { EPaymentMethod } from '../enums/payment-system.enum';
+import { Transform } from 'class-transformer';
 
 export class ListPackageDto extends ListDto {
   @ApiHideProperty()
@@ -43,29 +46,33 @@ export class CreatePackageDto extends UploadImageDto {
   @ToNumber()
   golds: number;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
-  @IsPositive()
+  @IsNumber()
   @ToNumber()
   discount: number;
 
-  @ApiProperty()
+  @ApiPropertyOptional({
+    enum: EState,
+  })
   @IsOptional()
   @IsEnum(EState)
   @ToNumber()
   state: EState;
 
-  @ApiProperty()
+  @ApiPropertyOptional({ example: new Date() })
   @IsDate()
+  @Transform(({ value }) => new Date(value))
   @IsOptional()
   startDate: Date;
 
-  @ApiProperty()
+  @ApiPropertyOptional({ example: new Date() })
+  @Transform(({ value }) => new Date(value))
   @IsDate()
   @IsOptional()
   endDate: Date;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsString()
   @IsOptional()
   @Trim()

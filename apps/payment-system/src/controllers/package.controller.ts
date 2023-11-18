@@ -25,7 +25,9 @@ export class PackageController {
   }
 
   @MessagePattern(PAYMENT_SYSTEM_MESSAGE_PATTERN.PACKAGE.GET_PACKAGE)
-  async getOne(@Payload('id') id: number, @Payload('user') user: User) {
+  async getOne(@Payload('id') id: number, @Payload('user') user: any) {
+    console.log(id, user);
+
     try {
       return this.packageService.getById(id, user);
     } catch (e) {

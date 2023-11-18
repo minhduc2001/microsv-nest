@@ -12,7 +12,7 @@ export class Package extends AbstractEntity {
   price: number;
 
   @Column({ default: 0 })
-  gold: number;
+  golds: number;
 
   @Column({ default: 0 })
   discount: number;
