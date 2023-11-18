@@ -19,6 +19,7 @@ import { USER_MESSAGE_PATTERNS } from '@libs/common/constants/rabbit-patterns.co
 import { Auth } from '../auth/decorators/auth.decorator';
 import {
   CreateProfileDto,
+  CreateProfileDtoByAdmin,
   LoginProfileDto,
   UpdateProfileDto,
 } from '@libs/common/dtos/profile.dto';
@@ -109,6 +110,32 @@ export class ProfileController {
         this.userClientProxy.send<any>(
           USER_MESSAGE_PATTERNS.PROFILE.CREATE_PROFILE,
           { ...body, userId, avatar: avatarUrl },
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
+
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('avatar'))
+  @Post('admin')
+  async createProfileByAdmin(
+    @Body() body: CreateProfileDtoByAdmin,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    try {
+      const avatarUrl = file
+        ? await this.uploadService.uploadFile(file.filename, 'user')
+        : undefined;
+      const resp = await firstValueFrom(
+        this.userClientProxy.send<any>(
+          USER_MESSAGE_PATTERNS.PROFILE.CREATE_PROFILE,
+          { ...body, avatar: avatarUrl },
         ),
       );
       return resp;
