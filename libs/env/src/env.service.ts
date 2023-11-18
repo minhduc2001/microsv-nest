@@ -21,6 +21,7 @@ export class EnvService {
 
   // system
   IP = ip.address();
+  SUB_SERVER = _process.env.SUB_SERVER;
 
   FIXED_STATUS_CODE =
     (_process.env.SENTRY_LOG ?? 'true').toLowerCase() === 'true';

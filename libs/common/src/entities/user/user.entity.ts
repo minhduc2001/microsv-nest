@@ -1,4 +1,4 @@
-import { AfterLoad, Column, Entity, JoinColumn, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany } from 'typeorm';
 import { AbstractEntity } from '../abstract.entity';
 import { Exclude } from 'class-transformer';
 import { ERole } from '@libs/common/enums/role.enum';

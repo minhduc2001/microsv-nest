@@ -8,12 +8,15 @@ import { ListDto, UploadImageDto } from './common.dto';
 import {
   IsDate,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsPositive,
   IsString,
 } from 'class-validator';
 import { ToNumber, ToNumbers, Trim } from '../decorators/common.decorator';
-import { ETypeGenreMedia } from '../enums/media.enum';
+import { ETypeMedia } from '../enums/media.enum';
+import { User } from '../entities/user/user.entity';
+import { Profile } from '../entities/user/profile.entity';
 
 export class ListComicsDto extends ListDto {
   @ApiHideProperty()
@@ -25,29 +28,21 @@ export class ListComicsDto extends ListDto {
 export class ListMovieDto extends ListDto {
   @ApiHideProperty()
   @IsOptional()
-  profileId: number;
+  profile: Profile;
 }
 
-export class UploadMovieDto {
-  @ApiProperty({
-    required: false,
-    type: 'string',
-    format: 'binary',
-    description: 'File to upload',
-  })
-  @IsOptional()
-  movie: string;
-}
-
-export class CreateMovieDto extends IntersectionType(
-  UploadMovieDto,
-  UploadImageDto,
-) {
+export class CreateMovieDto extends UploadImageDto {
   @ApiProperty({ example: 'Phượng hoàng gãy cánh' })
   @IsString()
   @IsNotEmpty()
   @Trim()
   title: string;
+
+  @ApiProperty({ example: 6 })
+  @IsNumber()
+  @IsNotEmpty()
+  @ToNumber()
+  minAge: number;
 
   @ApiProperty({ example: new Date(), required: false })
   @IsDate()
@@ -66,19 +61,11 @@ export class CreateMovieDto extends IntersectionType(
 
   @ApiHideProperty()
   @IsOptional()
-  url?: string;
-
-  @ApiHideProperty()
-  @IsOptional()
   duration?: number;
 
   @ApiHideProperty()
   @IsOptional()
   isAccess: boolean;
-
-  @ApiHideProperty()
-  @IsOptional()
-  type: ETypeGenreMedia;
 
   @ApiProperty({ example: [1, 2, 3], required: false })
   @IsPositive({ each: true })
@@ -93,11 +80,19 @@ export class CreateMovieDto extends IntersectionType(
   genreIds: number[];
 }
 
+export class UpdateMovieDto extends PartialType(CreateMovieDto) {
+  @ApiHideProperty()
+  @IsOptional()
+  @ToNumber()
+  @IsPositive()
+  id: number;
+}
+
 // music
 export class ListMusicDto extends ListDto {
   @ApiHideProperty()
   @IsOptional()
-  profileId: number;
+  profile: Profile;
 }
 
 export class UploadMusicDto {
@@ -111,15 +106,18 @@ export class UploadMusicDto {
   music: string;
 }
 
-export class CreateMusicDto extends IntersectionType(
-  UploadMovieDto,
-  UploadImageDto,
-) {
+export class CreateMusicDto extends UploadImageDto {
   @ApiProperty({ example: 'Phượng hoàng gãy cánh' })
   @IsString()
   @IsNotEmpty()
   @Trim()
   title: string;
+
+  @ApiProperty({ example: 6 })
+  @IsNumber()
+  @IsNotEmpty()
+  @ToNumber()
+  minAge: number;
 
   @ApiProperty({ example: new Date(), required: false })
   @IsDate()
@@ -138,19 +136,11 @@ export class CreateMusicDto extends IntersectionType(
 
   @ApiHideProperty()
   @IsOptional()
-  url?: string;
-
-  @ApiHideProperty()
-  @IsOptional()
   duration?: number;
 
   @ApiHideProperty()
   @IsOptional()
   isAccess: boolean;
-
-  @ApiHideProperty()
-  @IsOptional()
-  type: ETypeGenreMedia;
 
   @ApiProperty({ example: [1, 2, 3], required: false })
   @IsPositive({ each: true })

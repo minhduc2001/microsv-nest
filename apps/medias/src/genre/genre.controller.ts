@@ -4,7 +4,6 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
 import { CreateGenreDto, UpdateGenreDto } from '@libs/common/dtos/genre.dto';
 import { ListDto } from '@libs/common/dtos/common.dto';
-import { ETypeGenreMedia } from '@libs/common/enums/media.enum';
 
 @Controller()
 export class GenreController {
