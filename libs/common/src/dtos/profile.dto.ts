@@ -1,6 +1,13 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  isNotEmpty,
+} from 'class-validator';
 import { ToNumber, Trim } from '../decorators/common.decorator';
+import { Transform } from 'class-transformer';
 
 export class UploadAvatarDto {
   @ApiProperty({
@@ -31,35 +38,64 @@ export class CreateProfileDto extends UploadAvatarDto {
   @IsNotEmpty()
   birthday: Date;
 
+  @ApiProperty({ example: false })
+  @IsNotEmpty()
+  @IsBoolean()
+  @Transform(({ value }) => value?.toLowerCase?.() === 'true')
+  isLocked: boolean;
+
   @ApiHideProperty()
   @IsNumber()
   @IsOptional()
+  @ToNumber()
+  userId: number;
+}
+
+export class CreateProfileDtoByAdmin extends UploadAvatarDto {
+  @ApiProperty({ example: 'Bé Bi' })
+  @IsNotEmpty()
+  @Trim()
+  nickname: string;
+
+  @ApiProperty({ example: new Date() })
+  @IsNotEmpty()
+  birthday: Date;
+
+  @ApiProperty({ example: false })
+  @IsNotEmpty()
+  @IsBoolean()
+  @Transform(({ value }) => value?.toLowerCase?.() === 'true')
+  isLocked: boolean;
+
+  @ApiProperty({ example: 0 })
+  @IsNumber()
+  @IsNotEmpty()
+  @ToNumber()
   userId: number;
 }
 
 export class UpdateProfileDto extends UploadAvatarDto {
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiProperty({ required: false })
   @IsOptional()
   @Trim()
   nickname: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
-  @IsNotEmpty()
   birthday: Date;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsNumber()
   golds: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsNumber()
   progress: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
+  @Transform(({ value }) => value?.toLowerCase?.() === 'true')
   @IsBoolean()
   @IsOptional()
   isLocked: boolean;

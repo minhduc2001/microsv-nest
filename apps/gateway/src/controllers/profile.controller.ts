@@ -19,6 +19,7 @@ import { USER_MESSAGE_PATTERNS } from '@libs/common/constants/rabbit-patterns.co
 import { Auth } from '../auth/decorators/auth.decorator';
 import {
   CreateProfileDto,
+  CreateProfileDtoByAdmin,
   LoginProfileDto,
   UpdateProfileDto,
 } from '@libs/common/dtos/profile.dto';
@@ -75,6 +76,24 @@ export class ProfileController {
     }
   }
 
+  @Get('user/:id')
+  async getAllProfileByUserId(@Param() params: ParamIdDto) {
+    try {
+      const resp = await firstValueFrom(
+        this.userClientProxy.send<any>(
+          USER_MESSAGE_PATTERNS.PROFILE.GET_ALL_PROFILE_BY_USER_ID,
+          params.id,
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
+
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('avatar'))
   @Post()
@@ -91,6 +110,32 @@ export class ProfileController {
         this.userClientProxy.send<any>(
           USER_MESSAGE_PATTERNS.PROFILE.CREATE_PROFILE,
           { ...body, userId, avatar: avatarUrl },
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
+
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('avatar'))
+  @Post('admin')
+  async createProfileByAdmin(
+    @Body() body: CreateProfileDtoByAdmin,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    try {
+      const avatarUrl = file
+        ? await this.uploadService.uploadFile(file.filename, 'user')
+        : undefined;
+      const resp = await firstValueFrom(
+        this.userClientProxy.send<any>(
+          USER_MESSAGE_PATTERNS.PROFILE.CREATE_PROFILE,
+          { ...body, avatar: avatarUrl },
         ),
       );
       return resp;
@@ -132,16 +177,22 @@ export class ProfileController {
     }
   }
 
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('avatar'))
   @Patch(':id')
   async updateProfile(
     @Param() params: ParamIdDto,
     @Body() body: UpdateProfileDto,
+    @UploadedFile() avatar: Express.Multer.File,
   ) {
     try {
+      const avatarUrl = avatar
+        ? await this.uploadService.uploadFile(avatar.filename, 'user')
+        : undefined;
       const resp = await firstValueFrom(
         this.userClientProxy.send<any>(
           USER_MESSAGE_PATTERNS.PROFILE.UPDATE_PROFILE,
-          { profileId: params.id, body },
+          { profileId: params.id, body: { ...body, avatar: avatarUrl } },
         ),
       );
       return resp;
