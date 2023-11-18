@@ -44,7 +44,7 @@ export class UploadService {
     // Lấy public URL của file
     const publicUrl = await file.getSignedUrl({
       action: 'read',
-      expires: '01-01-2100', // Đặt thời gian hết hạn theo mong muốn
+      expires: '01-01-2100',
     });
 
     return publicUrl[0];

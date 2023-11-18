@@ -187,7 +187,7 @@ export class UserService extends BaseService<User> {
 
   async thirdPartyLogin(data: any) {
     if (data.provider == 'google') {
-      let user = await this.findOne({ where: { email: data.email } });
+      let user = await this.getOne({ where: { email: data.email } });
 
       if (!user) {
         user = await this.createUser({

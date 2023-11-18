@@ -1,4 +1,5 @@
 import {
+  AfterLoad,
   Column,
   Entity,
   JoinColumn,
@@ -9,7 +10,14 @@ import {
 import { AbstractEntity } from '../abstract.entity';
 import { Author } from './author.entity';
 import { Genre } from './genre.entity';
-import { ETypeGenreMedia } from '@libs/common/enums/media.enum';
+import {
+  ETypeAuthor,
+  ETypeGenre,
+  ETypeMedia,
+} from '@libs/common/enums/media.enum';
+import { convertUrl } from '@libs/common/utils/url-reslove';
+import { EState } from '@libs/common/enums/common.enum';
+import { BadException } from '@libs/common/api';
 
 @Entity()
 export class Media extends AbstractEntity {
@@ -28,6 +36,9 @@ export class Media extends AbstractEntity {
   @Column({ nullable: true, default: '' })
   desc: string;
 
+  @Column()
+  minAge: number;
+
   @Column({ default: '', nullable: true })
   thumbnail: string;
 
@@ -40,14 +51,22 @@ export class Media extends AbstractEntity {
   @Column({ nullable: true, type: 'boolean', default: true })
   isAccess: boolean;
 
-  @Column({ type: 'enum', enum: ETypeGenreMedia })
-  type: ETypeGenreMedia;
+  @Column({ type: 'enum', enum: ETypeMedia, nullable: false })
+  type: ETypeMedia;
 
-  @ManyToOne(() => Author, (author) => author.media)
+  @Column({ type: 'enum', enum: EState, default: EState.InActive })
+  state: EState;
+
+  @ManyToOne(() => Author, (author) => author.medias)
   @JoinColumn()
-  author: Author[];
+  authors: Author[];
 
-  @ManyToMany(() => Genre, (genre) => genre.media)
+  @ManyToMany(() => Genre, (genre) => genre.medias)
   @JoinTable()
-  genre: Genre[];
+  genres: Genre[];
+
+  @AfterLoad()
+  afterload() {
+    if (this.url) this.url = convertUrl(this.url, this.type);
+  }
 }

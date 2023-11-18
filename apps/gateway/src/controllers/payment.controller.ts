@@ -9,6 +9,7 @@ import { GetUser } from '../auth/decorators/get-user.decorator';
 import { Public } from '../auth/decorators/public.decorator';
 import { firstValueFrom } from 'rxjs';
 import { PAYMENT_SYSTEM_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
+import * as exc from '@libs/common/api';
 
 @ApiTagsAndBearer('Payment')
 @Controller('payment')
@@ -21,12 +22,20 @@ export class PaymentController {
 
   @Post()
   async createPayment(@Body() dto: CreatePaymentDto, @GetUser() user: User) {
-    const resp = await firstValueFrom(
-      this.paymentSystemClientProxy.send<any>(
-        PAYMENT_SYSTEM_MESSAGE_PATTERN.PAYMENT.CREATE_PAYMENT,
-        { ...dto, user: user },
-      ),
-    );
+    try {
+      const resp = await firstValueFrom(
+        this.paymentSystemClientProxy.send<any>(
+          PAYMENT_SYSTEM_MESSAGE_PATTERN.PAYMENT.CREATE_PAYMENT,
+          { ...dto, user: user },
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
   }
 
   @Public()

@@ -117,7 +117,10 @@ export class PackageController {
       );
       return resp;
     } catch (e) {
-      throw new exc.BadException({ message: e.message ?? e });
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
     }
   }
 
@@ -133,7 +136,10 @@ export class PackageController {
       );
       return resp;
     } catch (e) {
-      throw new exc.BadException({ message: e.message ?? e });
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
     }
   }
 
@@ -149,7 +155,10 @@ export class PackageController {
       );
       return resp;
     } catch (e) {
-      throw new exc.BadException({ message: e.message ?? e });
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
     }
   }
 }

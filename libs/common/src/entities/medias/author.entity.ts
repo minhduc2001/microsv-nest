@@ -2,7 +2,7 @@ import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 import { AbstractEntity } from '../abstract.entity';
 import { Media } from './media.entity';
 import { Comics } from './comics.entity';
-import { ETypeGenreMedia } from '@libs/common/enums/media.enum';
+import { ETypeAuthor } from '@libs/common/enums/media.enum';
 
 @Entity()
 export class Author extends AbstractEntity {
@@ -15,11 +15,11 @@ export class Author extends AbstractEntity {
   @Column({ nullable: true })
   image: string;
 
-  @Column({ type: 'enum', enum: ETypeGenreMedia })
-  type: ETypeGenreMedia;
+  @Column({ type: 'enum', enum: ETypeAuthor })
+  type: ETypeAuthor;
 
-  @OneToMany(() => Media, (media) => media.author)
-  media: Media[];
+  @OneToMany(() => Media, (media) => media.authors)
+  medias: Media[];
 
   @OneToMany(() => Comics, (comics) => comics.author)
   comics: Comics[];

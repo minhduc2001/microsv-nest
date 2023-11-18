@@ -8,7 +8,7 @@ import {
   IsString,
 } from 'class-validator';
 import { ToNumber, ToNumbers, Trim } from '../decorators/common.decorator';
-import { ETypeGenreMedia } from '../enums/media.enum';
+import { ETypeGenre } from '../enums/media.enum';
 
 export class GenreIdsDto {
   @ApiProperty({ type: Number, isArray: true })
@@ -26,11 +26,11 @@ export class CreateGenreDto {
   @Trim()
   name: string;
 
-  @ApiProperty({ example: ETypeGenreMedia.Movies })
-  @IsEnum(ETypeGenreMedia)
+  @ApiProperty({ example: ETypeGenre.Movies })
+  @IsEnum(ETypeGenre)
   @ToNumber()
   @IsNotEmpty()
-  type: ETypeGenreMedia;
+  type: ETypeGenre;
 }
 
 export class UpdateGenreDto {
@@ -40,9 +40,9 @@ export class UpdateGenreDto {
   @Trim()
   name: string;
 
-  @ApiProperty({ example: ETypeGenreMedia.Movies })
-  @IsEnum(ETypeGenreMedia)
+  @ApiProperty({ example: ETypeGenre.Movies })
+  @IsEnum(ETypeGenre)
   @ToNumber()
   @IsOptional()
-  type: ETypeGenreMedia;
+  type: ETypeGenre;
 }

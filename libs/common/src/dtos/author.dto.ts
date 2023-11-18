@@ -8,7 +8,7 @@ import {
   IsString,
 } from 'class-validator';
 import { ToNumber, ToNumbers, Trim } from '../decorators/common.decorator';
-import { ETypeGenreMedia } from '../enums/media.enum';
+import { ETypeAuthor } from '../enums/media.enum';
 
 export class AuthorIdsDto {
   @ApiProperty({ type: Number, isArray: true })
@@ -43,11 +43,11 @@ export class CreateAuthorDto extends UploadImageAuthorDto {
   @Trim()
   description: string;
 
-  @ApiProperty({ example: ETypeGenreMedia.Comics })
-  @IsEnum(ETypeGenreMedia)
+  @ApiProperty({ example: ETypeAuthor.Comics })
+  @IsEnum(ETypeAuthor)
   @ToNumber()
   @IsNotEmpty()
-  type: ETypeGenreMedia;
+  type: ETypeAuthor;
 }
 
 export class UpdateAuthorDto extends UploadImageAuthorDto {
@@ -63,9 +63,9 @@ export class UpdateAuthorDto extends UploadImageAuthorDto {
   @Trim()
   description: string;
 
-  @ApiProperty({ example: ETypeGenreMedia.Comics, required: false })
-  @IsEnum(ETypeGenreMedia)
+  @ApiProperty({ example: ETypeAuthor.Comics, required: false })
+  @IsEnum(ETypeAuthor)
   @ToNumber()
   @IsOptional()
-  type: ETypeGenreMedia;
+  type: ETypeAuthor;
 }

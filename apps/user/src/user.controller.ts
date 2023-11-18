@@ -54,7 +54,7 @@ export class UserController {
 
   @MessagePattern(USER_MESSAGE_PATTERNS.GET_USER)
   async getUser(@Payload('id') id: number) {
-    return this.userService.findOne({ where: { id } });
+    return this.userService.getUserById(id);
   }
 
   @MessagePattern(USER_MESSAGE_PATTERNS.UPDATE_USER)
