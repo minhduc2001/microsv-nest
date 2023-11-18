@@ -30,6 +30,8 @@ import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { ClientProxy } from '@nestjs/microservices';
 import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
 import { IdsDto, ParamIdDto } from '@libs/common/dtos/common.dto';
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { AuthType } from '@libs/common/interfaces/common.interface';
 
 @ApiTagsAndBearer('Movie')
 @Controller('movie')
@@ -42,12 +44,12 @@ export class MovieController {
   ) {}
 
   @Get()
-  async list(@Query() query: ListMovieDto) {
+  async list(@Query() query: ListMovieDto, @GetUser() user: AuthType) {
     try {
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.MOVIE.GET_LIST_MOVIE,
-          query,
+          { ...query, user: user },
         ),
       );
       return resp;

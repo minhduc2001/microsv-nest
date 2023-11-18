@@ -3,3 +3,8 @@ export enum EState {
   Active,
   Deleted,
 }
+
+export enum ETypeAccount {
+  User,
+  Profile,
+}

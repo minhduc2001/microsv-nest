@@ -1,12 +1,15 @@
 import {
   ApiHideProperty,
   ApiProperty,
+  ApiPropertyOptional,
   IntersectionType,
   PartialType,
 } from '@nestjs/swagger';
 import { ListDto, UploadImageDto } from './common.dto';
 import {
+  IsBoolean,
   IsDate,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -17,6 +20,9 @@ import { ToNumber, ToNumbers, Trim } from '../decorators/common.decorator';
 import { ETypeMedia } from '../enums/media.enum';
 import { User } from '../entities/user/user.entity';
 import { Profile } from '../entities/user/profile.entity';
+import { Transform } from 'class-transformer';
+import { EState } from '../enums/common.enum';
+import { AuthType } from '../interfaces/common.interface';
 
 export class ListComicsDto extends ListDto {
   @ApiHideProperty()
@@ -28,7 +34,7 @@ export class ListComicsDto extends ListDto {
 export class ListMovieDto extends ListDto {
   @ApiHideProperty()
   @IsOptional()
-  profile: Profile;
+  user: AuthType;
 }
 
 export class CreateMovieDto extends UploadImageDto {
@@ -44,7 +50,8 @@ export class CreateMovieDto extends UploadImageDto {
   @ToNumber()
   minAge: number;
 
-  @ApiProperty({ example: new Date(), required: false })
+  @ApiPropertyOptional({ example: new Date(), required: false })
+  @Transform(({ value }) => new Date(value))
   @IsDate()
   @IsOptional()
   publishDate: Date;
@@ -63,21 +70,31 @@ export class CreateMovieDto extends UploadImageDto {
   @IsOptional()
   duration?: number;
 
-  @ApiHideProperty()
+  @ApiPropertyOptional({ example: true })
+  @IsBoolean()
+  @Transform(({ value }) => value?.toLowerCase?.() === 'true')
   @IsOptional()
   isAccess: boolean;
 
-  @ApiProperty({ example: [1, 2, 3], required: false })
+  @ApiPropertyOptional({ example: [1, 2, 3] })
   @IsPositive({ each: true })
   @IsOptional()
   @ToNumbers()
   authorIds: number[];
 
-  @ApiProperty({ example: [1, 2, 3], required: false })
+  @ApiPropertyOptional({ example: [1, 2, 3] })
   @IsOptional()
   @IsPositive({ each: true })
   @ToNumbers()
   genreIds: number[];
+
+  @ApiPropertyOptional({
+    enum: EState,
+  })
+  @IsOptional()
+  @IsEnum(EState)
+  @ToNumber()
+  state: EState;
 }
 
 export class UpdateMovieDto extends PartialType(CreateMovieDto) {

@@ -29,16 +29,13 @@ export class PackageService extends BaseService<Package> {
     const config: PaginateConfig<Package> = {
       sortableColumns: ['id'],
       searchableColumns: ['name', 'golds', 'desc', 'endDate', 'startDate'],
+      where:
+        query.user.role !== ERole.ADMIN
+          ? { state: EState.Active }
+          : { state: Not(EState.Deleted) },
     };
 
-    let queryB = this.repository
-      .createQueryBuilder('package')
-      .where('package.state = :state', { state: EState.Active });
-
-    if (query.user.role == ERole.ADMIN)
-      queryB.orWhere('package.state = :state', { state: EState.InActive });
-
-    return this.listWithPage(query, config, queryB);
+    return this.listWithPage(query, config);
   }
 
   async getById(id: number, user: User) {

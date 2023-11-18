@@ -47,7 +47,7 @@ export class Comics extends AbstractEntity {
   @JoinColumn()
   chapters: Chapter[];
 
-  @ManyToOne(() => Author, (author) => author.comics)
-  @JoinColumn()
+  @ManyToMany(() => Author, (author) => author.comics)
+  @JoinTable()
   author: Author;
 }

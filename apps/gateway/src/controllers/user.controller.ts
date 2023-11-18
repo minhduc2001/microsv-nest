@@ -34,6 +34,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { CacheService } from '@libs/cache';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User } from '@libs/common/entities/user/user.entity';
+import { ERole } from '@libs/common/enums/role.enum';
 
 @ApiTagsAndBearer('User')
 @Controller('user')

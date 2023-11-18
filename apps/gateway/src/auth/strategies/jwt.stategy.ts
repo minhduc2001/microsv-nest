@@ -12,6 +12,8 @@ import { IJWTPayload } from '../interfaces/auth.interface';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { ClientProxy } from '@nestjs/microservices';
 import { USER_MESSAGE_PATTERNS } from '@libs/common/constants/rabbit-patterns.constant';
+import { Profile } from '@libs/common/entities/user/profile.entity';
+import { User } from '@libs/common/entities/user/user.entity';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -38,7 +40,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
           throw new exc.Unauthorized({ message: 'Token is not valid' });
 
         delete profile?.password;
-        return profile;
+        return profile as Profile;
       }
 
       const user = await lastValueFrom(
@@ -50,7 +52,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
       delete user?.password;
       delete user?.refreshToken;
-      return user;
+      return user as User;
     } catch (e) {
       throw new exc.Unauthorized({ message: 'Token is not valid' });
     }

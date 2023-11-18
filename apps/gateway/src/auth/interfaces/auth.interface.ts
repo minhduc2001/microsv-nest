@@ -1,3 +1,5 @@
+import { ERole } from '@libs/common/enums/role.enum';
+
 export interface IJWTPayload {
   sub: number;
   uav?: number;

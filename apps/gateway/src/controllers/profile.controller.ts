@@ -29,6 +29,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from '@libs/upload';
 import { UserService } from '../services/user.service';
 import { User } from '@libs/common/entities/user/user.entity';
+import { ERole } from '@libs/common/enums/role.enum';
 
 @ApiTagsAndBearer('Profile')
 @Controller('profile')

@@ -18,9 +18,9 @@ export class Author extends AbstractEntity {
   @Column({ type: 'enum', enum: ETypeAuthor })
   type: ETypeAuthor;
 
-  @OneToMany(() => Media, (media) => media.authors)
+  @ManyToMany(() => Media, (media) => media.authors)
   medias: Media[];
 
-  @OneToMany(() => Comics, (comics) => comics.author)
+  @ManyToMany(() => Comics, (comics) => comics.author)
   comics: Comics[];
 }

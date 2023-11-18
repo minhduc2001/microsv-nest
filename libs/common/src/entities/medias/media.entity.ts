@@ -57,8 +57,8 @@ export class Media extends AbstractEntity {
   @Column({ type: 'enum', enum: EState, default: EState.InActive })
   state: EState;
 
-  @ManyToOne(() => Author, (author) => author.medias)
-  @JoinColumn()
+  @ManyToMany(() => Author, (author) => author.medias)
+  @JoinTable()
   authors: Author[];
 
   @ManyToMany(() => Genre, (genre) => genre.medias)

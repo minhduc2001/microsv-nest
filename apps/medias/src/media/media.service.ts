@@ -19,13 +19,16 @@ import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { Inject, Injectable, Query } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Not } from 'typeorm';
+import { Repository, Not, Brackets } from 'typeorm';
 import * as excRpc from '@libs/common/api';
 import {
   IPrepareMediaData,
   IPrepareMediaDataOptions,
 } from '@libs/common/interfaces/media.interface';
-import { EState } from '@libs/common/enums/common.enum';
+import { EState, ETypeAccount } from '@libs/common/enums/common.enum';
+import { ERole } from '@libs/common/enums/role.enum';
+import { detectRole } from '@libs/common/utils/check-auth';
+import { Profile } from '@libs/common/entities/user/profile.entity';
 
 interface Validate {
   genres?: Genre[];
@@ -50,7 +53,9 @@ export class MediaService extends BaseService<Media> {
       genre_ids: dto.genreIds,
     });
 
-    await this._beforeCheck({ authors, genres }, ETypeMedia.Movies);
+    console.log(dto);
+
+    this._beforeCheck({ authors, genres }, ETypeMedia.Movies);
 
     const media: Media = this.repository.create(dto);
     media.type = ETypeMedia.Movies;
@@ -66,7 +71,7 @@ export class MediaService extends BaseService<Media> {
       genre_ids: dto.genreIds,
     });
 
-    await this._beforeCheck({ authors, genres }, ETypeMedia.Music);
+    this._beforeCheck({ authors, genres }, ETypeMedia.Music);
 
     const media: Media = this.repository.create(dto);
     media.type = ETypeMedia.Music;
@@ -80,21 +85,25 @@ export class MediaService extends BaseService<Media> {
     const media = await this.findOne(id, ETypeMedia.Movies);
   }
 
-  async list(query: ListMovieDto, type: ETypeMedia, user?: User) {
+  async list(query: ListMovieDto, type: ETypeMedia) {
     const config: PaginateConfig<Media> = {
       sortableColumns: ['id'],
-      where: { state: Not(EState.Deleted) },
+      where:
+        query.user.role !== ERole.ADMIN
+          ? { state: EState.Active }
+          : { state: Not(EState.Deleted) },
     };
-
-    const profile = query.profile;
+    const role = detectRole(query.user);
 
     const queryB = this.repository
       .createQueryBuilder('media')
-      .where('media.type = : type', { type });
+      .leftJoinAndSelect('media.authors', 'author')
+      .leftJoinAndSelect('media.genres', 'genre')
+      .where('media.type = :type', { type });
 
-    if (profile)
+    if (role === ETypeAccount.Profile)
       queryB.andWhere('media.minAge <= :age', {
-        age: this._getAge(profile.birthday),
+        age: this._getAge((query.user as Profile).birthday),
       });
 
     queryB.select(this.defautlSelect());
@@ -124,7 +133,7 @@ export class MediaService extends BaseService<Media> {
     return;
   }
 
-  private async _beforeCheck(data: Validate, type: ETypeMedia) {
+  private _beforeCheck(data: Validate, type: ETypeMedia) {
     const { genres, authors } = data;
     if (genres.length) {
       for (const genre of genres) {
@@ -148,7 +157,6 @@ export class MediaService extends BaseService<Media> {
             message: 'Kiểu dữ liệu không đúng!',
           });
       }
-      return;
     }
   }
 
@@ -164,7 +172,8 @@ export class MediaService extends BaseService<Media> {
       'media.id',
       'media.title',
       'media.publishDate',
-      'media.view',
+      'media.views',
+      'media.likes',
       'media.desc',
       'media.minAge',
       'media.thumbnail',
