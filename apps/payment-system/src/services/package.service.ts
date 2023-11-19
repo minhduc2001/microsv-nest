@@ -29,7 +29,7 @@ export class PackageService extends BaseService<Package> {
     const config: PaginateConfig<Package> = {
       sortableColumns: ['id'],
       defaultSortBy: [['updatedAt', 'DESC']],
-      searchableColumns: ['name', 'golds', 'desc', 'endDate', 'startDate'],
+      searchableColumns: ['name', 'desc'],
       where:
         query.user.role !== ERole.ADMIN
           ? { state: EState.Active }
