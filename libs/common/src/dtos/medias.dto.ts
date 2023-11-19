@@ -31,7 +31,7 @@ export class ListComicsDto extends ListDto {
 }
 
 // movie
-export class ListMovieDto extends ListDto {
+export class ListMediaDto extends ListDto {
   @ApiHideProperty()
   @IsOptional()
   user: AuthType;
@@ -106,11 +106,6 @@ export class UpdateMovieDto extends PartialType(CreateMovieDto) {
 }
 
 // music
-export class ListMusicDto extends ListDto {
-  @ApiHideProperty()
-  @IsOptional()
-  profile: Profile;
-}
 
 export class UploadMusicDto {
   @ApiProperty({
@@ -155,21 +150,31 @@ export class CreateMusicDto extends UploadImageDto {
   @IsOptional()
   duration?: number;
 
-  @ApiHideProperty()
+  @ApiPropertyOptional({ example: true })
+  @IsBoolean()
+  @Transform(({ value }) => value?.toLowerCase?.() === 'true')
   @IsOptional()
   isAccess: boolean;
 
-  @ApiProperty({ example: [1, 2, 3], required: false })
+  @ApiPropertyOptional({ example: [1, 2, 3] })
   @IsPositive({ each: true })
   @IsOptional()
   @ToNumbers()
   authorIds: number[];
 
-  @ApiProperty({ example: [1, 2, 3], required: false })
+  @ApiPropertyOptional({ example: [1, 2, 3] })
   @IsOptional()
   @IsPositive({ each: true })
   @ToNumbers()
   genreIds: number[];
+
+  @ApiPropertyOptional({
+    enum: EState,
+  })
+  @IsOptional()
+  @IsEnum(EState)
+  @ToNumber()
+  state: EState;
 }
 
 export class UpdateMusicDto extends PartialType(CreateMusicDto) {

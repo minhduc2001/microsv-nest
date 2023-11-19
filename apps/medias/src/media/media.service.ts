@@ -1,8 +1,9 @@
 import {
   CreateMovieDto,
   CreateMusicDto,
-  ListMovieDto,
+  ListMediaDto,
   UpdateMovieDto,
+  UpdateMusicDto,
 } from '@libs/common/dtos/medias.dto';
 import { Author } from '@libs/common/entities/medias/author.entity';
 import { Genre } from '@libs/common/entities/medias/genre.entity';
@@ -53,8 +54,6 @@ export class MediaService extends BaseService<Media> {
       genre_ids: dto.genreIds,
     });
 
-    console.log(dto);
-
     this._beforeCheck({ authors, genres }, ETypeMedia.Movies);
 
     const media: Media = this.repository.create(dto);
@@ -83,9 +82,57 @@ export class MediaService extends BaseService<Media> {
 
   async updateMovie(id: number, dto: UpdateMovieDto) {
     const media = await this.findOne(id, ETypeMedia.Movies);
+
+    const { authorIds = [], genreIds = [] } = dto;
+    const { genres, authors } = await this._prepare({
+      author_ids: authorIds,
+      genre_ids: genreIds,
+    });
+
+    this._beforeCheck({ authors, genres }, ETypeMedia.Movies);
+
+    media.authors = authors;
+    media.genres = genres;
+    media.desc = dto.desc;
+    media.duration = dto.duration;
+    media.minAge = dto.minAge;
+    media.isAccess = dto.isAccess;
+    media.publishDate = dto.publishDate;
+    media.thumbnail = dto.thumbnail ?? media.thumbnail;
+    media.type = ETypeMedia.Movies;
+    media.title = dto.title;
+    media.state = dto.state;
+
+    return media.save();
   }
 
-  async list(query: ListMovieDto, type: ETypeMedia) {
+  async updateMusic(id: number, dto: UpdateMusicDto) {
+    const media = await this.findOne(id, ETypeMedia.Music);
+
+    const { authorIds = [], genreIds = [] } = dto;
+    const { genres, authors } = await this._prepare({
+      author_ids: authorIds,
+      genre_ids: genreIds,
+    });
+
+    this._beforeCheck({ authors, genres }, ETypeMedia.Music);
+
+    media.authors = authors;
+    media.genres = genres;
+    media.desc = dto.desc;
+    media.duration = dto.duration;
+    media.minAge = dto.minAge;
+    media.isAccess = dto.isAccess;
+    media.publishDate = dto.publishDate;
+    media.thumbnail = dto.thumbnail ?? media.thumbnail;
+    media.type = ETypeMedia.Music;
+    media.title = dto.title;
+    media.state = dto.state;
+
+    return media.save();
+  }
+
+  async list(query: ListMediaDto, type: ETypeMedia) {
     const config: PaginateConfig<Media> = {
       sortableColumns: ['id'],
       where:
@@ -126,9 +173,12 @@ export class MediaService extends BaseService<Media> {
     return media;
   }
 
-  async bulkDelete(ids: number[]) {
+  async bulkDelete(ids: number[], type: ETypeMedia) {
     for (const id of ids) {
-      await this.repository.update(id, { state: EState.Deleted });
+      await this.repository.update(
+        { id: id, type: type },
+        { state: EState.Deleted },
+      );
     }
     return;
   }
