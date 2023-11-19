@@ -82,7 +82,6 @@ export class MovieController {
   @Post()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
-  @Public()
   async createMovie(
     @Body() payload: CreateMovieDto,
     @UploadedFile() file: Express.Multer.File,
@@ -108,7 +107,6 @@ export class MovieController {
   @Put()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
-  @Public()
   async updateMovie(
     @Body() payload: UpdateMovieDto,
     @UploadedFile() file: Express.Multer.File,

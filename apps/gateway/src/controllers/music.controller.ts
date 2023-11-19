@@ -91,7 +91,6 @@ export class MusicController {
   @Post()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
-  @Public()
   async createMusic(
     @Body() payload: CreateMusicDto,
     @UploadedFile() file: Express.Multer.File,
@@ -117,7 +116,6 @@ export class MusicController {
   @Put()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
-  @Public()
   async updateMusic(
     @Body() payload: UpdateMusicDto,
     @UploadedFile() file: Express.Multer.File,
