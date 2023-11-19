@@ -17,7 +17,7 @@ import { ApiConsumes } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
   CreateMovieDto,
-  ListMovieDto,
+  ListMediaDto,
   UpdateMovieDto,
 } from '@libs/common/dtos/medias.dto';
 import * as exc from '@libs/common/api';
@@ -44,7 +44,7 @@ export class MovieController {
   ) {}
 
   @Get()
-  async list(@Query() query: ListMovieDto, @GetUser() user: AuthType) {
+  async list(@Query() query: ListMediaDto, @GetUser() user: AuthType) {
     try {
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(

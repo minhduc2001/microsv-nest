@@ -6,14 +6,10 @@ import { GenreController } from '../controllers/genre.controller';
 import { AuthorController } from '../controllers/author.controller';
 import { ChapterController } from '../controllers/chapter.controller';
 import { MovieController } from '../controllers/movie.controller';
-import { ConvertService } from '../services/convert.service';
 import { MusicController } from '../controllers/music.controller';
 
 @Module({
-  imports: [
-    RabbitModule.forClientProxy(RabbitServiceName.MEDIA),
-    RabbitModule.forClientProxy(RabbitServiceName.FILE),
-  ],
+  imports: [RabbitModule.forClientProxy(RabbitServiceName.MEDIA)],
   controllers: [
     MovieController,
     ComicsController,
@@ -22,6 +18,6 @@ import { MusicController } from '../controllers/music.controller';
     ChapterController,
     MusicController,
   ],
-  providers: [ConvertService],
+  providers: [],
 })
 export class MediasModule {}

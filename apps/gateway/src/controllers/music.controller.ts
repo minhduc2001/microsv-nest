@@ -1,14 +1,17 @@
-import { ApiTagsAndBearer } from '@libs/common/swagger-ui';
+import { ApiCreateOperation, ApiTagsAndBearer } from '@libs/common/swagger-ui';
 import { User } from '@libs/common/entities/user/user.entity';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
+  Patch,
   Post,
   Put,
   Query,
+  UploadedFile,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -18,38 +21,44 @@ import { GetUser } from '../auth/decorators/get-user.decorator';
 import { Public } from '../auth/decorators/public.decorator';
 import * as exc from '@libs/common/api';
 import * as path from 'path';
-import { ParamIdDto } from '@libs/common/dtos/common.dto';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { IdsDto, ParamIdDto } from '@libs/common/dtos/common.dto';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
 import { RolesGuard } from '../auth/guards/role.guard';
 import { Roles } from '../auth/decorators/role.decorator';
 import { ERole } from '@libs/common/enums/role.enum';
 import {
   CreateMusicDto,
-  ListMusicDto,
+  ListMediaDto,
   UpdateMusicDto,
 } from '@libs/common/dtos/medias.dto';
-import { lastValueFrom } from 'rxjs';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
 import { Auth } from '../auth/decorators/auth.decorator';
+import { AuthType } from '@libs/common/interfaces/common.interface';
+import { UploadService } from '@libs/upload';
 
 @ApiTagsAndBearer('Music')
 @Controller('music')
 @Auth()
 export class MusicController {
   constructor(
-    @Inject(RabbitServiceName.MEDIA) private mediaClientProxy: ClientProxy,
-    @Inject(RabbitServiceName.FILE) private fileClientProxy: ClientProxy,
+    @Inject(RabbitServiceName.MEDIA)
+    private readonly mediaClientProxy: ClientProxy,
+    private readonly uploadService: UploadService,
   ) {}
-  @ApiOperation({ summary: 'lấy danh sách music' })
+
   @Get()
-  async listAudioBook(@Query() query: ListMusicDto, @GetUser() user: User) {
+  async list(@Query() query: ListMediaDto, @GetUser() user: AuthType) {
     try {
-      const resp = await lastValueFrom(
-        this.mediaClientProxy.send(
+      const resp = await firstValueFrom(
+        this.mediaClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.MUSIC.GET_LIST_MUSIC,
-          { ...query, profileId: user.id },
+          { ...query, user: user },
         ),
       );
       return resp;
@@ -61,14 +70,13 @@ export class MusicController {
     }
   }
 
-  @ApiOperation({ summary: 'Lấy chi tiết music' })
   @Get(':id')
-  async getAudioBook(@Param() param: ParamIdDto, @GetUser() user: User) {
+  async findOne(@Param() param: ParamIdDto) {
     try {
-      const resp = await lastValueFrom(
-        this.mediaClientProxy.send(
-          MEDIAS_MESSAGE_PATTERN.MUSIC.GET_LIST_MUSIC,
-          { ...param, profileId: user.id },
+      const resp = await firstValueFrom(
+        this.mediaClientProxy.send<any>(
+          MEDIAS_MESSAGE_PATTERN.MUSIC.GET_MUSIC,
+          param,
         ),
       );
       return resp;
@@ -80,34 +88,25 @@ export class MusicController {
     }
   }
 
-  @ApiOperation({ summary: 'Tạo music' })
   @Post()
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: 'music', maxCount: 1 },
-      { name: 'image', maxCount: 1 },
-    ]),
-  )
-  @UseGuards(RolesGuard)
-  @Roles(ERole.ADMIN)
-  async createAudioBook(
-    @Body() dto: CreateMusicDto,
-    @UploadedFiles()
-    files: { image?: Express.Multer.File; audio?: Express.Multer.File },
+  @UseInterceptors(FileInterceptor('image'))
+  @Public()
+  async createMusic(
+    @Body() payload: CreateMusicDto,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    try {
-      const resp = await lastValueFrom(
-        this.mediaClientProxy.send(MEDIAS_MESSAGE_PATTERN.MUSIC.CREATE_MUSIC, {
-          ...dto,
-        }),
-      );
+    payload.image = await this.uploadService.uploadFile(file.filename, 'music');
 
+    try {
+      const resp = await firstValueFrom(
+        this.mediaClientProxy.send<any>(
+          MEDIAS_MESSAGE_PATTERN.MUSIC.CREATE_MUSIC,
+          payload,
+        ),
+      );
       return resp;
     } catch (e) {
-      //   this.logger.warn(e.message);
-      //   this.fileService.removeFile(files.audio[0].filename, 'audio');
-      //   this.fileService.removeFile(files.image[0].filename, 'uploads');
       throw new exc.CustomError({
         message: e.message,
         statusCode: e?.status ?? e,
@@ -115,43 +114,69 @@ export class MusicController {
     }
   }
 
+  @Put()
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('image'))
   @Public()
-  @ApiOperation({ summary: 'yêu thích' })
-  @Post('like')
-  async like() {
-    const resp = await this.fileClientProxy
-      .send('file.convert', {})
-      .toPromise();
-    console.log(resp);
+  async updateMusic(
+    @Body() payload: UpdateMusicDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (file)
+      payload.image = await this.uploadService.uploadFile(
+        file.filename,
+        'music',
+      );
 
-    // return this.service.like(dto.id, user);
-    return 'haha';
+    try {
+      const resp = await firstValueFrom(
+        this.mediaClientProxy.send<any>(
+          MEDIAS_MESSAGE_PATTERN.MUSIC.UPDATE_MUSIC,
+          payload,
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
   }
 
-  @ApiOperation({ summary: 'sửa audio book' })
-  @ApiConsumes('multipart/form-data')
-  @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: 'audio', maxCount: 1 },
-      { name: 'image', maxCount: 1 },
-    ]),
-  )
-  @Put(':id')
-  @UseGuards(RolesGuard)
-  @Roles(ERole.ADMIN)
-  async updateAudioBook(
-    @Body() dto: UpdateMusicDto,
+  @ApiCreateOperation({ summary: 'do not call this api, please!' })
+  @Patch(':id/url')
+  async updateUrl(
     @Param() param: ParamIdDto,
-    @UploadedFiles()
-    files: { image?: Express.Multer.File; audio?: Express.Multer.File },
+    @Body() body: { filename: string },
   ) {
     try {
+      const resp = await firstValueFrom(
+        this.mediaClientProxy.send<any>(
+          MEDIAS_MESSAGE_PATTERN.MUSIC.UPDATE_URL_MUSIC,
+          { param, body },
+        ),
+      );
+      return resp;
     } catch (e) {
-      //   this.logger.warn(e.message);
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
 
-      //   this.fileService.removeFile(files.audio[0].filename, 'audio');
-      //   this.fileService.removeFile(files.image[0].filename, 'uploads');
-
+  @Delete()
+  async bulkDelete(@Body() payload: IdsDto) {
+    try {
+      const resp = await firstValueFrom(
+        this.mediaClientProxy.send<any>(
+          MEDIAS_MESSAGE_PATTERN.MUSIC.BULK_DELETE_MUSIC,
+          payload,
+        ),
+      );
+      return resp;
+    } catch (e) {
       throw new exc.CustomError({
         message: e.message,
         statusCode: e?.status ?? e,
