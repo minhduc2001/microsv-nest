@@ -28,6 +28,7 @@ export class PackageService extends BaseService<Package> {
   async listPackage(query: ListPackageDto) {
     const config: PaginateConfig<Package> = {
       sortableColumns: ['id'],
+      defaultSortBy: [['updatedAt', 'DESC']],
       searchableColumns: ['name', 'golds', 'desc', 'endDate', 'startDate'],
       where:
         query.user.role !== ERole.ADMIN

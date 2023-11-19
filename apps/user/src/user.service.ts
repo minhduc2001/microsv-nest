@@ -34,7 +34,9 @@ export class UserService extends BaseService<User> {
 
   // get user lists of Parents role
   async getAllUser(query: ListDto) {
-    query.filter = JSON.stringify({ role: ERole.PARENTS }) as any;
+    query.filter = query.filter
+      ? query.filter
+      : (JSON.stringify({ role: ERole.PARENTS }) as any);
     const config: PaginateConfig<User> = {
       defaultSortBy: [['updatedAt', 'DESC']],
       sortableColumns: ['id'],
