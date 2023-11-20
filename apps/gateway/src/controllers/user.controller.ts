@@ -18,6 +18,7 @@ import * as exc from '@libs/common/api';
 import {
   CheckOTPDto,
   ForgotPasswordDto,
+  IAddUserByAdmin,
   LoginDto,
   RegisterDto,
   ResetPasswordDto,
@@ -155,6 +156,25 @@ export class UserController {
     try {
       const resp = await firstValueFrom(
         this.userClientProxy.send<any>(USER_MESSAGE_PATTERNS.REGISTER, body),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
+
+  @Post('create')
+  @Public()
+  async createUserByAdmin(@Body() body: IAddUserByAdmin) {
+    try {
+      const resp = await firstValueFrom(
+        this.userClientProxy.send<any>(
+          USER_MESSAGE_PATTERNS.CREATE_USER_BY_ADMIN,
+          body,
+        ),
       );
       return resp;
     } catch (e) {

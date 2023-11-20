@@ -6,6 +6,7 @@ import { ICreateUser, IUserGetByUniqueKey } from './user.interface';
 import { BaseService } from '@libs/common/services/base.service';
 import { PaginateConfig } from '@libs/common/services/paginate';
 import {
+  IAddUserByAdmin,
   LoginDto,
   RegisterDto,
   UserUpdateDto,
@@ -119,6 +120,45 @@ export class UserService extends BaseService<User> {
     });
 
     return 'Register Successful!';
+  }
+
+  async createUserByAdmin(newUser: IAddUserByAdmin) {
+    const { email, password, phone, address, username, isActive } = newUser;
+    const checkExisted = await this.userRepository.findOne({
+      where: { email: newUser.email },
+    });
+
+    if (checkExisted)
+      throw new excRpc.BadRequest({ message: 'Tài khoản đã tồn tại!' });
+
+    const saveUser = Object.assign(new User(), {
+      username,
+      email,
+      phone,
+      address,
+      isActive,
+    });
+    saveUser.setPassword(password);
+
+    this.userRepository.insert(saveUser);
+
+    // send mail
+    if (!isActive) {
+      await this.mailerService.sendMail({
+        to: saveUser.email,
+        subject: 'Xác thực tài khoản Zappy.',
+        body: {
+          title: 'Xác thực tài khoản Zappy.',
+          content:
+            'Để có thể sử dụng hệ thống Zappy, bạn cần phải xác thực tài khoản. Vui lòng nhấn vào nút bên dưới để xác thực tài khoản.',
+          username,
+          url: `http:localhost:8081/api/v1/user/active?email=${saveUser.email}`,
+        },
+        template: 'email-signup',
+      });
+    }
+
+    return 'Tạo tài khoản khách hàng thành công!';
   }
 
   async getUserByIdWithRelationship(id: number) {

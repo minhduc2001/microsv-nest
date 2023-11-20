@@ -42,6 +42,13 @@ export class RegisterDto extends PickType(LoginDto, ['email', 'password']) {
   address: string;
 }
 
+export class IAddUserByAdmin extends RegisterDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsBoolean()
+  isActive: boolean;
+}
+
 export class UserUpdateDto {
   @ApiProperty()
   @IsOptional()
