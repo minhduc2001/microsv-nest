@@ -54,7 +54,11 @@ export class PackageController {
 
       return data;
     } catch (e) {
-      throw new exc.BadException({ message: e.message });
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+        errorCode: e.errorCode,
+      });
     }
   }
 
@@ -72,7 +76,11 @@ export class PackageController {
 
       return data;
     } catch (e) {
-      throw new exc.BadException({ message: e.message });
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+        errorCode: e.errorCode,
+      });
     }
   }
 

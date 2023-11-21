@@ -54,7 +54,10 @@ export class PackageService extends BaseService<Package> {
       .getOne();
 
     if (!data)
-      throw new excRpc.BadException({ message: 'Không tồn tại gói này!' });
+      throw new excRpc.BadException({
+        message: 'Không tồn tại gói này!',
+        errorCode: 'package_not_found',
+      });
     return data;
   }
 
