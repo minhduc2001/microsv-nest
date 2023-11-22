@@ -5,6 +5,7 @@ import { USER_MESSAGE_PATTERNS } from '@libs/common/constants/rabbit-patterns.co
 import * as excRpc from '@libs/common/api';
 import {
   CheckOTPDto,
+  IAddUserByAdmin,
   LoginDto,
   RegisterDto,
   UserUpdateDto,
@@ -40,6 +41,11 @@ export class UserController {
     } catch (e) {
       throw new excRpc.BadException({ message: e.message });
     }
+  }
+
+  @MessagePattern(USER_MESSAGE_PATTERNS.CREATE_USER_BY_ADMIN)
+  async createUserByAdmin(@Payload() data: IAddUserByAdmin) {
+    return this.userService.createUserByAdmin(data);
   }
 
   @MessagePattern(USER_MESSAGE_PATTERNS.GET_USER_LISTS)

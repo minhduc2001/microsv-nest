@@ -28,7 +28,8 @@ export class PackageService extends BaseService<Package> {
   async listPackage(query: ListPackageDto) {
     const config: PaginateConfig<Package> = {
       sortableColumns: ['id'],
-      searchableColumns: ['name', 'golds', 'desc', 'endDate', 'startDate'],
+      defaultSortBy: [['updatedAt', 'DESC']],
+      searchableColumns: ['name', 'desc'],
       where:
         query.user.role !== ERole.ADMIN
           ? { state: EState.Active }
@@ -53,7 +54,10 @@ export class PackageService extends BaseService<Package> {
       .getOne();
 
     if (!data)
-      throw new excRpc.BadException({ message: 'Không tồn tại gói này!' });
+      throw new excRpc.BadException({
+        message: 'Không tồn tại gói này!',
+        errorCode: 'package_not_found',
+      });
     return data;
   }
 
