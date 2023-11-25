@@ -20,7 +20,7 @@ import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { Inject, Injectable, Query } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Not, Brackets } from 'typeorm';
+import { Repository, Not, Brackets, LessThan } from 'typeorm';
 import * as excRpc from '@libs/common/api';
 import {
   IPrepareMediaData,
@@ -142,7 +142,7 @@ export class MediaService extends BaseService<Media> {
           ? { state: EState.Active }
           : { state: Not(EState.Deleted) },
         query.user.role === ERole.CHILDRENS
-          ? { minAge: this._getAge((query.user as Profile).birthday) }
+          ? { minAge: LessThan(this._getAge((query.user as Profile).birthday)) }
           : {},
       ],
       select: [...this.defautlSelect()],
@@ -208,7 +208,9 @@ export class MediaService extends BaseService<Media> {
   private _getAge(birthday: any) {
     const today = new Date();
     const birthDate = new Date(birthday);
-    const age = today.getTime() - birthDate.getTime() / (1000 * 60 * 60 * 24);
+    const age =
+      (today.getTime() - birthDate.getTime()) / (1000 * 60 * 60 * 24 * 365);
+
     return Math.floor(age);
   }
 

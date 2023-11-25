@@ -33,7 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         const profile = await lastValueFrom(
           this.userClientProxy.send<any>(
             USER_MESSAGE_PATTERNS.PROFILE.GET_PROFILE,
-            { id: payload.sub },
+            payload.sub,
           ),
         );
         if (!profile)
