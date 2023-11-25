@@ -3,7 +3,9 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   Inject,
+  Ip,
   Param,
   Patch,
   Post,
@@ -86,7 +88,10 @@ export class MovieController {
     @Body() payload: CreateMovieDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    payload.image = await this.uploadService.uploadFile(file.filename, 'movie');
+    payload.thumbnail = await this.uploadService.uploadFile(
+      file.filename,
+      'movie',
+    );
 
     try {
       const resp = await firstValueFrom(
@@ -112,7 +117,7 @@ export class MovieController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     if (file)
-      payload.image = await this.uploadService.uploadFile(
+      payload.thumbnail = await this.uploadService.uploadFile(
         file.filename,
         'movie',
       );
@@ -138,6 +143,7 @@ export class MovieController {
   async updateUrl(
     @Param() param: ParamIdDto,
     @Body() body: { filename: string },
+    @Headers() headers: any,
   ) {
     try {
       const resp = await firstValueFrom(

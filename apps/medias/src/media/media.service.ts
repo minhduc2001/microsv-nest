@@ -54,7 +54,7 @@ export class MediaService extends BaseService<Media> {
       genre_ids: dto.genreIds,
     });
 
-    this._beforeCheck({ authors, genres }, ETypeMedia.Movies);
+    await this._beforeCheck({ authors, genres }, ETypeMedia.Movies);
 
     const media: Media = this.repository.create(dto);
     media.type = ETypeMedia.Movies;
@@ -70,7 +70,7 @@ export class MediaService extends BaseService<Media> {
       genre_ids: dto.genreIds,
     });
 
-    this._beforeCheck({ authors, genres }, ETypeMedia.Music);
+    await this._beforeCheck({ authors, genres }, ETypeMedia.Music);
 
     const media: Media = this.repository.create(dto);
     media.type = ETypeMedia.Music;
@@ -134,28 +134,21 @@ export class MediaService extends BaseService<Media> {
 
   async list(query: ListMediaDto, type: ETypeMedia) {
     const config: PaginateConfig<Media> = {
-      sortableColumns: ['id'],
-      where:
+      sortableColumns: ['id', 'updatedAt'],
+      searchableColumns: ['genres.name', 'authors.name', 'title', 'desc'],
+      defaultSortBy: [['updatedAt', 'DESC']],
+      where: [
         query.user.role !== ERole.ADMIN
           ? { state: EState.Active }
           : { state: Not(EState.Deleted) },
+        query.user.role === ERole.CHILDRENS
+          ? { minAge: this._getAge((query.user as Profile).birthday) }
+          : {},
+      ],
+      select: [...this.defautlSelect()],
+      relations: ['authors', 'genres'],
     };
-    const role = detectRole(query.user);
-
-    const queryB = this.repository
-      .createQueryBuilder('media')
-      .leftJoinAndSelect('media.authors', 'author')
-      .leftJoinAndSelect('media.genres', 'genre')
-      .where('media.type = :type', { type });
-
-    if (role === ETypeAccount.Profile)
-      queryB.andWhere('media.minAge <= :age', {
-        age: this._getAge((query.user as Profile).birthday),
-      });
-
-    queryB.select(this.defautlSelect());
-
-    return this.listWithPage(query, config, queryB);
+    return this.listWithPage(query, config);
   }
 
   async findOne(id: number, type: ETypeMedia) {
@@ -166,7 +159,7 @@ export class MediaService extends BaseService<Media> {
     if (!media)
       throw new excRpc.BadException({
         message: `Không tồn tại ${
-          type == ETypeMedia.Music ? 'nhạc' : 'Phim'
+          type == ETypeMedia.Music ? 'nhạc' : 'phim'
         } này`,
       });
 
@@ -183,13 +176,15 @@ export class MediaService extends BaseService<Media> {
     return;
   }
 
-  private _beforeCheck(data: Validate, type: ETypeMedia) {
+  private async _beforeCheck(data: Validate, type: ETypeMedia) {
     const { genres, authors } = data;
     if (genres.length) {
       for (const genre of genres) {
+        console.log(genre.type);
+
         if (
-          (genre.type === ETypeGenre.Movies && type === ETypeMedia.Music) ||
-          (genre.type === ETypeGenre.Music && type === ETypeMedia.Movies)
+          genre.type === ETypeGenre.Comics ||
+          (genre.type as number) !== (type as number)
         )
           throw new excRpc.BadException({
             message: 'Kiểu dữ liệu không đúng!',
@@ -200,8 +195,8 @@ export class MediaService extends BaseService<Media> {
     if (authors.length) {
       for (const author of authors) {
         if (
-          (author.type === ETypeAuthor.Movies && type === ETypeMedia.Music) ||
-          (author.type === ETypeAuthor.Music && type === ETypeMedia.Movies)
+          author.type === ETypeAuthor.Comics ||
+          (author.type as number) !== (type as number)
         )
           throw new excRpc.BadException({
             message: 'Kiểu dữ liệu không đúng!',

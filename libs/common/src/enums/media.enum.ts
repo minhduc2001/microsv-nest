@@ -11,6 +11,7 @@ export enum ETypeAuthor {
 }
 
 export enum ETypeMedia {
+  Comics,
   Music,
   Movies,
 }

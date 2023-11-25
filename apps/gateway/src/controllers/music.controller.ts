@@ -95,7 +95,10 @@ export class MusicController {
     @Body() payload: CreateMusicDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    payload.image = await this.uploadService.uploadFile(file.filename, 'music');
+    payload.thumbnail = await this.uploadService.uploadFile(
+      file.filename,
+      'music',
+    );
 
     try {
       const resp = await firstValueFrom(
@@ -121,7 +124,7 @@ export class MusicController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     if (file)
-      payload.image = await this.uploadService.uploadFile(
+      payload.thumbnail = await this.uploadService.uploadFile(
         file.filename,
         'music',
       );

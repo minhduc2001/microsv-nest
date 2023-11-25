@@ -44,12 +44,9 @@ export class PackageService extends BaseService<Package> {
       .createQueryBuilder('package')
       .where({ id: id })
       .andWhere(
-        new Brackets((qb) => {
-          qb.where('package.state = :state', { state: EState.Active });
-          if (user.role == ERole.ADMIN) {
-            qb.orWhere('package.state = :state', { state: EState.InActive });
-          }
-        }),
+        user.role === ERole.ADMIN
+          ? { state: Not(EState.Deleted) }
+          : { state: EState.Active },
       )
       .getOne();
 

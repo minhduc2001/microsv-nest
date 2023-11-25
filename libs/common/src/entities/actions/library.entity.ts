@@ -1,5 +1,6 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany } from 'typeorm';
 import { AbstractEntity } from '../abstract.entity';
+import { LibraryChild } from './library-child.entity';
 
 @Entity()
 export class Library extends AbstractEntity {
@@ -7,5 +8,9 @@ export class Library extends AbstractEntity {
   name: string;
 
   @Column()
-  userId: number;
+  userId: number; // profile
+
+  @OneToMany(() => LibraryChild, (child) => child)
+  @JoinColumn()
+  libraryChilds: LibraryChild[];
 }

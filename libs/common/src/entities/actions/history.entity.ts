@@ -1,4 +1,5 @@
 import {
+  AfterLoad,
   BeforeInsert,
   Column,
   Entity,
@@ -9,8 +10,6 @@ import {
   OneToMany,
 } from 'typeorm';
 import { AbstractEntity } from '../abstract.entity';
-import { ETypeHistory } from '@libs/common/enums/actions.enum';
-import * as excRpc from '@libs/common/api';
 
 @Entity()
 export class History extends AbstractEntity {
@@ -18,7 +17,22 @@ export class History extends AbstractEntity {
   userId: number;
 
   @Column({ nullable: true })
-  mediaId: number;
+  musicId: number;
+
+  @Column({ nullable: true })
+  name: string;
+
+  @Column({ nullable: true })
+  chap: string;
+
+  @Column({ nullable: true })
+  title: string;
+
+  @Column({ nullable: true })
+  thumbnail: string;
+
+  @Column({ nullable: true })
+  movieId: number;
 
   @Column({ nullable: true })
   comicsId: number;
@@ -35,6 +49,13 @@ export class History extends AbstractEntity {
   @Column({ nullable: true, default: 0 })
   position: number;
 
-  @Column({ enum: ETypeHistory })
-  type: ETypeHistory;
+  @AfterLoad()
+  afterload() {
+    if (this.comicsId) {
+      delete this.movieId;
+      delete this.musicId;
+    } else {
+      delete this.movieId;
+    }
+  }
 }
