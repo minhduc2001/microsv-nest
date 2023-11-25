@@ -54,8 +54,16 @@ export class History extends AbstractEntity {
     if (this.comicsId) {
       delete this.movieId;
       delete this.musicId;
+      delete this.position;
+      // delete this.duration;
     } else {
-      delete this.movieId;
+      delete this.userId;
+      delete this.chap;
+      delete this.name;
+      delete this.chapterId;
+      delete this.comicsId;
+      delete this.indexChapter;
     }
+    delete this.userId;
   }
 }

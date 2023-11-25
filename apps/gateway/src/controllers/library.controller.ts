@@ -27,7 +27,7 @@ import { Profile } from '@libs/common/entities/user/profile.entity';
 @ApiTagsAndBearer('Library')
 @Controller('library')
 @Auth()
-export class GenreController {
+export class LibraryController {
   constructor(
     @Inject(RabbitServiceName.ACTIONS) private actionsClientProxy: ClientProxy,
   ) {}

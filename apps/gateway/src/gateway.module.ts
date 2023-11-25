@@ -19,6 +19,7 @@ import { UploadModule } from '@libs/upload';
 import { CacheModule } from '@libs/cache';
 import { PaymentSystemModule } from './modules/payment-system.module';
 import { MediasModule } from './modules/medias.module';
+import { ActionsModule } from './modules/actions.module';
 
 const coreModule = [
   EnvModule,
@@ -40,6 +41,7 @@ const rabbitModule = [
     UserModule,
     PaymentSystemModule,
     MediasModule,
+    ActionsModule,
   ],
   controllers: [GatewayController],
   providers: [GatewayService],
