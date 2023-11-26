@@ -144,12 +144,14 @@ export class MediaService extends BaseService<Media> {
         query.user.role === ERole.CHILDRENS
           ? { minAge: LessThan(this._getAge((query.user as Profile).birthday)) }
           : {},
-        { type },
       ],
       select: [...this.defautlSelect()],
       relations: ['authors', 'genres'],
     };
-    return this.listWithPage(query, config);
+    const queryB = this.repository
+      .createQueryBuilder('media')
+      .where({ type: type });
+    return this.listWithPage(query, config, queryB);
   }
 
   async findOne(id: number, type: ETypeMedia) {
@@ -227,6 +229,8 @@ export class MediaService extends BaseService<Media> {
       'media.thumbnail',
       'media.duration',
       'media.isAccess',
+      'media.golds',
+
       'author.id',
       'author.name',
       'author.image',
