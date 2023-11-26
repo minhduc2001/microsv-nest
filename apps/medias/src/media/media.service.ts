@@ -96,7 +96,7 @@ export class MediaService extends BaseService<Media> {
     media.desc = dto.desc;
     media.duration = dto.duration;
     media.minAge = dto.minAge;
-    media.isAccess = dto.isAccess;
+    media.golds = dto.golds;
     media.publishDate = dto.publishDate;
     media.thumbnail = dto.thumbnail ?? media.thumbnail;
     media.type = ETypeMedia.Movies;
@@ -122,7 +122,7 @@ export class MediaService extends BaseService<Media> {
     media.desc = dto.desc;
     media.duration = dto.duration;
     media.minAge = dto.minAge;
-    media.isAccess = dto.isAccess;
+    media.golds = dto.golds;
     media.publishDate = dto.publishDate;
     media.thumbnail = dto.thumbnail ?? media.thumbnail;
     media.type = ETypeMedia.Music;
@@ -144,6 +144,7 @@ export class MediaService extends BaseService<Media> {
         query.user.role === ERole.CHILDRENS
           ? { minAge: LessThan(this._getAge((query.user as Profile).birthday)) }
           : {},
+        { type },
       ],
       select: [...this.defautlSelect()],
       relations: ['authors', 'genres'],
@@ -173,7 +174,7 @@ export class MediaService extends BaseService<Media> {
         { state: EState.Deleted },
       );
     }
-    return;
+    return true;
   }
 
   private async _beforeCheck(data: Validate, type: ETypeMedia) {
