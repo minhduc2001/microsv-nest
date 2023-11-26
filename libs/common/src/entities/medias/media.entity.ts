@@ -48,7 +48,9 @@ export class Media extends AbstractEntity {
   @Column({ nullable: true })
   duration?: number;
 
-  @Column({ nullable: true, type: 'boolean', default: true })
+  @Column({ default: 0 })
+  golds: number;
+
   isAccess: boolean;
 
   @Column({ type: 'enum', enum: ETypeMedia, nullable: false })
@@ -68,5 +70,6 @@ export class Media extends AbstractEntity {
   @AfterLoad()
   afterload() {
     if (this.url) this.url = convertUrl(this.url, this.type);
+    if (!this.isAccess && this.golds > 0) this.isAccess = false;
   }
 }

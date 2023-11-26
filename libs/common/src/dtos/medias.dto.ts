@@ -70,11 +70,11 @@ export class CreateMovieDto extends UploadImageDto {
   @IsOptional()
   duration?: number;
 
-  @ApiPropertyOptional({ example: true })
+  @ApiPropertyOptional({ example: 0 })
   @IsBoolean()
-  @Transform(({ value }) => value?.toLowerCase?.() === 'true')
+  @ToNumber()
   @IsOptional()
-  isAccess: boolean;
+  golds: number;
 
   @ApiPropertyOptional({ example: [1, 2, 3] })
   @IsPositive({ each: true })
@@ -150,11 +150,11 @@ export class CreateMusicDto extends UploadImageDto {
   @IsOptional()
   duration?: number;
 
-  @ApiPropertyOptional({ example: true })
+  @ApiPropertyOptional({ example: 0 })
   @IsBoolean()
-  @Transform(({ value }) => value?.toLowerCase?.() === 'true')
+  @ToNumber()
   @IsOptional()
-  isAccess: boolean;
+  golds: number;
 
   @ApiPropertyOptional({ example: [1, 2, 3] })
   @IsPositive({ each: true })
