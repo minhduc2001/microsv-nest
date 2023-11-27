@@ -77,6 +77,7 @@ export class MovieController {
       throw new exc.CustomError({
         message: e.message,
         statusCode: e?.status ?? e,
+        errorCode: e.errorCode,
       });
     }
   }
