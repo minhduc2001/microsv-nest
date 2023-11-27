@@ -1,5 +1,5 @@
 import { User } from '@libs/common/entities/user/user.entity';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ICreateUser, IUserGetByUniqueKey } from './user.interface';
@@ -17,6 +17,10 @@ import { EProviderLogin } from '@libs/common/enums/user.enum';
 import { CacheService } from '@libs/cache';
 import { ListDto } from '@libs/common/dtos/common.dto';
 import { ERole } from '@libs/common/enums/role.enum';
+import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
+import { ClientProxy } from '@nestjs/microservices';
+import { ACTIONS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
+import { CreateLibraryDto } from '@libs/common/dtos/library.dto';
 
 interface CacheOtp {
   otp: string;
@@ -27,6 +31,8 @@ interface CacheOtp {
 export class UserService extends BaseService<User> {
   constructor(
     @InjectRepository(User) protected userRepository: Repository<User>,
+    @Inject(RabbitServiceName.ACTIONS)
+    private readonly actionsClientProxy: ClientProxy,
     private readonly mailerService: MailerService,
     private readonly cacheService: CacheService,
   ) {
@@ -92,15 +98,35 @@ export class UserService extends BaseService<User> {
     if (checkExisted)
       throw new excRpc.BadRequest({ message: 'Account has already exist!' });
 
-    const saveUser = Object.assign(new User(), {
+    const saveUser = this.repository.create({
       username,
       email,
       phone,
       address,
     });
     saveUser.setPassword(password);
+    await saveUser.save();
 
-    this.userRepository.insert(saveUser);
+    const data: CreateLibraryDto[] = [
+      {
+        name: 'Yêu thích',
+        user: saveUser,
+      },
+      {
+        name: 'Đã mua',
+        user: saveUser,
+      },
+      {
+        name: 'Danh sách phát',
+        user: saveUser,
+      },
+    ];
+
+    for (const a of data) {
+      await this.actionsClientProxy
+        .send<any>(ACTIONS_MESSAGE_PATTERN.LIBRARY.CREATE_LIBRARY, a)
+        .toPromise();
+    }
 
     // send mail
     await this.mailerService.sendMail({

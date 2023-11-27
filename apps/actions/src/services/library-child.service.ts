@@ -10,9 +10,10 @@ import {
   ListLibraryChildDto,
 } from '@libs/common/dtos/library.dto';
 import { PaginateConfig } from '@libs/common/services/paginate';
+import { AuthType } from '@libs/common/interfaces/common.interface';
 
 @Injectable()
-export class AudioBookLibraryService extends BaseService<LibraryChild> {
+export class LibraryChildService extends BaseService<LibraryChild> {
   constructor(
     @InjectRepository(LibraryChild)
     protected readonly repository: Repository<LibraryChild>,
@@ -26,7 +27,6 @@ export class AudioBookLibraryService extends BaseService<LibraryChild> {
       sortableColumns: ['updatedAt'],
       defaultSortBy: [['updatedAt', 'DESC']],
       where: {
-        id: query.cId,
         library: { id: query.libraryId, userId: query.userId },
       },
     };
@@ -34,28 +34,17 @@ export class AudioBookLibraryService extends BaseService<LibraryChild> {
     return this.listWithPage(query, config);
   }
 
-  async createLibraryChild(dto: CreateLibraryChildDto, type: ETypeMedia) {
-    const library = await this.libraryService.getLibrary(dto.libraryId);
-    const cLibs = this.repository.create({
+  async createLibraryChild(dto: CreateLibraryChildDto) {
+    const library = await this.libraryService.getLibrary(
+      dto.libraryId,
+      dto.user,
+    );
+    return await this.repository.save({
       library: library,
     });
-
-    switch (type) {
-      case ETypeMedia.Movies:
-        cLibs.movieId = dto.movieId;
-        break;
-      case ETypeMedia.Music:
-        cLibs.musicId = dto.musicId;
-        break;
-      case ETypeMedia.Comics:
-        cLibs.comicsId = dto.comicsId;
-        break;
-    }
-
-    return await cLibs.save();
   }
 
-  async deleteLibraryChild(id: number) {
-    return this.repository.delete(id);
+  async deleteLibraryChild(id: number, user: AuthType) {
+    return this.repository.delete({ id, library: { userId: user.id } });
   }
 }

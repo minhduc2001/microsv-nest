@@ -23,6 +23,11 @@ import {
 } from '@libs/common/dtos/library.dto';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { Profile } from '@libs/common/entities/user/profile.entity';
+import { ETypeAccount } from '@libs/common/enums/common.enum';
+import { firstValueFrom } from 'rxjs';
+import { ACTIONS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
+import { AuthType } from '@libs/common/interfaces/common.interface';
+import * as exc from '@libs/common/api';
 
 @ApiTagsAndBearer('Library')
 @Controller('library')
@@ -34,42 +39,107 @@ export class LibraryController {
 
   @ApiOperation({ summary: 'Lấy danh sách thư viện' })
   @Get()
-  async listLibrary(
-    @Query() query: ListLibraryDto,
-    @GetUser() profile: Profile,
-  ) {}
+  async listLibrary(@Query() query: ListLibraryDto, @GetUser() user: AuthType) {
+    try {
+      const resp = await firstValueFrom(
+        this.actionsClientProxy.send<any>(
+          ACTIONS_MESSAGE_PATTERN.LIBRARY.LIST_LIBRARY_CHILD_BY_USER,
+          { ...query, userId: user.id },
+        ),
+      );
+
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
 
   @ApiOperation({ summary: 'Lấy danh sách trong thư viện' })
   @Get(':id/list')
   async listAudioBookLibrary(
     @Query() query: ListLibraryChildDto,
     @Param() param: ParamIdDto,
-    @GetUser() profile: Profile,
-  ) {}
+    @GetUser() user: AuthType,
+  ) {
+    try {
+      const resp = await firstValueFrom(
+        this.actionsClientProxy.send<any>(
+          ACTIONS_MESSAGE_PATTERN.LIBRARY.LIST_LIBRARY_CHILD_BY_USER,
+          { ...query, userId: user.id, libraryId: param.id },
+        ),
+      );
+
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
 
   @ApiOperation({ summary: 'Tạo thư viện' })
   @Post('create-library')
   async createLibrary(
     @Body() dto: CreateLibraryDto,
-    @GetUser() profile: Profile,
-  ) {}
+    @GetUser() user: AuthType,
+  ) {
+    try {
+      const resp = await firstValueFrom(
+        this.actionsClientProxy.send<any>(
+          ACTIONS_MESSAGE_PATTERN.LIBRARY.CREATE_LIBRARY,
+          { ...dto, user: user },
+        ),
+      );
+
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
 
   @ApiOperation({ summary: 'Lưu ... vào thư viện' })
   @Post('add-library')
-  async createAudioBookLibrary(@Body() dto: CreateLibraryChildDto) {}
+  async createAudioBookLibrary(
+    @Body() dto: CreateLibraryChildDto,
+    @GetUser() user: AuthType,
+  ) {
+    try {
+      const resp = await firstValueFrom(
+        this.actionsClientProxy.send<any>(
+          ACTIONS_MESSAGE_PATTERN.LIBRARY.CREATE_LIBRARY,
+          { ...dto, user: user },
+        ),
+      );
+
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
 
   @ApiOperation({ summary: 'Sửa thư viện' })
   @Put(':id')
   async updateLibrary(
     @Param() param: ParamIdDto,
     @Body() dto: UpdateLibraryDto,
+    @GetUser() user: ETypeAccount,
   ) {}
 
   @ApiOperation({ summary: 'Xóa thư viện' })
   @Delete(':id')
   async deleteLibrary(
     @Param() param: ParamIdDto,
-    @GetUser() profile: Profile,
+    @GetUser() user: ETypeAccount,
   ) {}
 
   @ApiOperation({ summary: 'Xóa nội dung trong thư viện' })

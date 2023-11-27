@@ -6,6 +6,7 @@ import { Library } from '@libs/common/entities/actions/library.entity';
 import { LibraryChild } from '@libs/common/entities/actions/library-child.entity';
 import { RabbitModule } from '@libs/rabbit';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
+import { LibraryChildService } from '../services/library-child.service';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
     RabbitModule.forClientProxy(RabbitServiceName.MEDIA),
   ],
   controllers: [LibraryController],
-  providers: [LibraryService],
+  providers: [LibraryService, LibraryChildService],
 })
 export class LibraryModule {}

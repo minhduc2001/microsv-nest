@@ -9,13 +9,14 @@ import { Transform } from 'class-transformer';
 import { ListDto } from './common.dto';
 import { Profile } from '../entities/user/profile.entity';
 import { ToNumber, Trim } from '../decorators/common.decorator';
+import { AuthType } from '../interfaces/common.interface';
 
 export class ListLibraryDto extends ListDto {
   @ApiHideProperty()
   @IsOptional()
   @ToNumber()
   @IsPositive()
-  profileId?: number; // profile
+  userId?: number;
 }
 
 export class ListLibraryChildDto extends ListDto {
@@ -30,12 +31,6 @@ export class ListLibraryChildDto extends ListDto {
   @IsOptional()
   @IsPositive()
   userId?: number;
-
-  @ApiHideProperty()
-  @ToNumber()
-  @IsOptional()
-  @IsPositive()
-  cId?: number;
 }
 
 export class CreateLibraryDto {
@@ -47,7 +42,7 @@ export class CreateLibraryDto {
 
   @ApiHideProperty()
   @IsOptional()
-  profile?: Profile;
+  user?: AuthType;
 }
 
 export class CreateLibraryChildDto {
@@ -74,6 +69,10 @@ export class CreateLibraryChildDto {
   @IsOptional()
   @IsPositive()
   movieId: number;
+
+  @ApiHideProperty()
+  @IsOptional()
+  user?: AuthType;
 }
 
 export class UpdateLibraryDto {
@@ -88,4 +87,8 @@ export class UpdateLibraryDto {
   @IsOptional()
   @IsPositive()
   id: number;
+
+  @ApiHideProperty()
+  @IsOptional()
+  user?: AuthType;
 }

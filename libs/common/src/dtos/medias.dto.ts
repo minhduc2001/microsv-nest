@@ -71,7 +71,7 @@ export class CreateMovieDto extends UploadImageDto {
   duration?: number;
 
   @ApiPropertyOptional({ example: 0 })
-  @IsBoolean()
+  @IsNumber()
   @ToNumber()
   @IsOptional()
   golds: number;
@@ -151,7 +151,7 @@ export class CreateMusicDto extends UploadImageDto {
   duration?: number;
 
   @ApiPropertyOptional({ example: 0 })
-  @IsBoolean()
+  @IsNumber()
   @ToNumber()
   @IsOptional()
   golds: number;

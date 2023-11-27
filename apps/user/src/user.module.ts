@@ -19,6 +19,7 @@ import { CacheModule } from '@libs/cache';
     LoggerModule,
     TypeOrmModule.forFeature([User, Profile]),
     RabbitModule.forServerProxy(RabbitServiceName.USER),
+    RabbitModule.forClientProxy(RabbitServiceName.ACTIONS),
     MailerModule,
     CacheModule,
   ],
