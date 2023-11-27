@@ -183,8 +183,6 @@ export class MediaService extends BaseService<Media> {
     const { genres, authors } = data;
     if (genres.length) {
       for (const genre of genres) {
-        console.log(genre.type);
-
         if (
           genre.type === ETypeGenre.Comics ||
           (genre.type as number) !== (type as number)
@@ -197,6 +195,8 @@ export class MediaService extends BaseService<Media> {
 
     if (authors.length) {
       for (const author of authors) {
+        console.log(author);
+
         if (
           author.type === ETypeAuthor.Comics ||
           (author.type as number) !== (type as number)
@@ -250,7 +250,7 @@ export class MediaService extends BaseService<Media> {
       genres = await this.genreRepository
         .createQueryBuilder('genre')
         .where('genre.id IN (:...genre_ids)', { genre_ids })
-        .select(['genre.id'])
+        .select(['genre.id', 'genre.type'])
         .getMany();
     }
 
@@ -258,7 +258,7 @@ export class MediaService extends BaseService<Media> {
       authors = await this.authorRepository
         .createQueryBuilder('author')
         .where('author.id IN (:...author_ids)', { author_ids })
-        .select(['author.id'])
+        .select(['author.id', 'author.type'])
         .getMany();
     }
 
