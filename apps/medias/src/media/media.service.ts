@@ -166,6 +166,7 @@ export class MediaService extends BaseService<Media> {
         message: `Không tồn tại ${
           type == ETypeMedia.Music ? 'nhạc' : 'phim'
         } này`,
+        errorCode: 'media_not_found',
       });
 
     return media;

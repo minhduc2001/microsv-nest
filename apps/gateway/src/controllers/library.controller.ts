@@ -43,7 +43,7 @@ export class LibraryController {
     try {
       const resp = await firstValueFrom(
         this.actionsClientProxy.send<any>(
-          ACTIONS_MESSAGE_PATTERN.LIBRARY.LIST_LIBRARY_CHILD_BY_USER,
+          ACTIONS_MESSAGE_PATTERN.LIBRARY.LIST_LIBRARY_BY_USER,
           { ...query, userId: user.id },
         ),
       );
@@ -113,7 +113,7 @@ export class LibraryController {
     try {
       const resp = await firstValueFrom(
         this.actionsClientProxy.send<any>(
-          ACTIONS_MESSAGE_PATTERN.LIBRARY.CREATE_LIBRARY,
+          ACTIONS_MESSAGE_PATTERN.LIBRARY.ADD_LIBRARY,
           { ...dto, user: user },
         ),
       );
@@ -133,16 +133,67 @@ export class LibraryController {
     @Param() param: ParamIdDto,
     @Body() dto: UpdateLibraryDto,
     @GetUser() user: ETypeAccount,
-  ) {}
+  ) {
+    try {
+      const resp = await firstValueFrom(
+        this.actionsClientProxy.send<any>(
+          ACTIONS_MESSAGE_PATTERN.LIBRARY.UPDATE_LIBRARY,
+          { ...dto, ...param, user: user },
+        ),
+      );
+
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
 
   @ApiOperation({ summary: 'Xóa thư viện' })
   @Delete(':id')
   async deleteLibrary(
     @Param() param: ParamIdDto,
     @GetUser() user: ETypeAccount,
-  ) {}
+  ) {
+    try {
+      const resp = await firstValueFrom(
+        this.actionsClientProxy.send<any>(
+          ACTIONS_MESSAGE_PATTERN.LIBRARY.DELETE_LIB,
+          { ...param, user: user },
+        ),
+      );
+
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
 
   @ApiOperation({ summary: 'Xóa nội dung trong thư viện' })
   @Delete(':id/child')
-  async deleteAudioBookLibrary(@Param() param: ParamIdDto) {}
+  async deleteAudioBookLibrary(
+    @Param() param: ParamIdDto,
+    @GetUser() user: ETypeAccount,
+  ) {
+    try {
+      const resp = await firstValueFrom(
+        this.actionsClientProxy.send<any>(
+          ACTIONS_MESSAGE_PATTERN.LIBRARY.DELETE_C_LIB,
+          { ...param, user: user },
+        ),
+      );
+
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError({
+        message: e.message,
+        statusCode: e?.status ?? e,
+      });
+    }
+  }
 }

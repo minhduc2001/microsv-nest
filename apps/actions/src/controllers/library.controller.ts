@@ -34,6 +34,11 @@ export class LibraryController {
     return this.libraryService.updateLibrary(payload);
   }
 
+  @MessagePattern(ACTIONS_MESSAGE_PATTERN.LIBRARY.DELETE_LIB)
+  async delete(@Payload('id') id: number, @Payload('user') user: AuthType) {
+    return this.libraryService.deleteLibrary(id, user);
+  }
+
   @MessagePattern(ACTIONS_MESSAGE_PATTERN.LIBRARY.LIST_LIBRARY_CHILD_BY_USER)
   async listCLib(@Payload() query: ListLibraryChildDto) {
     return this.libraryChildService.listLibraryChild(query);

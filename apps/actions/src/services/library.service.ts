@@ -36,8 +36,6 @@ export class LibraryService extends BaseService<Library> {
   }
 
   async createLibrary(dto: CreateLibraryDto) {
-    console.log(dto);
-
     const library = await this.repository
       .createQueryBuilder('library')
       .where('unaccent(library.name) ILIKE unaccent(:name)', {
@@ -64,7 +62,14 @@ export class LibraryService extends BaseService<Library> {
     return library;
   }
 
-  async deleteLibrary(id: number) {
+  async deleteLibrary(id: number, user: AuthType) {
+    const check: string[] = ['yeu thich', 'da mua', 'danh sach phat'];
+    const lib = await this.getLibrary(id, user);
+    if (check.includes(convertViToEn(lib.name.toLowerCase()))) {
+      throw new excRpc.BadException({
+        message: 'Không thể xóa thư viện mặc định',
+      });
+    }
     return this.repository.delete(id);
   }
 
