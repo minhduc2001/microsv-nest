@@ -137,20 +137,22 @@ export class MediaService extends BaseService<Media> {
       sortableColumns: ['id', 'updatedAt'],
       searchableColumns: ['genres.name', 'authors.name', 'title', 'desc'],
       defaultSortBy: [['updatedAt', 'DESC']],
-      where: [
-        query.user.role !== ERole.ADMIN
-          ? { state: EState.Active }
-          : { state: Not(EState.Deleted) },
-        query.user.role === ERole.CHILDRENS
-          ? { minAge: LessThan(this._getAge((query.user as Profile).birthday)) }
-          : {},
-      ],
       select: [...this.defautlSelect()],
       relations: ['authors', 'genres'],
     };
     const queryB = this.repository
       .createQueryBuilder('media')
-      .where({ type: type });
+      .where({ type: type })
+      .andWhere(
+        query.user.role !== ERole.ADMIN
+          ? { state: EState.Active }
+          : { state: Not(EState.Deleted) },
+      )
+      .andWhere(
+        query.user.role === ERole.CHILDRENS
+          ? { minAge: LessThan(this._getAge((query.user as Profile).birthday)) }
+          : {},
+      );
     return this.listWithPage(query, config, queryB);
   }
 
