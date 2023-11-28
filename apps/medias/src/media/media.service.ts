@@ -159,6 +159,7 @@ export class MediaService extends BaseService<Media> {
   async findOne(id: number, type: ETypeMedia) {
     const media = await this.repository.findOne({
       where: { id, type, state: Not(EState.Deleted) },
+      relations: { authors: true, genres: true },
     });
 
     if (!media)
