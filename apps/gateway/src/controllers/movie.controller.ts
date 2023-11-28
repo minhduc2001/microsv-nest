@@ -110,10 +110,11 @@ export class MovieController {
     }
   }
 
-  @Put()
+  @Put(':id')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
   async updateMovie(
+    @Param() param: ParamIdDto,
     @Body() payload: UpdateMovieDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
@@ -127,7 +128,7 @@ export class MovieController {
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.MOVIE.UPDATE_MOVIE,
-          payload,
+          { ...payload, ...param },
         ),
       );
       return resp;

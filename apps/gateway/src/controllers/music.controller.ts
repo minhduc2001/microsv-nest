@@ -117,10 +117,11 @@ export class MusicController {
     }
   }
 
-  @Put()
+  @Put(':id')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
   async updateMusic(
+    @Param() param: ParamIdDto,
     @Body() payload: UpdateMusicDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
@@ -134,7 +135,7 @@ export class MusicController {
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.MUSIC.UPDATE_MUSIC,
-          payload,
+          { ...payload, ...param },
         ),
       );
       return resp;
