@@ -4,8 +4,10 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
 import {
   CreateMovieDto,
+  CreateMusicDto,
   ListMediaDto,
   UpdateMovieDto,
+  UpdateMusicDto,
 } from '@libs/common/dtos/medias.dto';
 import { ETypeMedia } from '@libs/common/enums/media.enum';
 
@@ -40,7 +42,7 @@ export class MediaController {
 
   // music
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.MUSIC.CREATE_MUSIC)
-  async create(@Payload() payload: CreateMovieDto) {
+  async create(@Payload() payload: CreateMusicDto) {
     return this.mediaService.saveMusic(payload);
   }
 
@@ -55,7 +57,7 @@ export class MediaController {
   }
 
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.MUSIC.UPDATE_MUSIC)
-  async update(@Payload() payload: UpdateMovieDto) {
+  async update(@Payload() payload: UpdateMusicDto) {
     return this.mediaService.updateMusic(payload.id, payload);
   }
 

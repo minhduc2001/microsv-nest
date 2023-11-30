@@ -52,6 +52,7 @@ export class MediaService extends BaseService<Media> {
     const { genres, authors } = await this._prepare({
       author_ids: dto.authorIds,
       genre_ids: dto.genreIds,
+      type: ETypeMedia.Movies,
     });
 
     await this._beforeCheck({ authors, genres }, ETypeMedia.Movies);
@@ -68,6 +69,7 @@ export class MediaService extends BaseService<Media> {
     const { genres, authors } = await this._prepare({
       author_ids: dto.authorIds,
       genre_ids: dto.genreIds,
+      type: ETypeMedia.Music,
     });
 
     await this._beforeCheck({ authors, genres }, ETypeMedia.Music);
@@ -87,6 +89,7 @@ export class MediaService extends BaseService<Media> {
     const { genres, authors } = await this._prepare({
       author_ids: authorIds,
       genre_ids: genreIds,
+      type: ETypeMedia.Movies,
     });
 
     this._beforeCheck({ authors, genres }, ETypeMedia.Movies);
@@ -113,6 +116,7 @@ export class MediaService extends BaseService<Media> {
     const { genres, authors } = await this._prepare({
       author_ids: authorIds,
       genre_ids: genreIds,
+      type: ETypeMedia.Music,
     });
 
     this._beforeCheck({ authors, genres }, ETypeMedia.Music);
@@ -199,8 +203,6 @@ export class MediaService extends BaseService<Media> {
 
     if (authors.length) {
       for (const author of authors) {
-        console.log(author);
-
         if (
           author.type === ETypeAuthor.Comics ||
           (author.type as number) !== (type as number)
@@ -246,6 +248,7 @@ export class MediaService extends BaseService<Media> {
   private async _prepare({
     genre_ids = [],
     author_ids = [],
+    type = ETypeMedia.Movies,
   }: IPrepareMediaDataOptions): Promise<IPrepareMediaData> {
     let genres: Genre[] = [];
     let authors: Author[] = [];
@@ -254,6 +257,7 @@ export class MediaService extends BaseService<Media> {
       genres = await this.genreRepository
         .createQueryBuilder('genre')
         .where('genre.id IN (:...genre_ids)', { genre_ids })
+        .andWhere('genre.type = :type', { type })
         .select(['genre.id', 'genre.type'])
         .getMany();
     }
@@ -262,6 +266,7 @@ export class MediaService extends BaseService<Media> {
       authors = await this.authorRepository
         .createQueryBuilder('author')
         .where('author.id IN (:...author_ids)', { author_ids })
+        .andWhere('author.type = :type', { type })
         .select(['author.id', 'author.type'])
         .getMany();
     }
