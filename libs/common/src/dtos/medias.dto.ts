@@ -132,6 +132,7 @@ export class CreateMusicDto extends UploadImageDto {
   minAge: number;
 
   @ApiProperty({ example: new Date(), required: false })
+  @Transform(({ value }) => new Date(value))
   @IsDate()
   @IsOptional()
   publishDate: Date;
