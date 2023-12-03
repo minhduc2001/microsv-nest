@@ -77,14 +77,24 @@ export class UserService extends BaseService<User> {
       relations: { profiles: true },
     });
 
-    if (!user)
-      throw new excRpc.NotFound({ message: 'Email does not existed!' });
-
-    if (!user.comparePassword(password))
-      throw new excRpc.BadRequest({ message: 'password incorrect' });
+    if (!user || !user.comparePassword(password))
+      throw new excRpc.BadException({
+        message: 'Email hoặc mật khẩu không đúng!',
+      });
 
     if (!user.isActive)
-      throw new excRpc.BadRequest({ message: 'Account is not activated' });
+      throw new excRpc.BadException({
+        message: 'Tài khoản chưa được kích hoạt',
+      });
+
+    if (dto?.token) {
+      await this.actionsClientProxy
+        .send<any>(ACTIONS_MESSAGE_PATTERN.NOTI.UPDATE, {
+          userId: user.id,
+          token: dto.token,
+        })
+        .toPromise();
+    }
 
     return user;
   }
@@ -96,7 +106,7 @@ export class UserService extends BaseService<User> {
     });
 
     if (checkExisted)
-      throw new excRpc.BadRequest({ message: 'Account has already exist!' });
+      throw new excRpc.BadRequest({ message: 'Tài khoản đã tồn tại!' });
 
     const saveUser = this.repository.create({
       username,
@@ -191,7 +201,7 @@ export class UserService extends BaseService<User> {
     });
     if (!user)
       throw new excRpc.NotFound({
-        message: 'Account does not existed!',
+        message: 'Tài khoản đã tồn tại!',
         errorCode: 'user_not_found',
       });
     return user;
@@ -199,15 +209,14 @@ export class UserService extends BaseService<User> {
 
   async getUserById(id: number) {
     const user = await this.userRepository.findOne({ where: { id } });
-    if (!user)
-      throw new excRpc.NotFound({ message: 'Account does not existed!' });
+    if (!user) throw new excRpc.NotFound({ message: 'Tài khoản đã tồn tại!' });
     return user;
   }
 
   async getUserByEmail(email: string) {
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user)
-      throw new excRpc.BadRequest({ message: 'Account does not existed!' });
+      throw new excRpc.BadRequest({ message: 'Tài khoản đã tồn tại!' });
     return user;
   }
 
@@ -216,17 +225,17 @@ export class UserService extends BaseService<User> {
     const newInfo = Object.assign(new User(), { ...userUpdate });
     await this.userRepository.update(user.id, { ...newInfo });
 
-    return 'Update user info succesful';
+    return 'Cập nhật thông tin thành công';
   }
 
   async activeAccount(email: string) {
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user)
-      throw new excRpc.BadRequest({ message: 'Account does not existed!' });
+      throw new excRpc.BadRequest({ message: 'Tài khoản đã tồn tại!' });
 
     await this.userRepository.update(user.id, { isActive: true });
 
-    return 'Active successful';
+    return 'Kích hoạt tài khoản thành công';
   }
 
   async resetPassword(email: string, password: string) {
@@ -235,7 +244,7 @@ export class UserService extends BaseService<User> {
     newPass.setPassword(password);
     await this.userRepository.update(user.id, { password: newPass.password });
 
-    return 'Reset Password Successful';
+    return 'Thay đổi mật khẩu thành công';
   }
 
   async createUser(data: ICreateUser) {

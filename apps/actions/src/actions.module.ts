@@ -9,6 +9,7 @@ import { LibraryModule } from './modules/library.module';
 import { HistoryModule } from './modules/history.module';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { LoggerModule } from '@libs/logger';
+import { NotiModule } from './modules/noti.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { LoggerModule } from '@libs/logger';
     CommentModule,
     LibraryModule,
     HistoryModule,
+    NotiModule,
   ],
   controllers: [ActionsController],
   providers: [ActionsService],

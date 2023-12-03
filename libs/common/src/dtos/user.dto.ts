@@ -1,4 +1,4 @@
-import { ApiProperty, PickType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, PickType } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsEmail,
@@ -21,6 +21,12 @@ export class LoginDto {
   @IsNotEmpty()
   @Trim()
   password: string;
+
+  @ApiPropertyOptional({ example: '123456' })
+  @IsString()
+  @IsOptional()
+  @Trim()
+  token: string;
 }
 
 export class RegisterDto extends PickType(LoginDto, ['email', 'password']) {

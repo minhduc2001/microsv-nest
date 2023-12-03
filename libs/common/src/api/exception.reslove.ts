@@ -12,7 +12,7 @@ import { Payload, defaultPayload } from './api.schema';
  * @param t {string}: first char of filename
  **/
 
-export const SUCCESS = '000000';
+export const SUCCESS = '200';
 export const UNKNOWN = '999999';
 export const SYSTEM_ERROR = '990001';
 

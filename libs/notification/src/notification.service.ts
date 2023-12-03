@@ -3,20 +3,12 @@ import { Injectable } from '@nestjs/common';
 import {
   IAddGroupDevices,
   IFirebaseSendNotification,
-  IFirebaseSendNotificationGroupDevices,
   IResponseFirebase,
+  IUpdateGroupDevices,
 } from './notification.interface';
-import request from 'request';
 import * as firebase from 'firebase-admin';
 import * as serviceAccount from 'firebase-key.json';
-import {
-  getMessaging,
-  MessagingTopicManagementResponse,
-  TokenMessage,
-  Messaging,
-  MessagingPayload,
-} from 'firebase-admin/messaging';
-import { App, getApp, ServiceAccount } from 'firebase-admin/app';
+import { TokenMessage } from 'firebase-admin/messaging';
 import { NOTIFICATION_PLATFORM } from './notification.enum';
 import { ApiService } from '@libs/api';
 
@@ -54,9 +46,7 @@ export class NotificationService {
     return response.notification_key;
   }
 
-  async updateDeviceGroup(
-    data: IFirebaseSendNotificationGroupDevices,
-  ): Promise<string> {
+  async updateDeviceGroup(data: IUpdateGroupDevices): Promise<string> {
     const options = {
       url: 'https://fcm.googleapis.com/fcm/notification',
       method: 'POST',
@@ -81,37 +71,7 @@ export class NotificationService {
     return response.notification_key;
   }
 
-  async sendGroupDevice(data: IFirebaseSendNotificationGroupDevices) {
-    const app = getApp();
-
-    const payload = {
-      notification: {
-        title: 'New message from John Doe',
-        body: 'You have a new message from John Doe',
-        icon: 'path/to/icon',
-        click_action: '#',
-      },
-      data: {
-        message_id: '123',
-        sender_name: 'John Doe',
-        sender_avatar: 'path/to/avatar',
-        message_content: 'Hello, how are you?',
-      },
-    };
-
-    return getMessaging(app).sendToDeviceGroup(data.notification_key, payload);
-  }
-
-  async send(data: IFirebaseSendNotification) {
-    const app = getApp();
-    const payload = this.createPayload(data, [
-      NOTIFICATION_PLATFORM.web,
-      NOTIFICATION_PLATFORM.android,
-    ]);
-    return getMessaging(app).send(payload);
-  }
-
-  private createPayload(
+  createPayload(
     data: IFirebaseSendNotification,
     platforms: NOTIFICATION_PLATFORM[],
   ) {

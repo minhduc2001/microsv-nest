@@ -12,6 +12,7 @@ import { ProfileController } from './controllers/profile.controller';
 import { ProfileService } from './services/profile.service';
 import { MailerModule } from '@libs/mailer';
 import { CacheModule } from '@libs/cache';
+import { Notification } from '@libs/common/entities/notification/notification.entity';
 
 @Module({
   imports: [
