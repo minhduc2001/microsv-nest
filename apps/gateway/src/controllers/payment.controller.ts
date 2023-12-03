@@ -1,4 +1,4 @@
-import { ApiTagsAndBearer } from '@libs/common/swagger-ui';
+import { ApiCreateOperation, ApiTagsAndBearer } from '@libs/common/swagger-ui';
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
@@ -31,16 +31,14 @@ export class PaymentController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
   @Public()
   @Post('return')
+  @ApiCreateOperation({ summary: 'you can not call this api. warning!!!!' })
   async test(@Body() body: any) {
-    return 'Thử cc';
+    return 'Thử cc! Tò mò cc!';
   }
 }

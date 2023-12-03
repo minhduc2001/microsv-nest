@@ -12,8 +12,6 @@ import {
   Put,
   Query,
   UploadedFile,
-  UploadedFiles,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiConsumes, ApiOperation } from '@nestjs/swagger';
@@ -26,9 +24,6 @@ import {
   FileFieldsInterceptor,
   FileInterceptor,
 } from '@nestjs/platform-express';
-import { RolesGuard } from '../auth/guards/role.guard';
-import { Roles } from '../auth/decorators/role.decorator';
-import { ERole } from '@libs/common/enums/role.enum';
 import {
   CreateMusicDto,
   ListMediaDto,
@@ -63,10 +58,7 @@ export class MusicController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -81,11 +73,7 @@ export class MusicController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-        errorCode: e.errorCode,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -110,10 +98,7 @@ export class MusicController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -140,10 +125,7 @@ export class MusicController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -162,10 +144,7 @@ export class MusicController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -180,10 +159,7 @@ export class MusicController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 }

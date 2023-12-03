@@ -52,10 +52,7 @@ export class ProfileController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -70,10 +67,7 @@ export class ProfileController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -88,10 +82,7 @@ export class ProfileController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -115,10 +106,7 @@ export class ProfileController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -141,10 +129,7 @@ export class ProfileController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -171,10 +156,7 @@ export class ProfileController {
         ...tokens,
       };
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -198,10 +180,7 @@ export class ProfileController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -216,10 +195,7 @@ export class ProfileController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 }

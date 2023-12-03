@@ -56,10 +56,7 @@ export class MovieController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -74,11 +71,7 @@ export class MovieController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-        errorCode: e.errorCode,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -103,10 +96,7 @@ export class MovieController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -133,10 +123,7 @@ export class MovieController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -156,10 +143,7 @@ export class MovieController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -174,10 +158,7 @@ export class MovieController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 }

@@ -35,7 +35,6 @@ import { AuthGuard } from '@nestjs/passport';
 import { CacheService } from '@libs/cache';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User } from '@libs/common/entities/user/user.entity';
-import { ERole } from '@libs/common/enums/role.enum';
 
 @ApiTagsAndBearer('User')
 @Controller('user')
@@ -65,10 +64,7 @@ export class UserController {
         ...tokens,
       };
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -84,10 +80,7 @@ export class UserController {
 
       return data;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -96,10 +89,7 @@ export class UserController {
     try {
       return user;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -142,11 +132,7 @@ export class UserController {
 
       return data;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-        errorCode: e.errorCode,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -159,10 +145,7 @@ export class UserController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -178,10 +161,7 @@ export class UserController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -197,10 +177,7 @@ export class UserController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -218,10 +195,7 @@ export class UserController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -237,10 +211,7 @@ export class UserController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -256,10 +227,7 @@ export class UserController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -283,10 +251,7 @@ export class UserController {
       if (resp) await this.cacheService.del(body.email);
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 }

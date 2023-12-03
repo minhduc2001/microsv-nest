@@ -89,7 +89,14 @@ export class CustomError<TData> extends BaseException<TData> {
   constructor(payload: Payload<TData>) {
     let statusCode = 200;
     if (typeof payload.statusCode != 'number') statusCode = 500;
+    if ('status' in payload) {
+      statusCode = payload['status'] as number;
+      delete payload?.status;
+    }
     if (typeof payload.statusCode == 'number') statusCode = payload.statusCode;
+    if (!payload.success && payload.errorCode === '200')
+      payload.errorCode = '500';
+
     super(payload, statusCode);
   }
 }

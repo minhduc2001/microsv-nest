@@ -52,7 +52,7 @@ export class ComicsController {
       );
       return resp;
     } catch (e) {
-      throw new exc.BadException({ message: e.message ?? e });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -67,7 +67,7 @@ export class ComicsController {
       );
       return resp;
     } catch (e) {
-      throw new exc.BadException({ message: e.message ?? e });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -88,7 +88,7 @@ export class ComicsController {
       );
       return resp;
     } catch (e) {
-      throw new exc.BadException({ message: e.message ?? e });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -112,7 +112,7 @@ export class ComicsController {
       );
       return resp;
     } catch (e) {
-      throw new exc.BadException({ message: e.message ?? e });
+      throw new exc.CustomError(e);
     }
   }
 }

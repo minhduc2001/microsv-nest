@@ -54,11 +54,7 @@ export class PackageController {
 
       return data;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-        errorCode: e.errorCode,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -76,11 +72,7 @@ export class PackageController {
 
       return data;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-        errorCode: e.errorCode,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -102,7 +94,7 @@ export class PackageController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({ message: e.message ?? e });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -127,10 +119,7 @@ export class PackageController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -146,10 +135,7 @@ export class PackageController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 
@@ -165,10 +151,7 @@ export class PackageController {
       );
       return resp;
     } catch (e) {
-      throw new exc.CustomError({
-        message: e.message,
-        statusCode: e?.status ?? e,
-      });
+      throw new exc.CustomError(e);
     }
   }
 }
