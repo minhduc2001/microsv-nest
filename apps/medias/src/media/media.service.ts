@@ -136,6 +136,13 @@ export class MediaService extends BaseService<Media> {
     return media.save();
   }
 
+  async updateUrl(id: number, url: string, type: ETypeMedia) {
+    const media = await this.findOne(id, type);
+
+    media.url = url;
+    return media.save();
+  }
+
   async list(query: ListMediaDto, type: ETypeMedia) {
     const config: PaginateConfig<Media> = {
       sortableColumns: ['id', 'updatedAt'],

@@ -138,11 +138,12 @@ export class UserController {
 
   @Post('register')
   @Public()
-  async register(@Body() body: RegisterDto) {
+  async register(@Body() body: RegisterDto, @Res() res: Response) {
     try {
       const resp = await firstValueFrom(
         this.userClientProxy.send<any>(USER_MESSAGE_PATTERNS.REGISTER, body),
       );
+      res.redirect('zappy://check.com');
       return resp;
     } catch (e) {
       throw new exc.CustomError(e);

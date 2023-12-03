@@ -87,6 +87,8 @@ export abstract class BaseException<TData> extends HttpException {
 
 export class CustomError<TData> extends BaseException<TData> {
   constructor(payload: Payload<TData>) {
+    if (typeof payload !== 'object')
+      payload = { message: JSON.stringify(payload) };
     let statusCode = 200;
     if (typeof payload.statusCode != 'number') statusCode = 500;
     if ('status' in payload) {

@@ -5,6 +5,7 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   Inject,
   Param,
   Patch,
@@ -134,12 +135,15 @@ export class MusicController {
   async updateUrl(
     @Param() param: ParamIdDto,
     @Body() body: { filename: string },
+    @Headers() header: any,
   ) {
+    console.log(header);
+
     try {
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.MUSIC.UPDATE_URL_MUSIC,
-          { param, body },
+          { ...param, ...body },
         ),
       );
       return resp;

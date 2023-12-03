@@ -42,8 +42,8 @@ export class RegisterDto extends PickType(LoginDto, ['email', 'password']) {
   @Trim()
   phone: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @Trim()
   address: string;
 }

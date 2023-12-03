@@ -138,7 +138,7 @@ export class MovieController {
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.MOVIE.UPDATE_URL_MOVIE,
-          { param, body },
+          { ...param, ...body },
         ),
       );
       return resp;

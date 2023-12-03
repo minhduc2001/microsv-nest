@@ -30,6 +30,14 @@ export class MediaController {
     return this.mediaService.findOne(id, ETypeMedia.Movies);
   }
 
+  @MessagePattern(MEDIAS_MESSAGE_PATTERN.MOVIE.UPDATE_URL_MOVIE)
+  async updateUrlMovies(
+    @Payload('id') id: number,
+    @Payload('url') url: string,
+  ) {
+    return this.mediaService.updateUrl(id, url, ETypeMedia.Movies);
+  }
+
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.MOVIE.UPDATE_MOVIE)
   async updateMovie(@Payload() payload: UpdateMovieDto) {
     return this.mediaService.updateMovie(payload.id, payload);
@@ -54,6 +62,11 @@ export class MediaController {
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.MUSIC.GET_MUSIC)
   async findOne(@Payload('id') id: number) {
     return this.mediaService.findOne(id, ETypeMedia.Music);
+  }
+
+  @MessagePattern(MEDIAS_MESSAGE_PATTERN.MUSIC.UPDATE_URL_MUSIC)
+  async updateUrlMusic(@Payload('id') id: number, @Payload('url') url: string) {
+    return this.mediaService.updateUrl(id, url, ETypeMedia.Music);
   }
 
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.MUSIC.UPDATE_MUSIC)
