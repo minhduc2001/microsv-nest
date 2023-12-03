@@ -27,21 +27,14 @@ export class CustomRpcExceptionFilter
     const meta = _data.headers;
     const path = _data.topic;
 
-    let error_data = {} as any;
-    let status_code = 500;
-
-    if (exception instanceof HttpException) {
-      error_data = exception.getResponse();
-      status_code = exception.getStatus();
-    }
-    this.logger.error(exception);
-
     if ('response' in exception) {
+      console.log('vao day');
+
       // @ts-ignore
       const response = exception.response;
 
       return throwError(() => ({
-        message: response.message,
+        message: response?.message,
         data: response.data ?? null,
         errorCode: response.errorCode ?? '000000',
         // @ts-ignore
@@ -53,7 +46,9 @@ export class CustomRpcExceptionFilter
 
     return throwError(() => ({
       errorCode: excRpc.UNKNOWN,
-      message: exception.message,
+      message:
+        exception?.message ??
+        'Uh oh! Something went wrong in RPC. Please report to develop team.',
       status: 500,
     }));
   }
