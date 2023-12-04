@@ -35,6 +35,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { CacheService } from '@libs/cache';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User } from '@libs/common/entities/user/user.entity';
+import { MailerService } from '@libs/mailer';
 
 @ApiTagsAndBearer('User')
 @Controller('user')
@@ -44,6 +45,7 @@ export class UserController {
     private readonly userService: UserService,
     @Inject(RabbitServiceName.USER) private userClientProxy: ClientProxy,
     private readonly cacheService: CacheService,
+    private readonly mailerService: MailerService,
   ) {}
 
   @Post('login')
@@ -56,7 +58,7 @@ export class UserController {
 
       const tokens = await this.userService.getTokens({
         sub: data.id,
-        email: data.enail,
+        email: data.email,
       });
 
       return {
@@ -138,12 +140,37 @@ export class UserController {
 
   @Post('register')
   @Public()
-  async register(@Body() body: RegisterDto, @Res() res: Response) {
+  async register(
+    @Body() body: RegisterDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     try {
       const resp = await firstValueFrom(
         this.userClientProxy.send<any>(USER_MESSAGE_PATTERNS.REGISTER, body),
       );
-      res.redirect('zappy://check.com');
+
+      const tokens = await this.userService.getTokens(
+        {
+          sub: resp.id,
+          email: resp.email,
+        },
+        { expiresIn: '10m' },
+      );
+      console.log('vao day', resp);
+
+      await this.mailerService.sendMail({
+        to: resp.email,
+        subject: 'Xác thực tài khoản Zappy.',
+        body: {
+          title: 'Xác thực tài khoản Zappy.',
+          content:
+            'Để có thể sử dụng hệ thống Zappy, bạn cần phải xác thực tài khoản. Vui lòng nhấn vào nút bên dưới để xác thực tài khoản.',
+          username: resp.username,
+          url: `http://localhost:8080/active-user?email=${resp.email}&accessToken=${tokens.accessToken}`,
+        },
+        template: 'email-signup',
+      });
+
       return resp;
     } catch (e) {
       throw new exc.CustomError(e);

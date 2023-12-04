@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { IJWTPayload } from '../auth/interfaces/auth.interface';
 import { envService } from '@libs/env';
 
@@ -7,8 +7,8 @@ import { envService } from '@libs/env';
 export class UserService {
   constructor(private jwtService: JwtService) {}
 
-  async getTokens(payload: IJWTPayload) {
-    const accessToken = this.jwtService.sign(payload);
+  async getTokens(payload: IJWTPayload, options?: JwtSignOptions) {
+    const accessToken = this.jwtService.sign(payload, options);
     const refreshToken = this.jwtService.sign(payload, {
       secret: envService.JWT_RT_SECRET,
       expiresIn: '7d',

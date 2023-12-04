@@ -138,21 +138,11 @@ export class UserService extends BaseService<User> {
         .toPromise();
     }
 
-    // send mail
-    await this.mailerService.sendMail({
-      to: saveUser.email,
-      subject: 'Xác thực tài khoản Zappy.',
-      body: {
-        title: 'Xác thực tài khoản Zappy.',
-        content:
-          'Để có thể sử dụng hệ thống Zappy, bạn cần phải xác thực tài khoản. Vui lòng nhấn vào nút bên dưới để xác thực tài khoản.',
-        username,
-        url: `http:localhost:8081/api/v1/user/active?email=${saveUser.email}`,
-      },
-      template: 'email-signup',
-    });
-
-    return 'Register Successful!';
+    return {
+      id: saveUser.id,
+      email: saveUser.email,
+      username: saveUser.username,
+    };
   }
 
   async createUserByAdmin(newUser: IAddUserByAdmin) {

@@ -9,6 +9,7 @@ import { UserService } from '../services/user.service';
 import { ProfileController } from '../controllers/profile.controller';
 import { JwtStrategy } from '../auth/strategies/jwt.stategy';
 import { GoogleStrategy } from '../auth/strategies/google.strategy';
+import { MailerModule } from '@libs/mailer';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { GoogleStrategy } from '../auth/strategies/google.strategy';
       secret: envService.JWT_SECRET,
       signOptions: { expiresIn: '10d' },
     }),
+    MailerModule,
   ],
   controllers: [UserController, ProfileController],
   providers: [UserService, JwtStrategy, GoogleStrategy],
