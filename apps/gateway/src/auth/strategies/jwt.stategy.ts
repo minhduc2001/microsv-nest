@@ -44,10 +44,14 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       }
 
       const user = await lastValueFrom(
-        this.userClientProxy.send<any>(USER_MESSAGE_PATTERNS.GET_USER, {
-          id: payload.sub,
-        }),
+        this.userClientProxy.send<any>(
+          USER_MESSAGE_PATTERNS.GET_USER_BY_STRATEGY,
+          {
+            id: payload.sub,
+          },
+        ),
       );
+
       if (!user) throw new exc.Unauthorized({ message: 'Token is not valid' });
 
       delete user?.password;

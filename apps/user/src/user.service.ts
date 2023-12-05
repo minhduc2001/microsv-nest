@@ -199,14 +199,28 @@ export class UserService extends BaseService<User> {
 
   async getUserById(id: number) {
     const user = await this.userRepository.findOne({ where: { id } });
-    if (!user) throw new excRpc.NotFound({ message: 'Tài khoản đã tồn tại!' });
+    if (!user)
+      throw new excRpc.NotFound({ message: 'Tài khoản không tồn tại!' });
+    return user;
+  }
+
+  async getUserByStrategy(id: number) {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where({ id })
+      .leftJoinAndSelect('user.profiles', 'profile')
+      .select(['user.id', 'email', 'user.isActive', 'golds', 'profile.id'])
+      .getOne();
+
+    if (!user)
+      throw new excRpc.NotFound({ message: 'Tài khoản không tồn tại!' });
     return user;
   }
 
   async getUserByEmail(email: string) {
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user)
-      throw new excRpc.BadRequest({ message: 'Tài khoản đã tồn tại!' });
+      throw new excRpc.BadRequest({ message: 'Tài khoản không tồn tại!' });
     return user;
   }
 
@@ -221,7 +235,7 @@ export class UserService extends BaseService<User> {
   async activeAccount(email: string) {
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user)
-      throw new excRpc.BadRequest({ message: 'Tài khoản đã tồn tại!' });
+      throw new excRpc.BadRequest({ message: 'Tài khoản không tồn tại!' });
 
     await this.userRepository.update(user.id, { isActive: true });
 

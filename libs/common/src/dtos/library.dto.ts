@@ -10,6 +10,7 @@ import { ListDto } from './common.dto';
 import { Profile } from '../entities/user/profile.entity';
 import { ToNumber, Trim } from '../decorators/common.decorator';
 import { AuthType } from '../interfaces/common.interface';
+import { User } from '../entities/user/user.entity';
 
 export class ListLibraryDto extends ListDto {
   @ApiHideProperty()
@@ -91,4 +92,22 @@ export class UpdateLibraryDto {
   @ApiHideProperty()
   @IsOptional()
   user?: AuthType;
+}
+
+export class AddLibraryChildDto {
+  @ApiProperty()
+  @ToNumber()
+  @IsNotEmpty()
+  @IsPositive()
+  profileId: number;
+
+  @ApiProperty()
+  @ToNumber()
+  @IsNotEmpty()
+  @IsPositive()
+  id: number;
+
+  @ApiHideProperty()
+  @IsOptional()
+  user?: User;
 }

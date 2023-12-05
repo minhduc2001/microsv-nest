@@ -19,4 +19,15 @@ export class UserService {
       refreshToken,
     };
   }
+
+  async verifyToken(token: string, email: string) {
+    const decode = this.jwtService.decode(token);
+
+    console.log(decode);
+
+    // return this.jwtService.verify(token, {
+    //   secret: envService.JWT_SECRET,
+    // });
+    return false;
+  }
 }

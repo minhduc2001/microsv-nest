@@ -3,6 +3,7 @@ import { LibraryService } from '../services/library.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ACTIONS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
 import {
+  AddLibraryChildDto,
   CreateLibraryChildDto,
   CreateLibraryDto,
   ListLibraryChildDto,
@@ -44,9 +45,21 @@ export class LibraryController {
     return this.libraryChildService.listLibraryChild(query);
   }
 
+  @MessagePattern(
+    ACTIONS_MESSAGE_PATTERN.LIBRARY.LIST_LIBRARY_CHILD_BOUGHT_BY_USER,
+  )
+  async listBoughtCLib(@Payload('userId') userId: number) {
+    return this.libraryChildService.listBoughtLibraryChild(userId);
+  }
+
   @MessagePattern(ACTIONS_MESSAGE_PATTERN.LIBRARY.ADD_LIBRARY)
   async addC(@Payload() payload: CreateLibraryChildDto) {
     return this.libraryChildService.createLibraryChild(payload);
+  }
+
+  @MessagePattern(ACTIONS_MESSAGE_PATTERN.LIBRARY.ADD_C_LIBRARY)
+  async addCL(@Payload() payload: AddLibraryChildDto) {
+    return this.libraryChildService.addLibraryChild(payload);
   }
 
   @MessagePattern(ACTIONS_MESSAGE_PATTERN.LIBRARY.DELETE_C_LIB)

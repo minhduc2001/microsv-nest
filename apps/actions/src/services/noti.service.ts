@@ -77,16 +77,16 @@ export class NotiService extends BaseService<Notification> {
 
     const payload = {
       notification: {
-        title: 'New message from John Doe',
-        body: 'You have a new message from John Doe',
+        title: 'New message from Admin',
+        body: 'You have a new message from Admin',
         icon: 'path/to/icon',
         click_action: '#',
       },
       data: {
         message_id: '123',
-        sender_name: 'John Doe',
-        sender_avatar: 'path/to/avatar',
-        message_content: 'Hello, how are you?',
+        sender_name: `Admin`,
+        sender_avatar: `${data.data.sender_avatar}`,
+        message_content: `${data.data.message_content}?`,
       },
     };
 

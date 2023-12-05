@@ -63,6 +63,11 @@ export class UserController {
     return this.userService.getUserById(id);
   }
 
+  @MessagePattern(USER_MESSAGE_PATTERNS.GET_USER_BY_STRATEGY)
+  async getUserByStrategy(@Payload('id') id: number) {
+    return this.userService.getUserByStrategy(id);
+  }
+
   @MessagePattern(USER_MESSAGE_PATTERNS.UPDATE_USER)
   async updateUserById(
     @Payload('id') userId: number,

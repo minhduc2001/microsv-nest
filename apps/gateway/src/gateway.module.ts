@@ -30,7 +30,7 @@ const coreModule = [
 ];
 const rabbitModule = [
   RabbitModule.forClientProxy(RabbitServiceName.USER),
-  // RabbitModule.forClientProxy(RabbitServiceName.PAYMENT_SYSTEM),
+  RabbitModule.forClientProxy(RabbitServiceName.ACTIONS),
 ];
 @Module({
   imports: [

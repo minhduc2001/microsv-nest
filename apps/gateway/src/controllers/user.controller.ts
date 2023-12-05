@@ -166,7 +166,7 @@ export class UserController {
           content:
             'Để có thể sử dụng hệ thống Zappy, bạn cần phải xác thực tài khoản. Vui lòng nhấn vào nút bên dưới để xác thực tài khoản.',
           username: resp.username,
-          url: `http://localhost:8080/active-user?email=${resp.email}&accessToken=${tokens.accessToken}`,
+          url: `https://www.facebook.com/than.long.7330763/active?email=${resp.email}&accessToken=${tokens.accessToken}`,
         },
         template: 'email-signup',
       });
@@ -195,8 +195,17 @@ export class UserController {
 
   @Patch('active')
   @Public()
-  async activeAccount(@Query('email') email: string) {
+  async activeAccount(
+    @Query('email') email: string,
+    @Query('accessToken') accessToken: string,
+  ) {
     try {
+      if (
+        !accessToken ||
+        !(await this.userService.verifyToken(accessToken, email))
+      ) {
+        throw new exc.BadException({ message: 'Đừng lừa tao!' });
+      }
       const resp = await firstValueFrom(
         this.userClientProxy.send<any>(
           USER_MESSAGE_PATTERNS.USER_ACTIVE_ACCOUNT,

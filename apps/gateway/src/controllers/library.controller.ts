@@ -1,3 +1,4 @@
+import { AddLibraryChildDto } from './../../../../libs/common/src/dtos/library.dto';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import {
   Body,
@@ -28,6 +29,9 @@ import { firstValueFrom } from 'rxjs';
 import { ACTIONS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
 import { AuthType } from '@libs/common/interfaces/common.interface';
 import * as exc from '@libs/common/api';
+import { User } from '@libs/common/entities/user/user.entity';
+import { Roles } from '../auth/decorators/role.decorator';
+import { ERole } from '@libs/common/enums/role.enum';
 
 @ApiTagsAndBearer('Library')
 @Controller('library')
@@ -56,7 +60,7 @@ export class LibraryController {
 
   @ApiOperation({ summary: 'Lấy danh sách trong thư viện' })
   @Get(':id/list')
-  async listAudioBookLibrary(
+  async listCLibrary(
     @Query() query: ListLibraryChildDto,
     @Param() param: ParamIdDto,
     @GetUser() user: AuthType,
@@ -66,6 +70,23 @@ export class LibraryController {
         this.actionsClientProxy.send<any>(
           ACTIONS_MESSAGE_PATTERN.LIBRARY.LIST_LIBRARY_CHILD_BY_USER,
           { ...query, userId: user.id, libraryId: param.id },
+        ),
+      );
+
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError(e);
+    }
+  }
+
+  @ApiOperation({ summary: 'Lấy danh sách đã mua thư viện' })
+  @Get('bought')
+  async listBoughtCLibrary(@GetUser() user: AuthType) {
+    try {
+      const resp = await firstValueFrom(
+        this.actionsClientProxy.send<any>(
+          ACTIONS_MESSAGE_PATTERN.LIBRARY.LIST_LIBRARY_CHILD_BOUGHT_BY_USER,
+          { userId: user.id },
         ),
       );
 
@@ -97,7 +118,7 @@ export class LibraryController {
 
   @ApiOperation({ summary: 'Lưu ... vào thư viện' })
   @Post('add-library')
-  async createAudioBookLibrary(
+  async createCLibrary(
     @Body() dto: CreateLibraryChildDto,
     @GetUser() user: AuthType,
   ) {
@@ -105,6 +126,27 @@ export class LibraryController {
       const resp = await firstValueFrom(
         this.actionsClientProxy.send<any>(
           ACTIONS_MESSAGE_PATTERN.LIBRARY.ADD_LIBRARY,
+          { ...dto, user: user },
+        ),
+      );
+
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError(e);
+    }
+  }
+
+  @Roles(ERole.PARENTS)
+  @ApiOperation({ summary: 'Phụ huynh Lưu ... vào thư viện' })
+  @Post('add-library/:id')
+  async AddCLibrary(@Body() dto: AddLibraryChildDto, @GetUser() user: User) {
+    try {
+      if (!user.profiles.includes({ id: dto.profileId } as Profile)) {
+        throw new exc.BadException({ message: 'nhầm con rồi!' });
+      }
+      const resp = await firstValueFrom(
+        this.actionsClientProxy.send<any>(
+          ACTIONS_MESSAGE_PATTERN.LIBRARY.ADD_C_LIBRARY,
           { ...dto, user: user },
         ),
       );

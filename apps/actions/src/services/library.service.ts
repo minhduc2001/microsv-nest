@@ -62,6 +62,15 @@ export class LibraryService extends BaseService<Library> {
     return library;
   }
 
+  async getLibraryByName(name: string, user: AuthType) {
+    const library = await this.repository.findOne({
+      where: { name: name, userId: user.id },
+    });
+    if (!library)
+      throw new excRpc.NotFound({ message: 'Không tồn tại thư viện' });
+    return library;
+  }
+
   async deleteLibrary(id: number, user: AuthType) {
     const check: string[] = ['yeu thich', 'da mua', 'danh sach phat'];
     const lib = await this.getLibrary(id, user);
