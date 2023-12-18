@@ -15,7 +15,11 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiConsumes, ApiTagsAndBearer } from '@libs/common/swagger-ui';
+import {
+  ApiConsumes,
+  ApiCreateOperation,
+  ApiTagsAndBearer,
+} from '@libs/common/swagger-ui';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { ClientProxy } from '@nestjs/microservices';
 import { query } from 'express';
@@ -34,6 +38,7 @@ export class AuthorController {
     private uploadService: UploadService,
   ) {}
 
+  @ApiCreateOperation({ summary: 'Lấy danh sách tác giả' })
   @Get()
   async getListAuthor(@Query() query: ListDto) {
     try {
@@ -49,6 +54,7 @@ export class AuthorController {
     }
   }
 
+  @ApiCreateOperation({ summary: 'Lấy danh sách tác giả của truyện' })
   @Get('/comic')
   async getListAuthorComic(@Query() query: ListDto) {
     try {
@@ -64,6 +70,7 @@ export class AuthorController {
     }
   }
 
+  @ApiCreateOperation({ summary: 'Lấy danh sách tác giả của phim' })
   @Get('movie')
   async getListAuthorMovie(@Query() query: ListDto) {
     try {
@@ -79,6 +86,7 @@ export class AuthorController {
     }
   }
 
+  @ApiCreateOperation({ summary: 'Lấy danh sách tác giả của nhạc' })
   @Get('music')
   async getListAuthorMusic(@Query() query: ListDto) {
     try {
@@ -94,6 +102,7 @@ export class AuthorController {
     }
   }
 
+  @ApiCreateOperation({ summary: 'Lấy chi tiết 1 tác giả' })
   @Get(':id')
   async getAuthor(@Param() param: ParamIdDto) {
     try {
@@ -111,6 +120,7 @@ export class AuthorController {
 
   @Post()
   @Public()
+  @ApiCreateOperation({ summary: 'Tạo mới 1 tác giả' })
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
   async createAuthor(
@@ -137,6 +147,7 @@ export class AuthorController {
   @Public()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
+  @ApiCreateOperation({ summary: 'cập nhật 1 tác giả' })
   async updateAuthor(
     @Param() param: ParamIdDto,
     @Body() payload: UpdateAuthorDto,

@@ -11,7 +11,7 @@ import { ClientProxy } from '@nestjs/microservices';
 
 // libs
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
-import { ApiTagsAndBearer } from '@libs/common/swagger-ui';
+import { ApiCreateOperation, ApiTagsAndBearer } from '@libs/common/swagger-ui';
 
 // apps
 import { Auth } from './auth/decorators/auth.decorator';
@@ -28,18 +28,31 @@ export class GatewayController {
     @Inject(RabbitServiceName.ACTIONS) private actionsClientProxy: ClientProxy,
   ) {}
 
-  @Patch('test')
-  public test() {
-    console.log('ngo minh duc');
+  // @Patch('test')
+  // public test() {
+  //   console.log('ngo minh duc');
 
-    return 'ok';
-  }
+  //   return 'ok';
+  // }
+
+  @Get('stats')
+  public a() {}
+
+  @Get('stats/revenue')
+  @ApiCreateOperation({ summary: 'Thống kê doanh thu' })
+  public b() {}
+
+  @Get('stats/media')
+  @ApiCreateOperation({ summary: 'Thống kê nội dung' })
+  public c() {}
+
+  @ApiCreateOperation({ summary: 'Thống kê theo thời gian sử dụng' })
+  @Get('stats/on-screen')
+  public d() {}
 
   @Get('noti')
   @Public()
   public async testNoti() {
-    console.log('ngo minh duc');
-
     const data: IFirebaseSendNotificationGroupDevices = {
       notification: {
         title: 'string',

@@ -116,7 +116,7 @@ export class LibraryController {
     }
   }
 
-  @ApiOperation({ summary: 'Lưu ... vào thư viện' })
+  @ApiOperation({ summary: 'Lưu nội dung vào thư viện' })
   @Post('add-library')
   async createCLibrary(
     @Body() dto: CreateLibraryChildDto,
@@ -137,7 +137,7 @@ export class LibraryController {
   }
 
   @Roles(ERole.PARENTS)
-  @ApiOperation({ summary: 'Phụ huynh Lưu ... vào thư viện' })
+  @ApiOperation({ summary: 'Phụ huynh Lưu nội dung vào thư viện' })
   @Post('add-library/:id')
   async AddCLibrary(@Body() dto: AddLibraryChildDto, @GetUser() user: User) {
     try {

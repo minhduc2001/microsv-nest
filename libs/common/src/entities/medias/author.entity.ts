@@ -21,6 +21,6 @@ export class Author extends AbstractEntity {
   @ManyToMany(() => Media, (media) => media.authors)
   medias: Media[];
 
-  @ManyToMany(() => Comics, (comics) => comics.author)
+  @ManyToMany(() => Comics, (comics) => comics.authors)
   comics: Comics[];
 }

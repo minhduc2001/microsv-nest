@@ -1,4 +1,8 @@
-import { ApiConsumes, ApiTagsAndBearer } from '@libs/common/swagger-ui';
+import {
+  ApiConsumes,
+  ApiCreateOperation,
+  ApiTagsAndBearer,
+} from '@libs/common/swagger-ui';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import {
   Body,
@@ -41,6 +45,7 @@ export class ProfileController {
     private uploadService: UploadService,
   ) {}
 
+  @ApiCreateOperation({ summary: 'Lấy danh sách profile' })
   @Get()
   async getAllProfileOfLoginUser(@GetUser('id') userId: number) {
     try {
@@ -56,6 +61,7 @@ export class ProfileController {
     }
   }
 
+  @ApiCreateOperation({ summary: 'Lấy chi tiết profile' })
   @Get(':id')
   async getProfileById(@Param() params: ParamIdDto) {
     try {
@@ -72,6 +78,7 @@ export class ProfileController {
   }
 
   @Get('user/:id')
+  @ApiCreateOperation({ summary: 'Lấy danh sách profile theo user' })
   async getAllProfileByUserId(@Param() params: ParamIdDto) {
     try {
       const resp = await firstValueFrom(
@@ -88,6 +95,7 @@ export class ProfileController {
 
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('avatar'))
+  @ApiCreateOperation({ summary: 'Tạo mới profile' })
   @Post()
   async createProfile(
     @Body() body: CreateProfileDto,
@@ -113,6 +121,7 @@ export class ProfileController {
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('avatar'))
   @Post('admin')
+  @ApiCreateOperation({ summary: '' })
   async createProfileByAdmin(
     @Body() body: CreateProfileDtoByAdmin,
     @UploadedFile() file: Express.Multer.File,
@@ -134,6 +143,7 @@ export class ProfileController {
   }
 
   @Post('login')
+  @ApiCreateOperation({ summary: 'Đăng nhập vào profile' })
   async loginWithProfile(
     @Body() payload: LoginProfileDto,
     @GetUser() user: User,
@@ -163,6 +173,7 @@ export class ProfileController {
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('avatar'))
   @Patch(':id')
+  @ApiCreateOperation({ summary: 'Cập nhật profile' })
   async updateProfile(
     @Param() params: ParamIdDto,
     @Body() body: UpdateProfileDto,
@@ -185,6 +196,7 @@ export class ProfileController {
   }
 
   @Delete()
+  @ApiCreateOperation({ summary: 'Xóa nhiều profile' })
   async removeProfiles(@Body() payload: IdsDto) {
     try {
       const resp = await firstValueFrom(

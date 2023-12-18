@@ -6,7 +6,11 @@ import {
   UpdatePackageDto,
   UpdateStatePackageDto,
 } from '@libs/common/dtos/payment-system.dto';
-import { ApiConsumes, ApiTagsAndBearer } from '@libs/common/swagger-ui';
+import {
+  ApiConsumes,
+  ApiCreateOperation,
+  ApiTagsAndBearer,
+} from '@libs/common/swagger-ui';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import {
   Body,
@@ -43,6 +47,7 @@ export class PackageController {
   ) {}
 
   @Get('')
+  @ApiCreateOperation({ summary: 'Lấy danh sách gói' })
   async listPackage(@Query() query: ListPackageDto, @GetUser() user: User) {
     try {
       const data = await firstValueFrom(
@@ -59,6 +64,7 @@ export class PackageController {
   }
 
   @Get(':id')
+  @ApiCreateOperation({ summary: 'Lấy chi tiết gói' })
   async getOne(@Param() param: ParamIdDto, @GetUser() user: User) {
     try {
       console.log({ ...param, user: user });
@@ -80,6 +86,7 @@ export class PackageController {
   @Post()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
+  @ApiCreateOperation({ summary: 'Tạo gói mới' })
   async create(
     @Body() payload: CreatePackageDto,
     @UploadedFile() file: Express.Multer.File,
@@ -102,6 +109,7 @@ export class PackageController {
   @Put(':id')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
+  @ApiCreateOperation({ summary: 'Cập nhật truyện' })
   async update(
     @Body() payload: UpdatePackageDto,
     @UploadedFile() file: Express.Multer.File,
@@ -125,6 +133,7 @@ export class PackageController {
 
   @Roles(ERole.ADMIN)
   @Put(':id/state')
+  @ApiCreateOperation({ summary: 'Cập nhật trạng thái gói' })
   async updateState(@Body() payload: UpdateStatePackageDto) {
     try {
       const resp = await firstValueFrom(
@@ -141,6 +150,7 @@ export class PackageController {
 
   @Roles(ERole.ADMIN)
   @Delete('')
+  @ApiCreateOperation({ summary: 'xóa gói' })
   async delete(@Body() payload: IdsDto) {
     try {
       const resp = await firstValueFrom(

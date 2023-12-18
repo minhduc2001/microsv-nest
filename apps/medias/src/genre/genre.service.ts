@@ -4,9 +4,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as excRpc from '@libs/common/api';
-import { CreateGenreDto, UpdateGenreDto } from '@libs/common/dtos/genre.dto';
+import {
+  CreateGenreDto,
+  ListGenreDto,
+  UpdateGenreDto,
+} from '@libs/common/dtos/genre.dto';
 import { ListDto } from '@libs/common/dtos/common.dto';
 import { PaginateConfig } from '@libs/common/services/paginate';
+import { ETypeGenre, ETypeMedia } from '@libs/common/enums/media.enum';
 
 @Injectable()
 export class GenreService extends BaseService<Genre> {
@@ -23,6 +28,22 @@ export class GenreService extends BaseService<Genre> {
       searchableColumns: ['name'],
     };
     return this.listWithPage(query, config);
+  }
+
+  async getListGenresGR(query: ListGenreDto) {
+    const config: PaginateConfig<Genre> = {
+      defaultSortBy: [['updatedAt', 'DESC']],
+      sortableColumns: ['id'],
+      searchableColumns: ['name'],
+      where: { type: query.type as number },
+    };
+
+    const queryB = this.repository
+      .createQueryBuilder('genre')
+      .leftJoinAndSelect('genre.medias', 'media');
+    // .where('media.type = :type', { type: query.type });
+    // .andWhere('genre.type', { type: query.type as number });
+    return this.listWithPage(query, config, queryB);
   }
 
   async createGenre(payload: CreateGenreDto) {

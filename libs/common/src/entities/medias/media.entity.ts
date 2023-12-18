@@ -20,6 +20,7 @@ import { EState } from '@libs/common/enums/common.enum';
 import { BadException } from '@libs/common/api';
 
 @Entity()
+// @Where('DELETE_FLAG = 0')
 export class Media extends AbstractEntity {
   @Column()
   title: string;
@@ -69,7 +70,11 @@ export class Media extends AbstractEntity {
 
   @AfterLoad()
   afterload() {
+    if (!this.isAccess && this.golds > 0) {
+      this.isAccess = false;
+      delete this.url;
+    } else this.isAccess = true;
+
     if (this.url) this.url = convertUrl(this.url, this.type);
-    if (!this.isAccess && this.golds > 0) this.isAccess = false;
   }
 }

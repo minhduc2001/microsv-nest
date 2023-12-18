@@ -1,4 +1,4 @@
-import { ApiTagsAndBearer } from '@libs/common/swagger-ui';
+import { ApiCreateOperation, ApiTagsAndBearer } from '@libs/common/swagger-ui';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import {
   Body,
@@ -50,6 +50,7 @@ export class UserController {
 
   @Post('login')
   @Public()
+  @ApiCreateOperation({ summary: 'Đăng nhập vào hệ thống' })
   async login(@Body() body: LoginDto) {
     try {
       const data = await firstValueFrom(
@@ -71,6 +72,7 @@ export class UserController {
   }
 
   @Get()
+  @ApiCreateOperation({ summary: 'Lấy danh sách user' })
   async getAllUsers(@Query() query: ListDto) {
     try {
       const data = await firstValueFrom(
@@ -87,8 +89,11 @@ export class UserController {
   }
 
   @Get('me')
+  @ApiCreateOperation({ summary: 'Lấy thông tin của bản thân' })
   async getMe(@GetUser() user: User) {
     try {
+      console.log(user);
+
       return user;
     } catch (e) {
       throw new exc.CustomError(e);
@@ -98,6 +103,7 @@ export class UserController {
   @Get('google')
   @Public()
   @UseGuards(AuthGuard('google'))
+  @ApiCreateOperation({ summary: 'Đăng nhập bằng google' })
   async googleAuth(@Req() req: Request) {}
 
   @Get('google/redirect')
@@ -123,6 +129,7 @@ export class UserController {
   }
 
   @Get(':id')
+  @ApiCreateOperation({ summary: 'Lấy chi tiết 1 user' })
   async getUserWithRelationship(@Param() params: ParamIdDto) {
     try {
       const data = await firstValueFrom(
@@ -139,6 +146,7 @@ export class UserController {
   }
 
   @Post('register')
+  @ApiCreateOperation({ summary: 'Đăng ký' })
   @Public()
   async register(
     @Body() body: RegisterDto,
@@ -178,6 +186,7 @@ export class UserController {
   }
 
   @Post('create')
+  @ApiCreateOperation({ summary: 'Tạo tài khoản bằng admin' })
   @Public()
   async createUserByAdmin(@Body() body: IAddUserByAdmin) {
     try {
@@ -195,6 +204,7 @@ export class UserController {
 
   @Patch('active')
   @Public()
+  @ApiCreateOperation({ summary: 'Kích hoạt tài khoản' })
   async activeAccount(
     @Query('email') email: string,
     @Query('accessToken') accessToken: string,
@@ -219,6 +229,7 @@ export class UserController {
   }
 
   @Patch(':id')
+  @ApiCreateOperation({ summary: 'Cập nhật thông tin' })
   async updateUser(
     @Param() param: ParamIdDto,
     @Body() userUpdate: UserUpdateDto,
@@ -238,6 +249,7 @@ export class UserController {
 
   @Public()
   @Post('forgot-password')
+  @ApiCreateOperation({ summary: 'Quên mật khẩu' })
   async forgotPassword(@Body() body: ForgotPasswordDto) {
     try {
       const resp = await firstValueFrom(
@@ -270,6 +282,7 @@ export class UserController {
 
   @Public()
   @Post('reset-password')
+  @ApiCreateOperation({ summary: '' })
   async resetPassword(@Body() body: ResetPasswordDto) {
     try {
       const otp = await this.cacheService.get(body.email);

@@ -1,4 +1,4 @@
-import { ApiTagsAndBearer } from '@libs/common/swagger-ui';
+import { ApiCreateOperation, ApiTagsAndBearer } from '@libs/common/swagger-ui';
 import {
   Body,
   Controller,
@@ -15,7 +15,11 @@ import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
 import * as exc from '@libs/common/api';
-import { CreateGenreDto, UpdateGenreDto } from '@libs/common/dtos/genre.dto';
+import {
+  CreateGenreDto,
+  ListGenreDto,
+  UpdateGenreDto,
+} from '@libs/common/dtos/genre.dto';
 import { ListDto, ParamIdDto } from '@libs/common/dtos/common.dto';
 import { Public } from '../auth/decorators/public.decorator';
 
@@ -28,6 +32,7 @@ export class GenreController {
   ) {}
 
   @Get()
+  @ApiCreateOperation({ summary: 'Lấy danh sách thể loại' })
   async getListGenre(@Query() query: ListDto) {
     try {
       const resp = await firstValueFrom(
@@ -42,6 +47,7 @@ export class GenreController {
     }
   }
 
+  @ApiCreateOperation({ summary: 'Lấy danh sách thể loại của truyện' })
   @Get('/comic')
   async getListGenreComic(@Query() query: ListDto) {
     try {
@@ -58,6 +64,7 @@ export class GenreController {
   }
 
   @Get('movie')
+  @ApiCreateOperation({ summary: 'Lấy danh sách thể loại của phim' })
   async getListGenreMovie(@Query() query: ListDto) {
     try {
       const resp = await firstValueFrom(
@@ -72,6 +79,7 @@ export class GenreController {
     }
   }
 
+  @ApiCreateOperation({ summary: 'Lấy danh sách thể loại của nhạc' })
   @Get('music')
   async getListGenreMusic(@Query() query: ListDto) {
     try {
@@ -87,7 +95,26 @@ export class GenreController {
     }
   }
 
+  @ApiCreateOperation({ summary: 'Lấy danh sách thể loại của nhạc' })
+  @Get('list/gr')
+  @Public()
+  async getMusicGroupBy(@Query() query: ListGenreDto) {
+    try {
+      if (!query.type) query.type = 1;
+      const resp = await firstValueFrom(
+        this.mediaClientProxy.send<any>(
+          MEDIAS_MESSAGE_PATTERN.GENRE.GET_GENRES_GR,
+          query,
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError(e);
+    }
+  }
+
   @Get(':id')
+  @ApiCreateOperation({ summary: 'Lấy chi tiết 1 thể loại' })
   async getGenre(@Param() params: ParamIdDto) {
     try {
       const resp = await firstValueFrom(
@@ -104,6 +131,7 @@ export class GenreController {
 
   @Post()
   @Public()
+  @ApiCreateOperation({ summary: 'Tạo mới 1 thể loại' })
   async createGenre(@Body() payload: CreateGenreDto) {
     try {
       const resp = await firstValueFrom(
@@ -119,6 +147,7 @@ export class GenreController {
   }
 
   @Patch(':id')
+  @ApiCreateOperation({ summary: 'Cập nhật thể loại' })
   async updateGenre(
     @Param() param: ParamIdDto,
     @Body() payload: UpdateGenreDto,

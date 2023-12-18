@@ -27,7 +27,7 @@ import { AuthType } from '../interfaces/common.interface';
 export class ListComicsDto extends ListDto {
   @ApiHideProperty()
   @IsOptional()
-  profileId: number;
+  user: AuthType;
 }
 
 // movie

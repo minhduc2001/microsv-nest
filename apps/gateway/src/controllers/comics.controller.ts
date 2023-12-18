@@ -1,6 +1,10 @@
 import { ParamIdDto, UploadImagesDto } from '@libs/common/dtos/common.dto';
 import { ListComicsDto } from '@libs/common/dtos/medias.dto';
-import { ApiConsumes, ApiTagsAndBearer } from '@libs/common/swagger-ui';
+import {
+  ApiConsumes,
+  ApiCreateOperation,
+  ApiTagsAndBearer,
+} from '@libs/common/swagger-ui';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import {
   Body,
@@ -42,6 +46,7 @@ export class ComicsController {
   // ) {}
 
   @Get()
+  @ApiCreateOperation({ summary: 'Lấy danh sách truyện' })
   async getListCommic(@Query() query: ListComicsDto) {
     try {
       const resp = await lastValueFrom(
@@ -57,6 +62,7 @@ export class ComicsController {
   }
 
   @Get(':id')
+  @ApiCreateOperation({ summary: 'Lấy chi tiết 1 truyện' })
   async getComic(@Param() param: ParamIdDto) {
     try {
       const resp = await lastValueFrom(
@@ -74,6 +80,7 @@ export class ComicsController {
   @Post()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('thumbnail'))
+  @ApiCreateOperation({ summary: 'Tạo 1 truyện mới' })
   async createComic(
     @Body() payload: CreateComicDto,
     @UploadedFile() thumbnail: Express.Multer.File,
@@ -95,6 +102,7 @@ export class ComicsController {
   @Patch(':id')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('thumbnail'))
+  @ApiCreateOperation({ summary: 'Cập nhật truyện' })
   async updateComic(
     @UploadedFile() thumbnail: Express.Multer.File,
     @Param() params: ParamIdDto,

@@ -2,6 +2,7 @@ export enum EPaymentStatus {
   PENDDING,
   SUCCESS,
   REJECT,
+  DONE,
 }
 
 export enum EPaymentMethod {

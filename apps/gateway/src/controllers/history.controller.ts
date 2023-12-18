@@ -47,7 +47,7 @@ export class HistoryController {
     }
   }
 
-  @ApiOperation({ summary: 'Tạo lịch sử' })
+  @ApiOperation({ summary: 'Tạo/Cập nhật lịch sử' })
   @Post('')
   async writeEpHistory(
     @Body() dto: WriteHistoryDto,

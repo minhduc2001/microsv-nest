@@ -145,7 +145,7 @@ export class MediaService extends BaseService<Media> {
 
   async list(query: ListMediaDto, type: ETypeMedia) {
     const config: PaginateConfig<Media> = {
-      sortableColumns: ['id', 'updatedAt'],
+      sortableColumns: ['id', 'updatedAt', 'views'],
       searchableColumns: ['genres.name', 'authors.name', 'title', 'desc'],
       defaultSortBy: [['updatedAt', 'DESC']],
       select: [...this.defautlSelect()],

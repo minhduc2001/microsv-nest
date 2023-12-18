@@ -1,4 +1,8 @@
-import { ApiConsumes, ApiTagsAndBearer } from '@libs/common/swagger-ui';
+import {
+  ApiConsumes,
+  ApiCreateOperation,
+  ApiTagsAndBearer,
+} from '@libs/common/swagger-ui';
 import {
   Body,
   Controller,
@@ -33,6 +37,7 @@ export class ChapterController {
   ) {}
 
   @Get()
+  @ApiCreateOperation({ summary: 'Lấy danh sách chương truyện của 1 truyện' })
   async getListChapter(@Query() query: ListDto) {
     try {
       const resp = await firstValueFrom(
@@ -48,6 +53,7 @@ export class ChapterController {
   }
 
   @Get(':id')
+  @ApiCreateOperation({ summary: 'Lấy chi tiết 1 chương truyện' })
   async getChapter(@Param() params: ParamIdDto) {
     try {
       const resp = await firstValueFrom(
@@ -66,6 +72,7 @@ export class ChapterController {
   @Public()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FilesInterceptor('images', 20))
+  @ApiCreateOperation({ summary: 'Tạo mới 1 chương truyện' })
   async createChapter(
     @Body() payload: CreateChapterDto,
     @UploadedFiles() images: Array<Express.Multer.File>,

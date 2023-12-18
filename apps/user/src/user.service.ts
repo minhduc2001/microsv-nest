@@ -209,7 +209,14 @@ export class UserService extends BaseService<User> {
       .createQueryBuilder('user')
       .where({ id })
       .leftJoinAndSelect('user.profiles', 'profile')
-      .select(['user.id', 'email', 'user.isActive', 'golds', 'profile.id'])
+      .select([
+        'user.id',
+        'user.email',
+        'user.isActive',
+        'user.role',
+        'user.golds',
+        'profile.id',
+      ])
       .getOne();
 
     if (!user)

@@ -2,7 +2,11 @@ import { Controller } from '@nestjs/common';
 import { GenreService } from './genre.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
-import { CreateGenreDto, UpdateGenreDto } from '@libs/common/dtos/genre.dto';
+import {
+  CreateGenreDto,
+  ListGenreDto,
+  UpdateGenreDto,
+} from '@libs/common/dtos/genre.dto';
 import { ListDto } from '@libs/common/dtos/common.dto';
 
 @Controller()
@@ -22,6 +26,11 @@ export class GenreController {
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.GENRE.GET_LIST_GENRES)
   async getListGenre(@Payload() query: ListDto) {
     return await this.service.getListGenres(query);
+  }
+
+  @MessagePattern(MEDIAS_MESSAGE_PATTERN.GENRE.GET_GENRES_GR)
+  async getListMovie(@Payload() query: ListGenreDto) {
+    return await this.service.getListGenresGR(query);
   }
 
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.GENRE.GET_LIST_GENRES_COMIC)

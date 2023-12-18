@@ -1,5 +1,6 @@
 import {
   IsArray,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -7,6 +8,7 @@ import {
 } from 'class-validator';
 import { ToNumber, ToNumbers } from '../decorators/common.decorator';
 import { ApiProperty } from '@nestjs/swagger';
+import { ETypeMedia } from '../enums/media.enum';
 
 export class PaginationDto {
   @ApiProperty()

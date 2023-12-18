@@ -8,7 +8,16 @@ import {
   IsString,
 } from 'class-validator';
 import { ToNumber, ToNumbers, Trim } from '../decorators/common.decorator';
-import { ETypeGenre } from '../enums/media.enum';
+import { ETypeGenre, ETypeMedia } from '../enums/media.enum';
+import { ListDto } from './common.dto';
+
+export class ListGenreDto extends ListDto {
+  @ApiProperty({ example: ETypeMedia.Movies })
+  @IsEnum(ETypeMedia)
+  @ToNumber()
+  @IsNotEmpty()
+  type: ETypeMedia;
+}
 
 export class GenreIdsDto {
   @ApiProperty({ type: Number, isArray: true })

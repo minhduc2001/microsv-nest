@@ -48,6 +48,7 @@ export class MusicController {
     private readonly uploadService: UploadService,
   ) {}
 
+  @ApiCreateOperation({ summary: 'Lấy danh sách nhạc' })
   @Get()
   async list(@Query() query: ListMediaDto, @GetUser() user: AuthType) {
     try {
@@ -64,6 +65,7 @@ export class MusicController {
   }
 
   @Get(':id')
+  @ApiCreateOperation({ summary: 'Lấy chi tiết nhạc' })
   async findOne(@Param() param: ParamIdDto) {
     try {
       const resp = await firstValueFrom(
@@ -81,6 +83,7 @@ export class MusicController {
   @Post()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
+  @ApiCreateOperation({ summary: 'Tạo mới nhạc' })
   async createMusic(
     @Body() payload: CreateMusicDto,
     @UploadedFile() file: Express.Multer.File,
@@ -106,6 +109,7 @@ export class MusicController {
   @Put(':id')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
+  @ApiCreateOperation({ summary: 'Cập nhật phim' })
   async updateMusic(
     @Param() param: ParamIdDto,
     @Body() payload: UpdateMusicDto,
@@ -153,6 +157,7 @@ export class MusicController {
   }
 
   @Delete()
+  @ApiCreateOperation({ summary: 'Xóa nhiều nhạc' })
   async bulkDelete(@Body() payload: IdsDto) {
     try {
       const resp = await firstValueFrom(

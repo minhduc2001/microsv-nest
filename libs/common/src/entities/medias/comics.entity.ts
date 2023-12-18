@@ -30,11 +30,10 @@ export class Comics extends AbstractEntity {
   @Column({ default: 0 })
   views: number;
 
-  @Column({ default: true })
-  isAccess: boolean;
-
   @Column({ default: 0 })
-  price: number;
+  golds: number;
+
+  isAccess: boolean;
 
   @Column({ type: 'enum', enum: EState, default: EState.InActive })
   state: EState;
@@ -49,5 +48,5 @@ export class Comics extends AbstractEntity {
 
   @ManyToMany(() => Author, (author) => author.comics)
   @JoinTable()
-  author: Author;
+  authors: Author[];
 }

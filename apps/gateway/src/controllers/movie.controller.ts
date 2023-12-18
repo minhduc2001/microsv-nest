@@ -46,6 +46,7 @@ export class MovieController {
   ) {}
 
   @Get()
+  @ApiCreateOperation({ summary: 'Lấy danh sách phim' })
   async list(@Query() query: ListMediaDto, @GetUser() user: AuthType) {
     try {
       const resp = await firstValueFrom(
@@ -61,6 +62,7 @@ export class MovieController {
   }
 
   @Get(':id')
+  @ApiCreateOperation({ summary: 'Lấy chi tiết phim' })
   async findOne(@Param() param: ParamIdDto) {
     try {
       const resp = await firstValueFrom(
@@ -78,6 +80,7 @@ export class MovieController {
   @Post()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
+  @ApiCreateOperation({ summary: 'Thêm mới 1 phim' })
   async createMovie(
     @Body() payload: CreateMovieDto,
     @UploadedFile() file: Express.Multer.File,
@@ -103,6 +106,7 @@ export class MovieController {
   @Put(':id')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
+  @ApiCreateOperation({ summary: 'Cập nhật 1 phim' })
   async updateMovie(
     @Param() param: ParamIdDto,
     @Body() payload: UpdateMovieDto,
@@ -127,7 +131,9 @@ export class MovieController {
     }
   }
 
-  @ApiCreateOperation({ summary: 'do not call this api, please!' })
+  @ApiCreateOperation({
+    summary: 'Cập nhật url nhạc. chỉ chấp nhận request do server2 gửi lên',
+  })
   @Patch(':id/url')
   async updateUrl(
     @Param() param: ParamIdDto,
@@ -148,6 +154,7 @@ export class MovieController {
   }
 
   @Delete()
+  @ApiCreateOperation({ summary: 'Xóa nhiều truyện' })
   async bulkDelete(@Body() payload: IdsDto) {
     try {
       const resp = await firstValueFrom(

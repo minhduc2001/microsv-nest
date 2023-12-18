@@ -1,7 +1,13 @@
-import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import {
+  ApiHideProperty,
+  ApiProperty,
+  ApiPropertyOptional,
+} from '@nestjs/swagger';
 import {
   IsArray,
   IsBoolean,
+  IsDate,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -12,6 +18,7 @@ import {
 import { ToNumber, ToNumbers, Trim } from '../decorators/common.decorator';
 import { ComicsImageurl } from '../interfaces/common.interface';
 import { Transform } from 'class-transformer';
+import { EState } from '../enums/common.enum';
 
 export class UploadThumbnailComicDto {
   @ApiProperty({
@@ -39,80 +46,95 @@ export class CreateComicDto extends UploadThumbnailComicDto {
   @ToNumber()
   minAge: number;
 
+  @ApiPropertyOptional({ example: new Date(), required: false })
+  @Transform(({ value }) => new Date(value))
+  @IsDate()
+  @IsOptional()
+  publishDate: Date;
+
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   desc: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional({ example: 0 })
   @IsNumber()
   @IsNotEmpty()
   @ToNumber()
-  price: number;
+  golds: number;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional({ example: [1, 2, 3] })
+  @IsPositive({ each: true })
   @IsOptional()
-  @IsBoolean()
-  @Transform(({ value }) => value && Boolean(value))
-  isAccess: boolean;
+  @ToNumbers()
+  authorIds: number[];
 
-  @ApiProperty({ type: Number, isArray: true })
-  @IsNotEmpty()
-  @IsArray({})
+  @ApiPropertyOptional({ example: [1, 2, 3] })
+  @IsOptional()
   @IsPositive({ each: true })
   @ToNumbers()
-  genres: number[];
+  genreIds: number[];
 
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsPositive()
+  @ApiPropertyOptional({
+    enum: EState,
+  })
+  @IsOptional()
+  @IsEnum(EState)
   @ToNumber()
-  author: number;
+  state: EState;
 }
 
 export class UpdateComicDto extends UploadThumbnailComicDto {
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   @IsString()
   @Trim()
   @IsOptional()
   title: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   @IsNumber()
   @IsOptional()
   @Min(2)
   @ToNumber()
   minAge: number;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   @IsString()
+  @Trim()
   @IsOptional()
   desc: string;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional({ example: new Date(), required: false })
+  @Transform(({ value }) => new Date(value))
+  @IsDate()
+  @IsOptional()
+  publishDate: Date;
+
+  @ApiPropertyOptional({ example: 0 })
   @IsNumber()
   @IsOptional()
   @ToNumber()
-  price: number;
+  golds: number;
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional({ example: [1, 2, 3] })
+  @IsPositive({ each: true })
   @IsOptional()
-  @IsBoolean()
-  @Transform(({ value }) => value && Boolean(value))
-  isAccess: boolean;
+  @ToNumbers()
+  authorIds: number[];
 
-  @ApiProperty({ type: Number, isArray: true, required: false })
+  @ApiPropertyOptional({ example: [1, 2, 3] })
   @IsOptional()
-  @IsArray({})
   @IsPositive({ each: true })
   @ToNumbers()
-  genres: number[];
+  genreIds: number[];
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional({
+    enum: EState,
+  })
   @IsOptional()
-  @IsPositive()
+  @IsEnum(EState)
   @ToNumber()
-  author: number;
+  state: EState;
 }
 
 export class CreateChapterDto {

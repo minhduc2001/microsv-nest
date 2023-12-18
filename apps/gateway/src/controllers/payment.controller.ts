@@ -21,6 +21,7 @@ export class PaymentController {
   ) {}
 
   @Post()
+  @ApiCreateOperation({ summary: 'Khởi tạo thanh toán' })
   async createPayment(@Body() dto: CreatePaymentDto, @GetUser() user: User) {
     try {
       const resp = await firstValueFrom(
@@ -37,7 +38,9 @@ export class PaymentController {
 
   @Public()
   @Post('return')
-  @ApiCreateOperation({ summary: 'you can not call this api. warning!!!!' })
+  @ApiCreateOperation({
+    summary: 'you can not call this api. warning!!!!/ api return payment',
+  })
   async test(@Body() body: any) {
     return 'Thử cc! Tò mò cc!';
   }
