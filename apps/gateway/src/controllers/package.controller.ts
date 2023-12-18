@@ -111,6 +111,7 @@ export class PackageController {
   @UseInterceptors(FileInterceptor('image'))
   @ApiCreateOperation({ summary: 'Cập nhật truyện' })
   async update(
+    @Param() param: ParamIdDto,
     @Body() payload: UpdatePackageDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
@@ -122,7 +123,7 @@ export class PackageController {
       const resp = await firstValueFrom(
         this.paymentSystemClientProxy.send<any>(
           PAYMENT_SYSTEM_MESSAGE_PATTERN.PACKAGE.UPDATE_PACKAGE,
-          { ...payload, image: url },
+          { ...payload, ...param, image: url },
         ),
       );
       return resp;
@@ -134,12 +135,15 @@ export class PackageController {
   @Roles(ERole.ADMIN)
   @Put(':id/state')
   @ApiCreateOperation({ summary: 'Cập nhật trạng thái gói' })
-  async updateState(@Body() payload: UpdateStatePackageDto) {
+  async updateState(
+    @Param() param: ParamIdDto,
+    @Body() payload: UpdateStatePackageDto,
+  ) {
     try {
       const resp = await firstValueFrom(
         this.paymentSystemClientProxy.send<any>(
           PAYMENT_SYSTEM_MESSAGE_PATTERN.PACKAGE.UPDATE_STATE_PACKAGE,
-          { state: payload.state },
+          { state: payload.state, ...param },
         ),
       );
       return resp;
