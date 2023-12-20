@@ -108,6 +108,12 @@ export class EnvService {
   // Messaging
   SENDER_ID = _process.env.SENDER_ID;
   SERVER_KEY = _process.env.SERVER_KEY;
+
+  // Momo
+  MOMO_PARTNER_CODE = _process.env.MOMO_PARTNER_CODE;
+  MOMO_ACCESS_KEY = _process.env.MOMO_ACCESS_KEY;
+  MOMO_SECRET_KEY = _process.env.MOMO_SECRET_KEY;
+  MOMO_ENVIRONMENT = _process.env.MOMO_ENVIRONMENT;
 }
 
 export const envService = new EnvService();

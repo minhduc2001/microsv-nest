@@ -1,4 +1,4 @@
-export enum EPaymentStatus {
+export enum EStatePayment {
   PENDDING,
   SUCCESS,
   REJECT,

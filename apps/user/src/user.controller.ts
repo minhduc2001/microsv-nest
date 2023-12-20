@@ -118,4 +118,16 @@ export class UserController {
       throw new excRpc.BadException({ message: e.message });
     }
   }
+
+  @MessagePattern(USER_MESSAGE_PATTERNS.UPDATE_GOLDS_PAYMENT)
+  async updateGoldsPayment(
+    @Payload('userId') userId: number,
+    @Payload('golds') golds: number,
+  ) {
+    try {
+      return this.userService.updateGoldspayment(userId, golds);
+    } catch (e) {
+      throw new excRpc.BadException({ message: e.message });
+    }
+  }
 }

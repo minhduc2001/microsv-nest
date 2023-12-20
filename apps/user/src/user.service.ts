@@ -215,6 +215,7 @@ export class UserService extends BaseService<User> {
         'user.isActive',
         'user.role',
         'user.golds',
+        'user.username',
         'profile.id',
       ])
       .getOne();
@@ -331,5 +332,13 @@ export class UserService extends BaseService<User> {
     );
 
     return true;
+  }
+
+  async updateGoldspayment(userId: number, golds: number) {
+    const user = await this.getUserById(userId);
+    user.golds = golds;
+    await user.save();
+
+    return 'update done!';
   }
 }

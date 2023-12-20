@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { AbstractEntity } from '../abstract.entity';
 import {
   EPaymentMethod,
-  EPaymentStatus,
+  EStatePayment,
 } from '@libs/common/enums/payment-system.enum';
 import { Package } from './package.entity';
 
@@ -20,13 +20,13 @@ export class Payment extends AbstractEntity {
   @Column()
   golds: number;
 
-  @Column()
+  @Column({ nullable: true })
   image: string;
 
   @Column()
-  price: string;
+  price: number;
 
-  @Column()
+  @Column({ nullable: true, default: 0 })
   discount: number;
 
   @Column({ nullable: true })
@@ -37,10 +37,10 @@ export class Payment extends AbstractEntity {
 
   @Column({
     type: 'enum',
-    enum: EPaymentStatus,
-    default: EPaymentStatus.PENDDING,
+    enum: EStatePayment,
+    default: EStatePayment.PENDDING,
   })
-  status: EPaymentStatus;
+  state: EStatePayment;
 
   @Column({ type: 'enum', enum: EPaymentMethod })
   paymentMethod: EPaymentMethod;

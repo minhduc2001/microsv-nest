@@ -86,6 +86,16 @@ export class PackageService extends BaseService<Package> {
     return true;
   }
 
+  async getPackageActive(id: number): Promise<Package> {
+    const pk = await this.repository.findOne({
+      where: { id, state: EState.Active },
+    });
+
+    if (!pk)
+      throw new excRpc.BadException({ message: 'Không tồn tại gói này!' });
+    return pk;
+  }
+
   private async _getPackage(id: number): Promise<Package> {
     const pk = await this.repository.findOne({
       where: { id, state: Not(EState.Deleted) },

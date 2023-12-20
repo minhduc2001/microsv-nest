@@ -10,15 +10,18 @@ import { RabbitModule } from '@libs/rabbit';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { PackageController } from './controllers/package.controller';
 import { PackageService } from './services/package.service';
+import { PaymentController } from './controllers/payment.controller';
+import { PaymentService } from './services/payment.service';
 
 @Module({
   imports: [
     RabbitModule.forServerProxy(RabbitServiceName.PAYMENT_SYSTEM),
+    RabbitModule.forClientProxy(RabbitServiceName.USER),
     LoggerModule,
     DatabaseModule,
     TypeOrmModule.forFeature([Package, Payment]),
   ],
-  controllers: [PaymentSystemController, PackageController],
-  providers: [PaymentSystemService, PackageService],
+  controllers: [PaymentSystemController, PackageController, PaymentController],
+  providers: [PaymentSystemService, PackageService, PaymentService],
 })
 export class PaymentSystemModule {}
