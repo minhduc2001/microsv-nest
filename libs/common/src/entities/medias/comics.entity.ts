@@ -1,4 +1,5 @@
 import {
+  AfterLoad,
   Column,
   Entity,
   JoinColumn,
@@ -49,4 +50,12 @@ export class Comics extends AbstractEntity {
   @ManyToMany(() => Author, (author) => author.comics)
   @JoinTable()
   authors: Author[];
+
+  @AfterLoad()
+  afterload() {
+    if (!this.isAccess && this.golds > 0) {
+      this.isAccess = false;
+      delete this.chapters;
+    } else this.isAccess = true;
+  }
 }

@@ -58,8 +58,7 @@ export class ComicsService extends BaseService<Comics> {
         'comics.minAge',
         'comics.desc',
         'comics.thumbnail',
-        'comics.isAccess',
-        'comics.price',
+        'comics.golds',
         'comics.views',
         'author.id',
         'author.name',
@@ -67,7 +66,7 @@ export class ComicsService extends BaseService<Comics> {
         'genres.id',
         'genres.name',
       ])
-      .leftJoin('comics.author', 'author')
+      .leftJoin('comics.authors', 'author')
       .leftJoin('comics.genres', 'genres')
       .leftJoin('comics.chapters', 'chapter')
       .loadRelationCountAndMap('comics.chaptersCount', 'comics.chapters');

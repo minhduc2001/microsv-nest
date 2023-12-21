@@ -12,6 +12,7 @@ import {
 import { ListDto } from '@libs/common/dtos/common.dto';
 import { PaginateConfig } from '@libs/common/services/paginate';
 import { ETypeGenre, ETypeMedia } from '@libs/common/enums/media.enum';
+import { EState } from '@libs/common/enums/common.enum';
 
 @Injectable()
 export class GenreService extends BaseService<Genre> {
@@ -40,8 +41,8 @@ export class GenreService extends BaseService<Genre> {
 
     const queryB = this.repository
       .createQueryBuilder('genre')
-      .leftJoinAndSelect('genre.medias', 'media');
-    // .where('media.type = :type', { type: query.type });
+      .leftJoinAndSelect('genre.medias', 'media')
+      .where('media.state = :state', { state: EState.Active });
     // .andWhere('genre.type', { type: query.type as number });
     return this.listWithPage(query, config, queryB);
   }

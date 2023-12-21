@@ -9,12 +9,15 @@ import { ChapterModule } from '../chapter/chapter.module';
 import { AuthorModule } from '../author/author.module';
 import { Author } from '@libs/common/entities/medias/author.entity';
 import { Genre } from '@libs/common/entities/medias/genre.entity';
+import { RabbitModule } from '@libs/rabbit';
+import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Comics, Chapter, Author, Genre]),
     GenreModule,
     AuthorModule,
+    RabbitModule.forClientProxy(RabbitServiceName.ACTIONS),
   ],
   controllers: [ComicsController],
   providers: [ComicsService],

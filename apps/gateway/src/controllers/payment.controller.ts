@@ -36,12 +36,22 @@ export class PaymentController {
     }
   }
 
-  @Public()
+  // @Public()
   @Post('return')
   @ApiCreateOperation({
     summary: 'you can not call this api. warning!!!!/ api return payment',
   })
-  async test(@Body() body: any) {
-    return 'Thử cc! Tò mò cc!';
+  async return(@Body() body: any) {
+    try {
+      const resp = await firstValueFrom(
+        this.paymentSystemClientProxy.send<any>(
+          PAYMENT_SYSTEM_MESSAGE_PATTERN.PAYMENT.RESPONSE_THIRD_PARTY_PAYMENT,
+          body,
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError(e);
+    }
   }
 }

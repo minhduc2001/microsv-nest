@@ -30,6 +30,10 @@ import { EState, ETypeAccount } from '@libs/common/enums/common.enum';
 import { ERole } from '@libs/common/enums/role.enum';
 import { detectRole } from '@libs/common/utils/check-auth';
 import { Profile } from '@libs/common/entities/user/profile.entity';
+import {
+  ACTIONS_MESSAGE_PATTERN,
+  PAYMENT_SYSTEM_MESSAGE_PATTERN,
+} from '@libs/common/constants/rabbit-patterns.constant';
 
 interface Validate {
   genres?: Genre[];
@@ -44,6 +48,8 @@ export class MediaService extends BaseService<Media> {
     private readonly authorRepository: Repository<Author>,
     @InjectRepository(Genre)
     private readonly genreRepository: Repository<Genre>,
+    @Inject(RabbitServiceName.ACTIONS)
+    private readonly libClientProxy: ClientProxy,
   ) {
     super(repository);
   }
@@ -182,6 +188,31 @@ export class MediaService extends BaseService<Media> {
       });
 
     return media;
+  }
+
+  async buy(mediaId: number, user: User) {
+    const media = await this.repository.findOne({ where: { id: mediaId } });
+    if (!media)
+      throw new excRpc.BadException({
+        message: 'Không có sản phẩm này!',
+        errorCode: '400',
+      });
+    if (user.golds < media.golds) {
+      throw new excRpc.BadException({
+        message: 'Bạn không đủ xu!',
+        errorCode: '400',
+      });
+    }
+
+    await this.libClientProxy
+      .send<any>(ACTIONS_MESSAGE_PATTERN.LIBRARY.BOUGHT_BY_USER, {
+        name: 'Đã mua',
+        media: media,
+        user: user,
+      })
+      .toPromise();
+
+    return true;
   }
 
   async bulkDelete(ids: number[], type: ETypeMedia) {

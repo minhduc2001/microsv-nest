@@ -26,6 +26,8 @@ import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.c
 import { Auth } from '../auth/decorators/auth.decorator';
 import { CreateComicDto, UpdateComicDto } from '@libs/common/dtos/comics.dto';
 import { UploadService } from '@libs/upload';
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { AuthType } from '@libs/common/interfaces/common.interface';
 
 @Controller('comics')
 @ApiTagsAndBearer('Comics')
@@ -47,12 +49,15 @@ export class ComicsController {
 
   @Get()
   @ApiCreateOperation({ summary: 'Lấy danh sách truyện' })
-  async getListCommic(@Query() query: ListComicsDto) {
+  async getListCommic(
+    @Query() query: ListComicsDto,
+    @GetUser() user: AuthType,
+  ) {
     try {
       const resp = await lastValueFrom(
         this.comicsClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.COMICS.LIST_COMICS,
-          query,
+          { ...query, user: user },
         ),
       );
       return resp;

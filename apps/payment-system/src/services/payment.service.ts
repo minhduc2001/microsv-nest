@@ -186,7 +186,7 @@ export class PaymentService extends BaseService<Payment> {
       //   userId: user.id,
       //   delay: Number(user.packageExpire) - date,
       // });
-      return true;
+      return 'true';
     } catch (e) {
       throw new excRpc.BadRequest({ message: e.message });
     }

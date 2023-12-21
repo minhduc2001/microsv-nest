@@ -25,4 +25,17 @@ export class PaymentController {
       throw new excRpc.BadException({ message: e.message });
     }
   }
+
+  @MessagePattern(
+    PAYMENT_SYSTEM_MESSAGE_PATTERN.PAYMENT.RESPONSE_THIRD_PARTY_PAYMENT,
+  )
+  async verify(@Payload() payload: any) {
+    console.log(payload);
+
+    try {
+      return this.paymentService.confirmPayment(payload);
+    } catch (e) {
+      throw new excRpc.BadException({ message: e.message });
+    }
+  }
 }

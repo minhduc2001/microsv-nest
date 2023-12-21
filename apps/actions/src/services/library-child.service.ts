@@ -114,4 +114,8 @@ export class LibraryChildService extends BaseService<LibraryChild> {
   async deleteLibraryChild(id: number, user: AuthType) {
     return this.repository.delete({ id, library: { userId: user.id } });
   }
+
+  async buyCLib() {
+    return this.repository;
+  }
 }
