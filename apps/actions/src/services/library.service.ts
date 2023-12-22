@@ -66,8 +66,17 @@ export class LibraryService extends BaseService<Library> {
     const library = await this.repository.findOne({
       where: { name: name, userId: user.id },
     });
-    if (!library)
+
+    if (!library) {
+      const check: string[] = ['Yêu thích', 'Đã mua', 'Danh sách phát'];
+      if (check.includes(name)) {
+        return this.repository.save({
+          name: name,
+          userId: user.id,
+        });
+      }
       throw new excRpc.NotFound({ message: 'Không tồn tại thư viện' });
+    }
     return library;
   }
 

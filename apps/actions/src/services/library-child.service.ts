@@ -13,7 +13,7 @@ import {
 import { PaginateConfig } from '@libs/common/services/paginate';
 import { AuthType } from '@libs/common/interfaces/common.interface';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, Payload } from '@nestjs/microservices';
 import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
 import { BadException } from '@libs/common';
 import { Profile } from '@libs/common/entities/user/profile.entity';
@@ -115,7 +115,32 @@ export class LibraryChildService extends BaseService<LibraryChild> {
     return this.repository.delete({ id, library: { userId: user.id } });
   }
 
-  async buyCLib() {
-    return this.repository;
+  async buyCLib(payload: any) {
+    console.log(payload);
+
+    const temp = { [`${payload.type}`]: payload.id };
+
+    console.log(temp);
+    let libs = await this.repository.findOne({
+      where: {
+        library: { userId: payload.user.id, name: 'Đã mua' },
+        // @ts-ignore
+        ...temp,
+      },
+    });
+
+    if (libs) return null;
+
+    const lib = await this.libraryService.getLibraryByName(
+      'Đã mua',
+      payload.user,
+    );
+
+    return this.repository.save({
+      library: lib,
+      golds: payload.golds,
+      thumbnail: payload.thumbnail,
+      ...temp,
+    });
   }
 }

@@ -10,6 +10,7 @@ import {
   UpdateMusicDto,
 } from '@libs/common/dtos/medias.dto';
 import { ETypeMedia } from '@libs/common/enums/media.enum';
+import { BuyMediaDto } from '@libs/common/dtos/common.dto';
 
 @Controller()
 export class MediaController {
@@ -48,6 +49,11 @@ export class MediaController {
     return this.mediaService.bulkDelete(ids, ETypeMedia.Movies);
   }
 
+  @MessagePattern(MEDIAS_MESSAGE_PATTERN.MOVIE.BUY)
+  async buyMovie(@Payload() payload: BuyMediaDto) {
+    return this.mediaService.buy(payload.id, payload.user);
+  }
+
   // music
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.MUSIC.CREATE_MUSIC)
   async create(@Payload() payload: CreateMusicDto) {
@@ -77,5 +83,10 @@ export class MediaController {
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.MUSIC.BULK_DELETE_MUSIC)
   async bulkDelete(@Payload('ids') ids: number[]) {
     return this.mediaService.bulkDelete(ids, ETypeMedia.Music);
+  }
+
+  @MessagePattern(MEDIAS_MESSAGE_PATTERN.MUSIC.BUY)
+  async buyMusic(@Payload() payload: BuyMediaDto) {
+    return this.mediaService.buy(payload.id, payload.user);
   }
 }

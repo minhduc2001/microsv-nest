@@ -17,6 +17,9 @@ export class LibraryChild extends AbstractEntity {
   title: string;
 
   @Column({ nullable: true })
+  golds: number;
+
+  @Column({ nullable: true })
   thumbnail: string;
 
   @ManyToOne(() => Library, (lib) => lib.libraryChilds)

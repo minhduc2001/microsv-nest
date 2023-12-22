@@ -20,7 +20,7 @@ import { GetUser } from '../auth/decorators/get-user.decorator';
 import { Public } from '../auth/decorators/public.decorator';
 import * as exc from '@libs/common/api';
 import * as path from 'path';
-import { IdsDto, ParamIdDto } from '@libs/common/dtos/common.dto';
+import { BuyMediaDto, IdsDto, ParamIdDto } from '@libs/common/dtos/common.dto';
 import {
   FileFieldsInterceptor,
   FileInterceptor,
@@ -37,6 +37,8 @@ import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.c
 import { Auth } from '../auth/decorators/auth.decorator';
 import { AuthType } from '@libs/common/interfaces/common.interface';
 import { UploadService } from '@libs/upload';
+import { Roles } from '../auth/decorators/role.decorator';
+import { ERole } from '@libs/common/enums/role.enum';
 
 @ApiTagsAndBearer('Music')
 @Controller('music')
@@ -99,6 +101,23 @@ export class MusicController {
           MEDIAS_MESSAGE_PATTERN.MUSIC.CREATE_MUSIC,
           payload,
         ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError(e);
+    }
+  }
+
+  @Post('buy')
+  @Roles(ERole.PARENTS)
+  @ApiCreateOperation({ summary: 'mua nhac' })
+  async buy(@Body() payload: BuyMediaDto, @GetUser() user: User) {
+    try {
+      const resp = await firstValueFrom(
+        this.mediaClientProxy.send<any>(MEDIAS_MESSAGE_PATTERN.MUSIC.BUY, {
+          ...payload,
+          user: user,
+        }),
       );
       return resp;
     } catch (e) {

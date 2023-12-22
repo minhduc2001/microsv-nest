@@ -33,6 +33,7 @@ import { Profile } from '@libs/common/entities/user/profile.entity';
 import {
   ACTIONS_MESSAGE_PATTERN,
   PAYMENT_SYSTEM_MESSAGE_PATTERN,
+  USER_MESSAGE_PATTERNS,
 } from '@libs/common/constants/rabbit-patterns.constant';
 
 interface Validate {
@@ -50,6 +51,8 @@ export class MediaService extends BaseService<Media> {
     private readonly genreRepository: Repository<Genre>,
     @Inject(RabbitServiceName.ACTIONS)
     private readonly libClientProxy: ClientProxy,
+    @Inject(RabbitServiceName.USER)
+    private readonly userClientProxy: ClientProxy,
   ) {
     super(repository);
   }
@@ -195,8 +198,13 @@ export class MediaService extends BaseService<Media> {
     if (!media)
       throw new excRpc.BadException({
         message: 'Không có sản phẩm này!',
-        errorCode: '400',
       });
+
+    if (media.golds === 0)
+      throw new excRpc.BadException({
+        message: 'Sản phẩm này không mất phí!',
+      });
+
     if (user.golds < media.golds) {
       throw new excRpc.BadException({
         message: 'Bạn không đủ xu!',
@@ -204,14 +212,26 @@ export class MediaService extends BaseService<Media> {
       });
     }
 
-    await this.libClientProxy
+    const type = media.type === ETypeMedia.Movies ? 'movieId' : 'musicId';
+
+    const check = await this.libClientProxy
       .send<any>(ACTIONS_MESSAGE_PATTERN.LIBRARY.BOUGHT_BY_USER, {
         name: 'Đã mua',
-        media: media,
+        type,
+        id: media.id,
         user: user,
+        golds: media.golds,
+        thumbnail: media.thumbnail,
       })
       .toPromise();
 
+    if (check)
+      await this.userClientProxy
+        .send<any>(USER_MESSAGE_PATTERNS.UPDATE_GOLDS_PAYMENT, {
+          userId: user.id,
+          golds: user.golds - media.golds,
+        })
+        .toPromise();
     return true;
   }
 

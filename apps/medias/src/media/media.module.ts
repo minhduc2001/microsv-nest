@@ -13,6 +13,7 @@ import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
   imports: [
     TypeOrmModule.forFeature([Media, Author, Genre]),
     RabbitModule.forClientProxy(RabbitServiceName.ACTIONS),
+    RabbitModule.forClientProxy(RabbitServiceName.USER),
   ],
   controllers: [MediaController],
   providers: [MediaService],

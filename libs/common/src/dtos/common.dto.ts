@@ -1,14 +1,13 @@
 import {
   IsArray,
-  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsPositive,
 } from 'class-validator';
 import { ToNumber, ToNumbers } from '../decorators/common.decorator';
-import { ApiProperty } from '@nestjs/swagger';
-import { ETypeMedia } from '../enums/media.enum';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { User } from '../entities/user/user.entity';
 
 export class PaginationDto {
   @ApiProperty()
@@ -96,4 +95,10 @@ export class UploadImagesDto {
   })
   @IsOptional()
   images: string[];
+}
+
+export class BuyMediaDto extends ParamIdDto {
+  @ApiHideProperty()
+  @IsOptional()
+  user: User;
 }

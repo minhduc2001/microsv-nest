@@ -18,6 +18,7 @@ import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
     GenreModule,
     AuthorModule,
     RabbitModule.forClientProxy(RabbitServiceName.ACTIONS),
+    RabbitModule.forClientProxy(RabbitServiceName.USER),
   ],
   controllers: [ComicsController],
   providers: [ComicsService],

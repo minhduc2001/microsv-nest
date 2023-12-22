@@ -31,9 +31,12 @@ import { firstValueFrom } from 'rxjs';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { ClientProxy } from '@nestjs/microservices';
 import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
-import { IdsDto, ParamIdDto } from '@libs/common/dtos/common.dto';
+import { BuyMediaDto, IdsDto, ParamIdDto } from '@libs/common/dtos/common.dto';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { AuthType } from '@libs/common/interfaces/common.interface';
+import { ERole } from '@libs/common/enums/role.enum';
+import { Roles } from '../auth/decorators/role.decorator';
+import { User } from '@libs/common/entities/user/user.entity';
 
 @ApiTagsAndBearer('Movie')
 @Controller('movie')
@@ -96,6 +99,23 @@ export class MovieController {
           MEDIAS_MESSAGE_PATTERN.MOVIE.CREATE_MOVIE,
           payload,
         ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError(e);
+    }
+  }
+
+  @Post('buy')
+  @Roles(ERole.PARENTS)
+  @ApiCreateOperation({ summary: 'mua phim' })
+  async buy(@Body() payload: BuyMediaDto, @GetUser() user: User) {
+    try {
+      const resp = await firstValueFrom(
+        this.mediaClientProxy.send<any>(MEDIAS_MESSAGE_PATTERN.MOVIE.BUY, {
+          ...payload,
+          user: user,
+        }),
       );
       return resp;
     } catch (e) {

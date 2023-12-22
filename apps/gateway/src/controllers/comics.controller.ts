@@ -1,4 +1,8 @@
-import { ParamIdDto, UploadImagesDto } from '@libs/common/dtos/common.dto';
+import {
+  BuyMediaDto,
+  ParamIdDto,
+  UploadImagesDto,
+} from '@libs/common/dtos/common.dto';
 import { ListComicsDto } from '@libs/common/dtos/medias.dto';
 import {
   ApiConsumes,
@@ -28,6 +32,9 @@ import { CreateComicDto, UpdateComicDto } from '@libs/common/dtos/comics.dto';
 import { UploadService } from '@libs/upload';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { AuthType } from '@libs/common/interfaces/common.interface';
+import { ERole } from '@libs/common/enums/role.enum';
+import { Roles } from '../auth/decorators/role.decorator';
+import { User } from '@libs/common/entities/user/user.entity';
 
 @Controller('comics')
 @ApiTagsAndBearer('Comics')
@@ -97,6 +104,23 @@ export class ComicsController {
           MEDIAS_MESSAGE_PATTERN.COMICS.CREATE_COMIC,
           { ...payload, thumbnail: url },
         ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError(e);
+    }
+  }
+
+  @Post('buy')
+  @Roles(ERole.PARENTS)
+  @ApiCreateOperation({ summary: 'mua truyen' })
+  async buy(@Body() payload: BuyMediaDto, @GetUser() user: User) {
+    try {
+      const resp = await firstValueFrom(
+        this.comicsClientProxy.send<any>(MEDIAS_MESSAGE_PATTERN.COMICS.BUY, {
+          ...payload,
+          user: user,
+        }),
       );
       return resp;
     } catch (e) {

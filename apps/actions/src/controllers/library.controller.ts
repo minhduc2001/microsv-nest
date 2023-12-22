@@ -66,4 +66,9 @@ export class LibraryController {
   async deleteCLib(@Payload('id') id: number, @Payload('user') user: AuthType) {
     return this.libraryChildService.deleteLibraryChild(id, user);
   }
+
+  @MessagePattern(ACTIONS_MESSAGE_PATTERN.LIBRARY.BOUGHT_BY_USER)
+  async buy(@Payload() payload: any) {
+    return this.libraryChildService.buyCLib(payload);
+  }
 }

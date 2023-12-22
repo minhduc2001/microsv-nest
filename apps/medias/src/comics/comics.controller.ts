@@ -4,6 +4,7 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ListComicsDto } from '@libs/common/dtos/medias.dto';
 import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
 import { UpdateComicDto } from '@libs/common/dtos/comics.dto';
+import { BuyMediaDto } from '@libs/common/dtos/common.dto';
 
 @Controller()
 export class ComicsController {
@@ -30,5 +31,10 @@ export class ComicsController {
     @Payload('body') payload: UpdateComicDto,
   ) {
     return this.comicsService.updateComic(id, payload);
+  }
+
+  @MessagePattern(MEDIAS_MESSAGE_PATTERN.COMICS.BUY)
+  async buy(@Payload() payload: BuyMediaDto) {
+    return this.comicsService.buy(payload.id, payload.user);
   }
 }

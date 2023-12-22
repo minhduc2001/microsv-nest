@@ -1,21 +1,4 @@
 import { ClientProxy } from '@nestjs/microservices';
-// beforeCreate() {
-//     if (
-//       (this.type === ETypeHistory.Music || this.type === ETypeHistory.Movie) &&
-//       !this.mediaId
-//     ) {
-//       throw new excRpc.BadException({ message: 'Sai dữ liệu!' });
-//     }
-
-//     if (
-//       this.type === ETypeHistory.Comics &&
-//       (!this.chapterId || !this.comicsId)
-//     ) {
-//       throw new excRpc.BadException({ message: 'Sai dữ liệu!' });
-//     }
-//   }
-
-import * as excRpc from '@libs/common/api';
 import { ListHistoryDto, WriteHistoryDto } from '@libs/common/dtos/history.dto';
 import { History } from '@libs/common/entities/actions/history.entity';
 import { BaseService } from '@libs/common/services/base.service';
@@ -25,8 +8,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
-import { IServiceResponse } from '@libs/rabbit/interfaces/rabbit-massage.interface';
-import { Media } from '@libs/common/entities/medias/media.entity';
 
 @Injectable()
 export class HistoryService extends BaseService<History> {
