@@ -1,4 +1,7 @@
-import { AddLibraryChildDto } from './../../../../libs/common/src/dtos/library.dto';
+import {
+  AddLibraryChildByNameDto,
+  AddLibraryChildDto,
+} from '@libs/common/dtos/library.dto';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import {
   Body,
@@ -136,9 +139,29 @@ export class LibraryController {
     }
   }
 
+  @ApiOperation({ summary: 'Lưu nội dung vào thư viện theo name' })
+  @Post('add-library-name')
+  async createCLibraryByName(
+    @Body() dto: AddLibraryChildByNameDto,
+    @GetUser() user: AuthType,
+  ) {
+    try {
+      const resp = await firstValueFrom(
+        this.actionsClientProxy.send<any>(
+          ACTIONS_MESSAGE_PATTERN.LIBRARY.ADD_C_LIBRARY_BY_NAME,
+          { ...dto, user: user },
+        ),
+      );
+
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError(e);
+    }
+  }
+
   @Roles(ERole.PARENTS)
   @ApiOperation({ summary: 'Phụ huynh Lưu nội dung vào thư viện' })
-  @Post('add-library/:id')
+  @Post('add-library-bought')
   async AddCLibrary(@Body() dto: AddLibraryChildDto, @GetUser() user: User) {
     try {
       if (!user.profiles.includes({ id: dto.profileId } as Profile)) {

@@ -31,7 +31,12 @@ import { firstValueFrom } from 'rxjs';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { ClientProxy } from '@nestjs/microservices';
 import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
-import { BuyMediaDto, IdsDto, ParamIdDto } from '@libs/common/dtos/common.dto';
+import {
+  BuyMediaDto,
+  IdsDto,
+  LikeMediaDto,
+  ParamIdDto,
+} from '@libs/common/dtos/common.dto';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { AuthType } from '@libs/common/interfaces/common.interface';
 import { ERole } from '@libs/common/enums/role.enum';
@@ -66,12 +71,12 @@ export class MovieController {
 
   @Get(':id')
   @ApiCreateOperation({ summary: 'Lấy chi tiết phim' })
-  async findOne(@Param() param: ParamIdDto) {
+  async findOne(@Param() param: ParamIdDto, @GetUser() user: AuthType) {
     try {
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.MOVIE.GET_MOVIE,
-          param,
+          { ...param, user: user },
         ),
       );
       return resp;
@@ -113,6 +118,22 @@ export class MovieController {
     try {
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(MEDIAS_MESSAGE_PATTERN.MOVIE.BUY, {
+          ...payload,
+          user: user,
+        }),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError(e);
+    }
+  }
+
+  @Post('like')
+  @ApiCreateOperation({ summary: 'like' })
+  async like(@Body() payload: LikeMediaDto, @GetUser() user: User) {
+    try {
+      const resp = await firstValueFrom(
+        this.mediaClientProxy.send<any>(MEDIAS_MESSAGE_PATTERN.MOVIE.LIKE, {
           ...payload,
           user: user,
         }),

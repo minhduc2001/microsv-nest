@@ -35,6 +35,8 @@ import {
   PAYMENT_SYSTEM_MESSAGE_PATTERN,
   USER_MESSAGE_PATTERNS,
 } from '@libs/common/constants/rabbit-patterns.constant';
+import { AuthType } from '@libs/common/interfaces/common.interface';
+import { LibraryChild } from '@libs/common/entities/actions/library-child.entity';
 
 interface Validate {
   genres?: Genre[];
@@ -55,6 +57,63 @@ export class MediaService extends BaseService<Media> {
     private readonly userClientProxy: ClientProxy,
   ) {
     super(repository);
+  }
+
+  async prepareResponse(medias: Media[], user: AuthType, type: ETypeMedia) {
+    const [libBought, libLike, libPlaylist]: [any, any, any] =
+      await Promise.all([
+        this.libClientProxy
+          .send<any>(
+            ACTIONS_MESSAGE_PATTERN.LIBRARY.LIST_LIBRARY_CHILD_BY_USER_NAME,
+            { name: 'Đã mua', userId: user.id },
+          )
+          .toPromise(),
+        this.libClientProxy
+          .send<any>(
+            ACTIONS_MESSAGE_PATTERN.LIBRARY.LIST_LIBRARY_CHILD_BY_USER_NAME,
+            { name: 'Yêu thích', userId: user.id },
+          )
+          .toPromise(),
+        this.libClientProxy
+          .send<any>(
+            ACTIONS_MESSAGE_PATTERN.LIBRARY.LIST_LIBRARY_CHILD_BY_USER_NAME,
+            { name: 'Danh sách phát', userId: user.id },
+          )
+          .toPromise(),
+      ]);
+
+    const idBuys = libBought.results.map((lib) => {
+      if (type === ETypeMedia.Movies) {
+        return lib.movieId;
+      }
+      if (type === ETypeMedia.Music) {
+        return lib.musicId;
+      }
+    });
+
+    const idLike = libLike.results.map((lib) => {
+      if (type === ETypeMedia.Movies) {
+        return lib.movieId;
+      }
+      if (type === ETypeMedia.Music) {
+        return lib.musicId;
+      }
+    });
+
+    const idPlaylist: number[] = libPlaylist.results.map((lib) => {
+      if (type === ETypeMedia.Movies) {
+        return lib.movieId;
+      }
+      if (type === ETypeMedia.Music) {
+        return lib.musicId;
+      }
+    });
+
+    for (const media of medias) {
+      if (idBuys.includes(media.id)) media.isAccess = true;
+      if (idLike.includes(media.id)) media.isLike = true;
+      if (idPlaylist.includes(media.id)) media.isPlaylist = true;
+    }
   }
 
   async saveMovie(dto: CreateMovieDto) {
@@ -173,10 +232,12 @@ export class MediaService extends BaseService<Media> {
           ? { minAge: LessThan(this._getAge((query.user as Profile).birthday)) }
           : {},
       );
-    return this.listWithPage(query, config, queryB);
+    const results = await this.listWithPage(query, config, queryB);
+    await this.prepareResponse(results.results, query.user, type);
+    return results;
   }
 
-  async findOne(id: number, type: ETypeMedia) {
+  async findOne(id: number, type: ETypeMedia, user?: AuthType) {
     const media = await this.repository.findOne({
       where: { id, type, state: Not(EState.Deleted) },
       relations: { authors: true, genres: true },
@@ -190,6 +251,7 @@ export class MediaService extends BaseService<Media> {
         errorCode: 'media_not_found',
       });
 
+    if (user) await this.prepareResponse([media], user, type);
     return media;
   }
 

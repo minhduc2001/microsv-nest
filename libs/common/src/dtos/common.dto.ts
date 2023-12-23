@@ -102,3 +102,9 @@ export class BuyMediaDto extends ParamIdDto {
   @IsOptional()
   user: User;
 }
+
+export class LikeMediaDto extends ParamIdDto {
+  @ApiHideProperty()
+  @IsOptional()
+  user: User;
+}

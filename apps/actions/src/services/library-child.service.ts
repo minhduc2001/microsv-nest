@@ -6,9 +6,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LibraryService } from './library.service';
 import {
+  AddLibraryChildByNameDto,
   AddLibraryChildDto,
   CreateLibraryChildDto,
   ListLibraryChildDto,
+  ListLibraryChildNameDto,
 } from '@libs/common/dtos/library.dto';
 import { PaginateConfig } from '@libs/common/services/paginate';
 import { AuthType } from '@libs/common/interfaces/common.interface';
@@ -42,6 +44,27 @@ export class LibraryChildService extends BaseService<LibraryChild> {
     return this.listWithPage(query, config);
   }
 
+  async listLibraryChildName(query: ListLibraryChildNameDto) {
+    console.log(query);
+
+    const config: PaginateConfig<LibraryChild> = {
+      sortableColumns: ['updatedAt'],
+      defaultSortBy: [['updatedAt', 'DESC']],
+      // relations: { library: true },
+      // where: {
+      //   library: { name: query.name, userId: query.userId },
+      // },
+    };
+
+    const queryB = this.repository
+      .createQueryBuilder('clib')
+      .leftJoinAndSelect('clib.library', 'lib')
+      .where('lib.name = :name', { name: query.name })
+      .andWhere('lib.userId = :userId', { userId: query.userId });
+
+    return this.listWithPage(query, config, queryB);
+  }
+
   async listBoughtLibraryChild(userId: number) {
     const config: PaginateConfig<LibraryChild> = {
       sortableColumns: ['updatedAt'],
@@ -60,6 +83,39 @@ export class LibraryChildService extends BaseService<LibraryChild> {
   async createLibraryChild(dto: CreateLibraryChildDto) {
     const library = await this.libraryService.getLibrary(
       dto.libraryId,
+      dto.user,
+    );
+    let object;
+
+    if (dto.movieId) {
+      object = await this.mediaClientProxy
+        .send<any>(MEDIAS_MESSAGE_PATTERN.MOVIE.GET_MOVIE, {
+          id: dto.movieId,
+        })
+        .toPromise();
+    } else if (dto.comicsId) {
+      object = await this.mediaClientProxy
+        .send<any>(MEDIAS_MESSAGE_PATTERN.COMICS.GET_COMICS, {
+          id: dto.comicsId,
+        })
+        .toPromise();
+    } else if (dto.movieId) {
+      object = await this.mediaClientProxy
+        .send<any>(MEDIAS_MESSAGE_PATTERN.MUSIC.GET_MUSIC, { id: dto.musicId })
+        .toPromise();
+    }
+
+    return await this.repository.save({
+      library: library,
+      title: object?.title,
+      thumbnail: object?.thumbnail,
+      ...dto,
+    });
+  }
+
+  async createLibraryChildByName(dto: AddLibraryChildByNameDto) {
+    const library = await this.libraryService.getLibraryByName(
+      dto.name,
       dto.user,
     );
     let object;

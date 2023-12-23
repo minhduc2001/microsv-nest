@@ -68,12 +68,12 @@ export class MusicController {
 
   @Get(':id')
   @ApiCreateOperation({ summary: 'Lấy chi tiết nhạc' })
-  async findOne(@Param() param: ParamIdDto) {
+  async findOne(@Param() param: ParamIdDto, @GetUser() user: AuthType) {
     try {
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.MUSIC.GET_MUSIC,
-          param,
+          { ...param, user: user },
         ),
       );
       return resp;

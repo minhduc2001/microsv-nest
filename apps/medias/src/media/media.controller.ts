@@ -11,6 +11,7 @@ import {
 } from '@libs/common/dtos/medias.dto';
 import { ETypeMedia } from '@libs/common/enums/media.enum';
 import { BuyMediaDto } from '@libs/common/dtos/common.dto';
+import { AuthType } from '@libs/common/interfaces/common.interface';
 
 @Controller()
 export class MediaController {
@@ -27,8 +28,11 @@ export class MediaController {
   }
 
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.MOVIE.GET_MOVIE)
-  async findOneMovie(@Payload('id') id: number) {
-    return this.mediaService.findOne(id, ETypeMedia.Movies);
+  async findOneMovie(
+    @Payload('id') id: number,
+    @Payload('user') user: AuthType,
+  ) {
+    return this.mediaService.findOne(id, ETypeMedia.Movies, user);
   }
 
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.MOVIE.UPDATE_URL_MOVIE)
@@ -66,8 +70,8 @@ export class MediaController {
   }
 
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.MUSIC.GET_MUSIC)
-  async findOne(@Payload('id') id: number) {
-    return this.mediaService.findOne(id, ETypeMedia.Music);
+  async findOne(@Payload('id') id: number, @Payload('user') user: AuthType) {
+    return this.mediaService.findOne(id, ETypeMedia.Music, user);
   }
 
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.MUSIC.UPDATE_URL_MUSIC)

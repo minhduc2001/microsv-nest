@@ -4,7 +4,15 @@ import {
   ApiPropertyOptional,
   PickType,
 } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsPositive, IsString } from 'class-validator';
+import {
+  IsEmpty,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsPositive,
+  IsString,
+  isEnum,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ListDto } from './common.dto';
 import { Profile } from '../entities/user/profile.entity';
@@ -32,6 +40,26 @@ export class ListLibraryChildDto extends ListDto {
   @IsOptional()
   @IsPositive()
   userId?: number;
+}
+
+export class ListLibraryChildNameDto extends ListDto {
+  @ApiHideProperty()
+  @Trim()
+  @IsOptional()
+  @IsString()
+  name: string;
+
+  @ApiHideProperty()
+  @ToNumber()
+  @IsOptional()
+  @IsPositive()
+  userId?: number;
+
+  @ApiHideProperty()
+  @ToNumber()
+  @IsOptional()
+  @IsPositive()
+  config?: number;
 }
 
 export class CreateLibraryDto {
@@ -110,4 +138,34 @@ export class AddLibraryChildDto {
   @ApiHideProperty()
   @IsOptional()
   user?: User;
+}
+
+export class AddLibraryChildByNameDto {
+  @ApiProperty()
+  @Trim()
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @ApiPropertyOptional()
+  @ToNumber()
+  @IsOptional()
+  @IsPositive()
+  comicsId: number;
+
+  @ApiPropertyOptional()
+  @ToNumber()
+  @IsOptional()
+  @IsPositive()
+  musicId: number;
+
+  @ApiPropertyOptional()
+  @ToNumber()
+  @IsOptional()
+  @IsPositive()
+  movieId: number;
+
+  @ApiHideProperty()
+  @IsOptional()
+  user: AuthType;
 }

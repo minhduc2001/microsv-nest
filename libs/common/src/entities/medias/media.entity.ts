@@ -68,6 +68,9 @@ export class Media extends AbstractEntity {
   @JoinTable()
   genres: Genre[];
 
+  isLike: boolean;
+  isPlaylist: boolean;
+
   @AfterLoad()
   afterload() {
     if (!this.isAccess && this.golds > 0) {
@@ -76,5 +79,11 @@ export class Media extends AbstractEntity {
     } else this.isAccess = true;
 
     if (this.url) this.url = convertUrl(this.url, this.type);
+
+    if (!this.isLike) this.isLike = false;
+    else this.isLike = true;
+
+    if (!this.isPlaylist) this.isPlaylist = false;
+    else this.isPlaylist = true;
   }
 }
