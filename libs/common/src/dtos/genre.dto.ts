@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
   IsEnum,
@@ -10,6 +10,7 @@ import {
 import { ToNumber, ToNumbers, Trim } from '../decorators/common.decorator';
 import { ETypeGenre, ETypeMedia } from '../enums/media.enum';
 import { ListDto } from './common.dto';
+import { AuthType } from '../interfaces/common.interface';
 
 export class ListGenreDto extends ListDto {
   @ApiProperty({ example: ETypeMedia.Movies })
@@ -17,6 +18,10 @@ export class ListGenreDto extends ListDto {
   @ToNumber()
   @IsNotEmpty()
   type: ETypeMedia;
+
+  @ApiHideProperty()
+  @IsOptional()
+  user: AuthType;
 }
 
 export class GenreIdsDto {

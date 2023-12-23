@@ -51,11 +51,20 @@ export class Comics extends AbstractEntity {
   @JoinTable()
   authors: Author[];
 
+  isLike: boolean;
+  isPlaylist: boolean;
+
   @AfterLoad()
   afterload() {
     if (!this.isAccess && this.golds > 0) {
       this.isAccess = false;
       delete this.chapters;
     } else this.isAccess = true;
+
+    if (!this.isLike) this.isLike = false;
+    else this.isLike = true;
+
+    if (!this.isPlaylist) this.isPlaylist = false;
+    else this.isPlaylist = true;
   }
 }

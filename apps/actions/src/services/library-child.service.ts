@@ -138,7 +138,7 @@ export class LibraryChildService extends BaseService<LibraryChild> {
         .toPromise();
     }
 
-    return await this.repository.save({
+    return this.repository.save({
       library: library,
       title: object?.title,
       thumbnail: object?.thumbnail,

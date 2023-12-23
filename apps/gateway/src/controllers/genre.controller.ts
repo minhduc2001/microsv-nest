@@ -22,6 +22,8 @@ import {
 } from '@libs/common/dtos/genre.dto';
 import { ListDto, ParamIdDto } from '@libs/common/dtos/common.dto';
 import { Public } from '../auth/decorators/public.decorator';
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { AuthType } from '@libs/common/interfaces/common.interface';
 
 @ApiTagsAndBearer('Genre')
 @Controller('genre')
@@ -97,14 +99,16 @@ export class GenreController {
 
   @ApiCreateOperation({ summary: 'Lấy danh sách thể loại của nhạc' })
   @Get('list/gr')
-  @Public()
-  async getMusicGroupBy(@Query() query: ListGenreDto) {
+  async getMusicGroupBy(
+    @Query() query: ListGenreDto,
+    @GetUser() user: AuthType,
+  ) {
     try {
       if (!query.type) query.type = 1;
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.GENRE.GET_GENRES_GR,
-          query,
+          { ...query, user: user },
         ),
       );
       return resp;

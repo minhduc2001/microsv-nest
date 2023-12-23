@@ -17,7 +17,7 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { ApiOperation, ApiTagsAndBearer } from '@libs/common/swagger-ui';
-import { ParamIdDto } from '@libs/common/dtos/common.dto';
+import { ParamIdDto, ParamNameDto } from '@libs/common/dtos/common.dto';
 import {
   CreateLibraryChildDto,
   CreateLibraryDto,
@@ -61,18 +61,39 @@ export class LibraryController {
     }
   }
 
+  // @ApiOperation({ summary: 'Lấy danh sách trong thư viện' })
+  // @Get(':id/list')
+  // async listCLibrary(
+  //   @Query() query: ListLibraryChildDto,
+  //   @Param() param: ParamIdDto,
+  //   @GetUser() user: AuthType,
+  // ) {
+  //   try {
+  //     const resp = await firstValueFrom(
+  //       this.actionsClientProxy.send<any>(
+  //         ACTIONS_MESSAGE_PATTERN.LIBRARY.LIST_LIBRARY_CHILD_BY_USER,
+  //         { ...query, userId: user.id, libraryId: param.id },
+  //       ),
+  //     );
+
+  //     return resp;
+  //   } catch (e) {
+  //     throw new exc.CustomError(e);
+  //   }
+  // }
+
   @ApiOperation({ summary: 'Lấy danh sách trong thư viện' })
-  @Get(':id/list')
+  @Get(':name/list')
   async listCLibrary(
     @Query() query: ListLibraryChildDto,
-    @Param() param: ParamIdDto,
+    @Param() param: ParamNameDto,
     @GetUser() user: AuthType,
   ) {
     try {
       const resp = await firstValueFrom(
         this.actionsClientProxy.send<any>(
-          ACTIONS_MESSAGE_PATTERN.LIBRARY.LIST_LIBRARY_CHILD_BY_USER,
-          { ...query, userId: user.id, libraryId: param.id },
+          ACTIONS_MESSAGE_PATTERN.LIBRARY.LIST_LIBRARY_CHILD_BY_USER_NAME,
+          { ...query, userId: user.id, name: param.name },
         ),
       );
 

@@ -30,7 +30,7 @@ import {
   ListMediaDto,
   UpdateMusicDto,
 } from '@libs/common/dtos/medias.dto';
-import { firstValueFrom, lastValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { ClientProxy } from '@nestjs/microservices';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';

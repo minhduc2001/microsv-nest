@@ -4,8 +4,9 @@ import {
   IsNumber,
   IsOptional,
   IsPositive,
+  IsString,
 } from 'class-validator';
-import { ToNumber, ToNumbers } from '../decorators/common.decorator';
+import { ToNumber, ToNumbers, Trim } from '../decorators/common.decorator';
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { User } from '../entities/user/user.entity';
 
@@ -29,6 +30,14 @@ export class ParamIdDto {
   @ToNumber()
   @IsPositive()
   id: number;
+}
+
+export class ParamNameDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @Trim()
+  @IsString()
+  name: string;
 }
 
 export class IdsDto {
