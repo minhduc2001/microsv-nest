@@ -20,7 +20,7 @@ async function bootstrap() {
   const loggerService = app.get(LoggerService);
   const logger = loggerService.getLogger();
 
-  app.enableCors(envService.CORS);
+  app.enableCors();
   app.useStaticAssets(path.join(process.cwd(), '/audio'));
   app.useStaticAssets(path.join(process.cwd(), '/uploads'));
   // app.use(`/uploads`, express.static('uploads'));
