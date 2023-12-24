@@ -144,8 +144,10 @@ export class ComicsService extends BaseService<Comics> {
     if (!comic)
       throw new excRpc.BadRequest({ message: 'Comic does not exists' });
 
-    comic.views += 1;
-    comic.save();
+    if (user.role !== ERole.ADMIN) {
+      comic.views += 1;
+      comic.save();
+    }
 
     if (user) {
       await this.prepareResponse([comic], user);

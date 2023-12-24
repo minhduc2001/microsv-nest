@@ -2,6 +2,7 @@ import {
   ApiHideProperty,
   ApiProperty,
   ApiPropertyOptional,
+  PartialType,
 } from '@nestjs/swagger';
 import {
   IsArray,
@@ -169,3 +170,5 @@ export class CreateChapterDto {
   @ApiHideProperty()
   imageUrl: ComicsImageurl[];
 }
+
+export class UpdateChapterDto extends PartialType(CreateChapterDto) {}

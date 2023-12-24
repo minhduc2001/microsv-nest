@@ -30,9 +30,9 @@ export class PaymentController {
   @MessagePattern(
     PAYMENT_SYSTEM_MESSAGE_PATTERN.PAYMENT.RESPONSE_THIRD_PARTY_PAYMENT,
   )
-  async verify(@Payload() payload: any, @GetUser() user: User) {
+  async verify(@Payload() payload: any) {
     try {
-      return this.paymentService.confirmPayment(payload, user);
+      return this.paymentService.confirmPayment(payload, payload.user);
     } catch (e) {
       throw new excRpc.BadException({ message: e.message });
     }

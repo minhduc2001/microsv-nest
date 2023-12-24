@@ -41,12 +41,12 @@ export class PaymentController {
   @ApiCreateOperation({
     summary: 'you can not call this api. warning!!!!/ api return payment',
   })
-  async return(@Body() body: any) {
+  async return(@Body() body: any, @GetUser() user: User) {
     try {
       const resp = await firstValueFrom(
         this.paymentSystemClientProxy.send<any>(
           PAYMENT_SYSTEM_MESSAGE_PATTERN.PAYMENT.RESPONSE_THIRD_PARTY_PAYMENT,
-          body,
+          { ...body, user: user },
         ),
       );
       return resp;

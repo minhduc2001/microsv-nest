@@ -1,5 +1,9 @@
 import * as excRpc from '@libs/common/api';
-import { CreateChapterDto } from '@libs/common/dtos/comics.dto';
+import {
+  CreateChapterDto,
+  UpdateChapterDto,
+  UpdateComicDto,
+} from '@libs/common/dtos/comics.dto';
 import { ListDto } from '@libs/common/dtos/common.dto';
 import { Chapter } from '@libs/common/entities/medias/chapter.entity';
 import { BaseService } from '@libs/common/services/base.service';
@@ -8,6 +12,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ComicsService } from '../comics/comics.service';
+import { ListChapterDto } from '@libs/common/dtos/chapter.dto';
+import { EState } from '@libs/common/enums/common.enum';
 
 @Injectable()
 export class ChapterService extends BaseService<Chapter> {
@@ -18,9 +24,10 @@ export class ChapterService extends BaseService<Chapter> {
     super(repository);
   }
 
-  async getListChapter(query: ListDto) {
+  async getListChapter(query: ListChapterDto) {
     const config: PaginateConfig<Chapter> = {
       sortableColumns: ['id'],
+      where: { comics: { id: query.id } },
     };
     return await this.listWithPage(query, config);
   }
@@ -47,5 +54,25 @@ export class ChapterService extends BaseService<Chapter> {
     await this.repository.save({ ...chapter });
 
     return 'Create Chapter successful';
+  }
+
+  // async updateChapter(dto: UpdateChapterDto) {
+  //   const comic = await this.comicsService.getComicById(dto.comicId);
+  //   const exists = await this.repository.findOne({
+  //     where: { chap: dto.chap, comics: { id: dto.comicId } },
+  //   });
+  //   if (!exists)
+  //     throw new excRpc.BadRequest({ message: 'Chapter không tồn tại!' });
+
+  //   if (dto.images) delete dto.images;
+
+  //   return this.repository
+  // }
+
+  async bulkDelete(ids: number[]) {
+    for (const id of ids) {
+      await this.repository.update({ id: id }, { state: EState.Deleted });
+    }
+    return true;
   }
 }

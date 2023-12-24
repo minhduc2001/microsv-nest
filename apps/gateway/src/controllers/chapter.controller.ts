@@ -6,6 +6,7 @@ import {
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -18,7 +19,7 @@ import { Auth } from '../auth/decorators/auth.decorator';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { ClientProxy } from '@nestjs/microservices';
 import * as exc from '@libs/common/api';
-import { ListDto, ParamIdDto } from '@libs/common/dtos/common.dto';
+import { IdsDto, ListDto, ParamIdDto } from '@libs/common/dtos/common.dto';
 import { firstValueFrom } from 'rxjs';
 import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
 import { Public } from '../auth/decorators/public.decorator';
@@ -36,14 +37,14 @@ export class ChapterController {
     private readonly uploadService: UploadService,
   ) {}
 
-  @Get()
+  @Get(':id')
   @ApiCreateOperation({ summary: 'Lấy danh sách chương truyện của 1 truyện' })
-  async getListChapter(@Query() query: ListDto) {
+  async getListChapter(@Query() query: ListDto, @Param() param: ParamIdDto) {
     try {
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.CHAPTER.LIST_CHAPTER,
-          query,
+          { ...query, ...param },
         ),
       );
       return resp;
@@ -52,7 +53,7 @@ export class ChapterController {
     }
   }
 
-  @Get(':id')
+  @Get(':id/detail')
   @ApiCreateOperation({ summary: 'Lấy chi tiết 1 chương truyện' })
   async getChapter(@Param() params: ParamIdDto) {
     try {
@@ -96,6 +97,23 @@ export class ChapterController {
           },
         ),
       );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError(e);
+    }
+  }
+
+  @Delete()
+  @ApiCreateOperation({ summary: 'Xóa nhiều chapter' })
+  async bulkDelete(@Body() payload: IdsDto) {
+    try {
+      const resp = await firstValueFrom(
+        this.mediaClientProxy.send<any>(
+          MEDIAS_MESSAGE_PATTERN.CHAPTER.DELETE,
+          payload,
+        ),
+      );
+
       return resp;
     } catch (e) {
       throw new exc.CustomError(e);
