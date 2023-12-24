@@ -23,7 +23,8 @@ export class ProfileService extends BaseService<Profile> {
   }
 
   async createProfile(payload: CreateProfileDto) {
-    const { nickname, birthday, avatar, userId, isLocked } = payload;
+    const { nickname, birthday, avatar, userId, isLocked, onScreen, order } =
+      payload;
 
     const user = await this.userService.getUserById(userId); // validate check user existed
 
@@ -34,17 +35,15 @@ export class ProfileService extends BaseService<Profile> {
     if (checkExisted)
       throw new excRpc.BadRequest({ message: 'Profile had been exist' });
 
-    const newProfile = Object.assign(new Profile(), {
+    return this.profileRepository.save({
       nickname,
       birthday,
+      onScreen,
       avatar,
       isLocked,
+      order,
+      user: user,
     });
-    newProfile.user = user;
-
-    await this.profileRepository.insert(newProfile);
-
-    return { ...newProfile, id: Math.random() };
   }
 
   async updateProfile(profileId: number, payload: UpdateProfileDto) {

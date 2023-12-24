@@ -11,6 +11,12 @@ export class Profile extends AbstractEntity {
   @Column({ type: 'date' })
   birthday: Date;
 
+  @Column({ default: 0 })
+  onScreen: number;
+
+  @Column({ nullable: true })
+  order: number;
+
   @Column({ nullable: true })
   avatar: string;
 

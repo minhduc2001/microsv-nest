@@ -25,9 +25,11 @@ export class UserService {
 
     console.log(decode);
 
-    // return this.jwtService.verify(token, {
-    //   secret: envService.JWT_SECRET,
-    // });
-    return false;
+    if (decode['email'] !== email) {
+      return false;
+    }
+    return this.jwtService.verify(token, {
+      secret: envService.JWT_SECRET,
+    });
   }
 }

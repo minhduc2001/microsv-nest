@@ -164,7 +164,6 @@ export class UserController {
         },
         { expiresIn: '10m' },
       );
-      console.log('vao day', resp);
 
       await this.mailerService.sendMail({
         to: resp.email,

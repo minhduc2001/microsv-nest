@@ -1,6 +1,11 @@
-import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import {
+  ApiHideProperty,
+  ApiProperty,
+  ApiPropertyOptional,
+} from '@nestjs/swagger';
 import {
   IsBoolean,
+  IsDate,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -34,14 +39,34 @@ export class CreateProfileDto extends UploadAvatarDto {
   @Trim()
   nickname: string;
 
+  @ApiHideProperty()
+  @IsOptional()
+  @ToNumber()
+  @IsNumber()
+  id: number;
+
   @ApiProperty({ example: new Date() })
   @IsNotEmpty()
+  @Transform(({ value }) => value && new Date(value))
+  @IsDate()
   birthday: Date;
 
-  @ApiProperty({ example: false })
+  @ApiProperty({ example: 3000 })
   @IsNotEmpty()
+  @ToNumber()
+  @IsNumber()
+  onScreen: number;
+
+  @ApiProperty({ example: 3000 })
+  @IsNotEmpty()
+  @ToNumber()
+  @IsNumber()
+  order: number;
+
+  @ApiPropertyOptional({ example: false })
+  @IsOptional()
   @IsBoolean()
-  @Transform(({ value }) => value?.toLowerCase?.() === 'true')
+  @Transform(({ value }) => value?.toLowerCase?.trim() === 'true')
   isLocked: boolean;
 
   @ApiHideProperty()
@@ -61,10 +86,10 @@ export class CreateProfileDtoByAdmin extends UploadAvatarDto {
   @IsNotEmpty()
   birthday: Date;
 
-  @ApiProperty({ example: false })
-  @IsNotEmpty()
+  @ApiPropertyOptional({ example: false })
+  @IsOptional()
   @IsBoolean()
-  @Transform(({ value }) => value?.toLowerCase?.() === 'true')
+  @Transform(({ value }) => value?.toLowerCase?.trim() === 'true')
   isLocked: boolean;
 
   @ApiProperty({ example: 0 })
@@ -80,23 +105,26 @@ export class UpdateProfileDto extends UploadAvatarDto {
   @Trim()
   nickname: string;
 
-  @ApiProperty({ required: false })
-  @IsOptional()
+  @ApiProperty({ example: new Date() })
+  @IsNotEmpty()
+  @Transform(({ value }) => value && new Date(value))
+  @IsDate()
   birthday: Date;
 
-  @ApiProperty({ required: false })
-  @IsOptional()
+  @ApiProperty({ example: 3000 })
+  @IsNotEmpty()
+  @ToNumber()
   @IsNumber()
-  golds: number;
+  onScreen: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
   @IsNumber()
   progress: number;
 
-  @ApiProperty({ required: false })
-  @Transform(({ value }) => value?.toLowerCase?.() === 'true')
-  @IsBoolean()
+  @ApiPropertyOptional({ example: false })
   @IsOptional()
+  @IsBoolean()
+  @Transform(({ value }) => value?.toLowerCase?.trim() === 'true')
   isLocked: boolean;
 }
