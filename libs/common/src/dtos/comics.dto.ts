@@ -168,6 +168,7 @@ export class CreateChapterDto {
   images: string[];
 
   @ApiHideProperty()
+  @IsOptional()
   imageUrl: ComicsImageurl[];
 }
 
