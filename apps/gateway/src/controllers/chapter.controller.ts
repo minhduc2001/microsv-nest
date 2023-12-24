@@ -70,7 +70,6 @@ export class ChapterController {
   }
 
   @Post()
-  @Public()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FilesInterceptor('images', 20))
   @ApiCreateOperation({ summary: 'Tạo mới 1 chương truyện' })
