@@ -199,8 +199,8 @@ export class ComicsService extends BaseService<Comics> {
     const newComic = this.comicsRepository.create(dto);
     newComic.authors = authors;
     newComic.genres = genres;
-
-    await this.comicsRepository.update(comic.id, newComic);
+    newComic.id = comic.id;
+    await newComic.save();
 
     return 'Update Successful';
   }
