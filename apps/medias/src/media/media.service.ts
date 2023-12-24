@@ -215,7 +215,9 @@ export class MediaService extends BaseService<Media> {
     const config: PaginateConfig<Media> = {
       sortableColumns: ['id', 'updatedAt', 'views'],
       searchableColumns: ['genres.name', 'authors.name', 'title', 'desc'],
-      defaultSortBy: [['updatedAt', 'DESC']],
+      defaultSortBy: [
+        query?.sortBy ? ['views', 'DESC'] : ['updatedAt', 'DESC'],
+      ],
       select: [...this.defautlSelect()],
       relations: ['authors', 'genres'],
     };

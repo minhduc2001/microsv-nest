@@ -24,7 +24,7 @@ import { User } from '@libs/common/entities/user/user.entity';
 export class NotiService extends BaseService<Noti> {
   constructor(
     @InjectRepository(Notification)
-    private readonly notificationRpository: Repository<Notification>,
+    private readonly notificationRepository: Repository<Notification>,
     @InjectRepository(Noti)
     protected readonly repository: Repository<Noti>,
     private readonly notificationService: NotificationService,
@@ -34,7 +34,7 @@ export class NotiService extends BaseService<Noti> {
 
   async save(userId: number, token: string) {
     try {
-      const check = this.notificationRpository.create({
+      const check = this.notificationRepository.create({
         userId: userId,
         notification_key_name: makeUUID(userId.toString()),
         registerIds: [token],
@@ -84,18 +84,24 @@ export class NotiService extends BaseService<Noti> {
 
     const message_id = `${new Date().getTime()}`;
 
+    const dataFirebase = await this.notificationRepository.findOne({
+      where: { userId: data.userId },
+    });
+
+    if (!dataFirebase) return null;
+
     const payload = {
       notification: {
-        title: 'New message from System',
-        body: 'You have a new message from System',
+        title: data?.notification?.title || 'New message from System',
+        body: data?.notification?.body || 'You have a new message from System',
         icon: 'path/to/icon',
         click_action: '#',
       },
       data: {
         message_id: message_id,
         sender_name: data.data.sender_name,
-        sender_avatar: `${data.data.sender_avatar}`,
-        message_content: `${data.data.message_content}?`,
+        sender_avatar: `${data?.data?.sender_avatar}`,
+        message_content: `${data.data.message_content}`,
       },
     };
 
@@ -105,7 +111,10 @@ export class NotiService extends BaseService<Noti> {
       messageContent: data.data.message_content,
     });
 
-    return getMessaging(app).sendToDeviceGroup(data.notification_key, payload);
+    return getMessaging(app).sendToDeviceGroup(
+      dataFirebase.notification_key,
+      payload,
+    );
   }
 
   async send(data: IFirebaseSendNotification) {
@@ -118,7 +127,7 @@ export class NotiService extends BaseService<Noti> {
   }
 
   private async _getToken(userId: number) {
-    return this.notificationRpository.findOne({
+    return this.notificationRepository.findOne({
       where: { userId },
     });
   }

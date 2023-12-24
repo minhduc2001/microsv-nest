@@ -91,6 +91,9 @@ export class ComicsService extends BaseService<Comics> {
     const config: PaginateConfig<Comics> = {
       sortableColumns: ['id'],
       searchableColumns: ['title'],
+      defaultSortBy: [
+        query?.sortBy ? ['views', 'DESC'] : ['updatedAt', 'DESC'],
+      ],
       relations: { genres: true, authors: true },
     };
     const queryB = this.repository

@@ -1,20 +1,20 @@
 export interface IFirebaseSendNotificationGroupDevices {
-  notification: {
+  notification?: {
     title: string;
     body: string;
     icon?: string;
     click_action?: string;
   };
-  data?: {
+  data: {
     message_id?: string;
-    sender_name?: string;
+    sender_name: string;
     sender_avatar?: string;
-    message_content?: string;
+    message_content: string;
   };
-  registrationTokens: string[];
-  notification_key: string;
-  notification_key_name: string;
-  userId?: number;
+  registrationTokens?: string[];
+  notification_key?: string;
+  notification_key_name?: string;
+  userId: number;
 }
 
 export interface IAddGroupDevices {

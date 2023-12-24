@@ -30,7 +30,11 @@ import {
 } from 'momo-payment-api/src/type';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { ClientProxy } from '@nestjs/microservices';
-import { USER_MESSAGE_PATTERNS } from '@libs/common/constants/rabbit-patterns.constant';
+import {
+  ACTIONS_MESSAGE_PATTERN,
+  USER_MESSAGE_PATTERNS,
+} from '@libs/common/constants/rabbit-patterns.constant';
+import { IFirebaseSendNotificationGroupDevices } from '@libs/notification/notification.interface';
 
 @Injectable()
 export class PaymentService extends BaseService<Payment> {
@@ -42,6 +46,8 @@ export class PaymentService extends BaseService<Payment> {
     private readonly packageService: PackageService,
     @Inject(RabbitServiceName.USER)
     private readonly userClientProxy: ClientProxy,
+    @Inject(RabbitServiceName.ACTIONS)
+    private readonly actionsClientProxy: ClientProxy,
   ) {
     super(paymentRepository);
 
@@ -127,6 +133,18 @@ export class PaymentService extends BaseService<Payment> {
       //     responsePayment.payUrl,
       //   );
 
+      const data: IFirebaseSendNotificationGroupDevices = {
+        userId: dto.user.id,
+        data: {
+          message_content: 'Vui lòng thanh toán!',
+          sender_name: ' Minh Đức',
+        },
+      };
+
+      this.actionsClientProxy
+        .send<any>(ACTIONS_MESSAGE_PATTERN.NOTI.SEND_GROUP, data)
+        .toPromise();
+
       return responsePayment.deeplink;
     } catch (e) {
       throw new excRpc.BadRequest({ message: e.message });
@@ -175,6 +193,18 @@ export class PaymentService extends BaseService<Payment> {
           userId: payment.userId,
           golds: payment.golds,
         })
+        .toPromise();
+
+      const data: IFirebaseSendNotificationGroupDevices = {
+        userId: user.id,
+        data: {
+          message_content: 'Thanh toán thành công',
+          sender_name: 'Minh Đức',
+        },
+      };
+
+      this.actionsClientProxy
+        .send<any>(ACTIONS_MESSAGE_PATTERN.NOTI.SEND_GROUP, data)
         .toPromise();
 
       // user.packageId = payment.package.id;`

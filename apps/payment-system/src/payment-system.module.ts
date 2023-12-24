@@ -17,6 +17,7 @@ import { PaymentService } from './services/payment.service';
   imports: [
     RabbitModule.forServerProxy(RabbitServiceName.PAYMENT_SYSTEM),
     RabbitModule.forClientProxy(RabbitServiceName.USER),
+    RabbitModule.forClientProxy(RabbitServiceName.ACTIONS),
     LoggerModule,
     DatabaseModule,
     TypeOrmModule.forFeature([Package, Payment]),
