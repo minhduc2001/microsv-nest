@@ -1,3 +1,4 @@
+import { GetUser } from './../../../gateway/src/auth/decorators/get-user.decorator';
 import { PAYMENT_SYSTEM_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
 import {
   CreatePackageDto,
@@ -29,11 +30,9 @@ export class PaymentController {
   @MessagePattern(
     PAYMENT_SYSTEM_MESSAGE_PATTERN.PAYMENT.RESPONSE_THIRD_PARTY_PAYMENT,
   )
-  async verify(@Payload() payload: any) {
-    console.log(payload);
-
+  async verify(@Payload() payload: any, @GetUser() user: User) {
     try {
-      return this.paymentService.confirmPayment(payload);
+      return this.paymentService.confirmPayment(payload, user);
     } catch (e) {
       throw new excRpc.BadException({ message: e.message });
     }

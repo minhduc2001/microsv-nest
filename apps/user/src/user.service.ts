@@ -336,7 +336,7 @@ export class UserService extends BaseService<User> {
 
   async updateGoldspayment(userId: number, golds: number) {
     const user = await this.getUserById(userId);
-    user.golds = golds;
+    user.golds += golds;
     await user.save();
 
     return 'update done!';

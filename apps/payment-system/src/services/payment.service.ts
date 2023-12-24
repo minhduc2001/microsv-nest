@@ -144,7 +144,7 @@ export class PaymentService extends BaseService<Payment> {
     }
   }
 
-  async confirmPayment(body: IResponseSuccessPayment) {
+  async confirmPayment(body: IResponseSuccessPayment, user: User) {
     try {
       if (body.resultCode != 0) return false;
       const payment = await this.getPaymentWithOrderId(body.orderId);
@@ -186,7 +186,7 @@ export class PaymentService extends BaseService<Payment> {
       //   userId: user.id,
       //   delay: Number(user.packageExpire) - date,
       // });
-      return 'true';
+      return user.golds + payment.golds;
     } catch (e) {
       throw new excRpc.BadRequest({ message: e.message });
     }

@@ -20,7 +20,6 @@ import { EState } from '@libs/common/enums/common.enum';
 import { BadException } from '@libs/common/api';
 
 @Entity()
-// @Where('DELETE_FLAG = 0')
 export class Media extends AbstractEntity {
   @Column()
   title: string;

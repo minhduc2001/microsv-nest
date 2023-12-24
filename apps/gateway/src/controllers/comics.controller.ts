@@ -1,5 +1,6 @@
 import {
   BuyMediaDto,
+  IdsDto,
   ParamIdDto,
   UploadImagesDto,
 } from '@libs/common/dtos/common.dto';
@@ -13,6 +14,7 @@ import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -147,6 +149,23 @@ export class ComicsController {
           { id: params.id, body: { ...payload, thumbnail: url } },
         ),
       );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError(e);
+    }
+  }
+
+  @Delete()
+  @ApiCreateOperation({ summary: 'Xóa nhiều truyện' })
+  async bulkDelete(@Body() payload: IdsDto) {
+    try {
+      const resp = await firstValueFrom(
+        this.comicsClientProxy.send<any>(
+          MEDIAS_MESSAGE_PATTERN.COMICS.REMOVE_COMIC,
+          payload,
+        ),
+      );
+
       return resp;
     } catch (e) {
       throw new exc.CustomError(e);

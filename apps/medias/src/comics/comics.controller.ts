@@ -37,4 +37,9 @@ export class ComicsController {
   async buy(@Payload() payload: BuyMediaDto) {
     return this.comicsService.buy(payload.id, payload.user);
   }
+
+  @MessagePattern(MEDIAS_MESSAGE_PATTERN.COMICS.REMOVE_COMIC)
+  async bulkDelete(@Payload('ids') ids: number[]) {
+    return this.comicsService.bulkDelete(ids);
+  }
 }
