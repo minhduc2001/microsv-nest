@@ -22,6 +22,9 @@ export class Comics extends AbstractEntity {
   @Column({ default: 2 })
   minAge: number;
 
+  @Column({ nullable: true, default: null })
+  publishDate: Date;
+
   @Column({ nullable: true })
   desc: string;
 

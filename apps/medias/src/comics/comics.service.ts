@@ -27,13 +27,12 @@ import {
   ACTIONS_MESSAGE_PATTERN,
   USER_MESSAGE_PATTERNS,
 } from '@libs/common/constants/rabbit-patterns.constant';
+import { AuthType } from '@libs/common/interfaces/common.interface';
 
 @Injectable()
 export class ComicsService extends BaseService<Comics> {
   constructor(
     @InjectRepository(Comics) protected comicsRepository: Repository<Comics>,
-    private readonly genreService: GenreService,
-    private readonly authorService: AuthorService,
     @InjectRepository(Author)
     private readonly authorRepository: Repository<Author>,
     @InjectRepository(Genre)
@@ -44,6 +43,48 @@ export class ComicsService extends BaseService<Comics> {
     private readonly userClientProxy: ClientProxy,
   ) {
     super(comicsRepository);
+  }
+
+  async prepareResponse(comics: Comics[], user: AuthType) {
+    const [libBought, libLike, libPlaylist]: [any, any, any] =
+      await Promise.all([
+        this.libClientProxy
+          .send<any>(
+            ACTIONS_MESSAGE_PATTERN.LIBRARY.LIST_LIBRARY_CHILD_BY_USER_NAME,
+            { name: 'Đã mua', userId: user.id },
+          )
+          .toPromise(),
+        this.libClientProxy
+          .send<any>(
+            ACTIONS_MESSAGE_PATTERN.LIBRARY.LIST_LIBRARY_CHILD_BY_USER_NAME,
+            { name: 'Yêu thích', userId: user.id },
+          )
+          .toPromise(),
+        this.libClientProxy
+          .send<any>(
+            ACTIONS_MESSAGE_PATTERN.LIBRARY.LIST_LIBRARY_CHILD_BY_USER_NAME,
+            { name: 'Danh sách phát', userId: user.id },
+          )
+          .toPromise(),
+      ]);
+
+    const idBuys = libBought.results.map((lib) => {
+      return lib.comicsId;
+    });
+
+    const idLike = libLike.results.map((lib) => {
+      return lib.comicsId;
+    });
+
+    const idPlaylist: number[] = libPlaylist.results.map((lib) => {
+      return lib.comicsId;
+    });
+
+    for (const comic of comics) {
+      if (idBuys.includes(comic.id)) comic.isAccess = true;
+      if (idLike.includes(comic.id)) comic.isLike = true;
+      if (idPlaylist.includes(comic.id)) comic.isPlaylist = true;
+    }
   }
 
   async listComics(query: ListComicsDto) {
@@ -76,25 +117,37 @@ export class ComicsService extends BaseService<Comics> {
         'author.image',
         'genres.id',
         'genres.name',
+        'comics.state',
+        'comics.publishDate',
       ])
       .leftJoin('comics.authors', 'author')
       .leftJoin('comics.genres', 'genres')
       .leftJoin('comics.chapters', 'chapter')
       .loadRelationCountAndMap('comics.chaptersCount', 'comics.chapters');
-    return this.listWithPage(query, config, queryB);
+    const results = await this.listWithPage(query, config, queryB);
+    await this.prepareResponse(results.results, query.user);
+    return results;
   }
 
-  async getComicById(id: number) {
+  async getComicById(id: number, user?: AuthType) {
     const comic = await this.repository.findOne({
       select: {
         genres: { id: true, name: true },
         authors: { id: true, name: true },
       },
-      where: { id },
+      where: { id, state: Not(EState.Deleted) },
       relations: { genres: true, authors: true },
     });
+
     if (!comic)
       throw new excRpc.BadRequest({ message: 'Comic does not exists' });
+
+    comic.views += 1;
+    comic.save();
+
+    if (user) {
+      await this.prepareResponse([comic], user);
+    }
     return comic;
   }
 
@@ -124,13 +177,13 @@ export class ComicsService extends BaseService<Comics> {
 
   async updateComic(id: number, dto: UpdateComicDto) {
     const comic = await this.getComicByIdWithoutRelation(id);
-    const { thumbnail, title, minAge, desc, golds, state } = dto;
-    const basicInfo = { thumbnail, title, minAge, desc, golds, state };
+
     const { authors, genres } = await this._prepare({
       genre_ids: dto.genreIds,
       author_ids: dto.authorIds,
     });
-    const updateInfo = { ...comic, ...basicInfo, authors, genres };
+
+    const updateInfo = { ...comic, ...dto, authors, genres };
     await this.comicsRepository.update(comic.id, updateInfo);
 
     return 'Update Successful';

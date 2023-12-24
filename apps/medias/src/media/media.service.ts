@@ -251,6 +251,9 @@ export class MediaService extends BaseService<Media> {
         errorCode: 'media_not_found',
       });
 
+    media.views += 1;
+    media.save();
+
     if (user) await this.prepareResponse([media], user, type);
     return media;
   }
