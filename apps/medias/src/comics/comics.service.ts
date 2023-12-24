@@ -142,7 +142,10 @@ export class ComicsService extends BaseService<Comics> {
     });
 
     if (!comic)
-      throw new excRpc.BadRequest({ message: 'Comic does not exists' });
+      throw new excRpc.BadRequest({
+        message: 'Comic does not exists',
+        errorCode: 'comic_not_found',
+      });
 
     if (user.role !== ERole.ADMIN) {
       comic.views += 1;
