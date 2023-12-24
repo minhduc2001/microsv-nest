@@ -163,7 +163,10 @@ export class ComicsService extends BaseService<Comics> {
       where: { id },
     });
     if (!comic)
-      throw new excRpc.BadRequest({ message: 'Comic does not exists' });
+      throw new excRpc.BadRequest({
+        message: 'Comic does not exists',
+        errorCode: 'comic_not_found',
+      });
     return comic;
   }
 
@@ -190,8 +193,14 @@ export class ComicsService extends BaseService<Comics> {
       author_ids: dto.authorIds,
     });
 
-    const updateInfo = { ...comic, ...dto, authors, genres };
-    await this.comicsRepository.update(comic.id, updateInfo);
+    delete dto.authorIds;
+    delete dto.authorIds;
+
+    const newComic = this.comicsRepository.create(dto);
+    newComic.authors = authors;
+    newComic.genres = genres;
+
+    await this.comicsRepository.update(comic.id, newComic);
 
     return 'Update Successful';
   }
