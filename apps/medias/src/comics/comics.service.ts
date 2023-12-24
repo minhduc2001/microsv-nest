@@ -90,6 +90,7 @@ export class ComicsService extends BaseService<Comics> {
   async listComics(query: ListComicsDto) {
     const config: PaginateConfig<Comics> = {
       sortableColumns: ['id'],
+      searchableColumns: ['title'],
       // relations: { genres: true, author: true },
     };
     const queryB = this.repository
@@ -112,6 +113,7 @@ export class ComicsService extends BaseService<Comics> {
         'comics.thumbnail',
         'comics.golds',
         'comics.views',
+        'comics.likes',
         'author.id',
         'author.name',
         'author.image',
@@ -120,9 +122,9 @@ export class ComicsService extends BaseService<Comics> {
         'comics.state',
         'comics.publishDate',
       ])
-      .leftJoin('comics.authors', 'author')
+      .leftJoin('comics.authors', 'authors')
       .leftJoin('comics.genres', 'genres')
-      .leftJoin('comics.chapters', 'chapter')
+      // .leftJoin('comics.chapters', 'chapters')
       .loadRelationCountAndMap('comics.chaptersCount', 'comics.chapters');
     const results = await this.listWithPage(query, config, queryB);
     await this.prepareResponse(results.results, query.user);

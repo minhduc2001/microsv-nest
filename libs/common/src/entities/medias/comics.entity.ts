@@ -34,6 +34,9 @@ export class Comics extends AbstractEntity {
   @Column({ default: 0 })
   views: number;
 
+  @Column({ nullable: true, default: 0 })
+  likes?: number;
+
   @Column({ default: 0 })
   golds: number;
 
