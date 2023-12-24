@@ -91,7 +91,7 @@ export class ComicsService extends BaseService<Comics> {
     const config: PaginateConfig<Comics> = {
       sortableColumns: ['id'],
       searchableColumns: ['title'],
-      // relations: { genres: true, author: true },
+      relations: { genres: true, authors: true },
     };
     const queryB = this.repository
       .createQueryBuilder('comics')
@@ -105,25 +105,25 @@ export class ComicsService extends BaseService<Comics> {
           ? { minAge: LessThan(this._getAge((query.user as Profile).birthday)) }
           : {},
       )
-      .select([
-        'comics.id',
-        'comics.title',
-        'comics.minAge',
-        'comics.desc',
-        'comics.thumbnail',
-        'comics.golds',
-        'comics.views',
-        'comics.likes',
-        'authors.id',
-        'authors.name',
-        'authors.image',
-        'genres.id',
-        'genres.name',
-        'comics.state',
-        'comics.publishDate',
-      ])
-      .leftJoin('comics.authors', 'authors')
-      .leftJoin('comics.genres', 'genres')
+      // .select([
+      //   'comics.id',
+      //   'comics.title',
+      //   'comics.minAge',
+      //   'comics.desc',
+      //   'comics.thumbnail',
+      //   'comics.golds',
+      //   'comics.views',
+      //   'comics.likes',
+      //   'authors.id',
+      //   'authors.name',
+      //   'authors.image',
+      //   'genres.id',
+      //   'genres.name',
+      //   'comics.state',
+      //   'comics.publishDate',
+      // ])
+      // .leftJoinAndSelect('comics.authors', 'authors')
+      // .leftJoinAndSelect('comics.genres', 'genres')
       // .leftJoin('comics.chapters', 'chapters')
       .loadRelationCountAndMap('comics.chaptersCount', 'comics.chapters');
     const results = await this.listWithPage(query, config, queryB);
