@@ -150,7 +150,7 @@ export class ComicsService extends BaseService<Comics> {
         errorCode: 'comic_not_found',
       });
 
-    if (user.role !== ERole.ADMIN) {
+    if (user && user.role !== ERole.ADMIN) {
       comic.views += 1;
       comic.save();
     }
