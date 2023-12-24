@@ -14,6 +14,7 @@ export interface IFirebaseSendNotificationGroupDevices {
   registrationTokens: string[];
   notification_key: string;
   notification_key_name: string;
+  userId?: number;
 }
 
 export interface IAddGroupDevices {

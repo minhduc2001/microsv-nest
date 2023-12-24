@@ -6,6 +6,7 @@ import {
   IFirebaseSendNotification,
   IFirebaseSendNotificationGroupDevices,
 } from '@libs/notification/notification.interface';
+import { ListNotiDto } from '@libs/common/dtos/noti.dto';
 
 @Controller()
 export class NotiController {
@@ -35,5 +36,15 @@ export class NotiController {
   @MessagePattern(ACTIONS_MESSAGE_PATTERN.NOTI.SEND_GROUP)
   async sendGroup(@Payload() payload: IFirebaseSendNotificationGroupDevices) {
     return this.service.sendGroupDevice(payload);
+  }
+
+  @MessagePattern(ACTIONS_MESSAGE_PATTERN.NOTI.GET_NOTI_BY_USER)
+  async find(@Payload() query: ListNotiDto) {
+    return this.service.find(query);
+  }
+
+  @MessagePattern(ACTIONS_MESSAGE_PATTERN.NOTI.IS_VIEWS)
+  async handleview(@Payload() payload: any) {
+    return this.service.handleView(payload.id, payload.user);
   }
 }

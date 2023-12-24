@@ -5,11 +5,14 @@ import { EState } from '@libs/common/enums/common.enum';
 @Entity()
 export class Noti extends AbstractEntity {
   @Column()
-  content: string;
+  messageContent: string;
 
   @Column()
   userId: number;
 
+  @Column()
+  messageId: string;
+
   @Column({ default: false })
-  isViews: boolean;
+  isView: boolean;
 }
