@@ -21,8 +21,8 @@ export class ComicsController {
   }
 
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.COMICS.GET_COMICS)
-  async getComic(@Payload() id: number) {
-    return await this.comicsService.getComicById(id);
+  async getComic(@Payload() payload: any) {
+    return await this.comicsService.getComicById(payload.id, payload.user);
   }
 
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.COMICS.UPDATE_COMIC)

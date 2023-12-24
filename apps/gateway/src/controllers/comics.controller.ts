@@ -77,12 +77,12 @@ export class ComicsController {
 
   @Get(':id')
   @ApiCreateOperation({ summary: 'Lấy chi tiết 1 truyện' })
-  async getComic(@Param() param: ParamIdDto) {
+  async getComic(@Param() param: ParamIdDto, @GetUser() user: AuthType) {
     try {
       const resp = await lastValueFrom(
         this.comicsClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.COMICS.GET_COMICS,
-          param.id,
+          { ...param, user: user },
         ),
       );
       return resp;
