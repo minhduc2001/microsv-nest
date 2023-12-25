@@ -26,6 +26,8 @@ import { Public } from '../auth/decorators/public.decorator';
 import { CreateChapterDto } from '@libs/common/dtos/comics.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { UploadService } from '@libs/upload';
+import { GetUser } from '../auth/decorators/get-user.decorator';
+import { AuthType } from '@libs/common/interfaces/common.interface';
 
 @ApiTagsAndBearer('Chapter')
 @Controller('chapter')
@@ -38,12 +40,16 @@ export class ChapterController {
 
   @Get(':id')
   @ApiCreateOperation({ summary: 'Lấy danh sách chương truyện của 1 truyện' })
-  async getListChapter(@Query() query: ListDto, @Param() param: ParamIdDto) {
+  async getListChapter(
+    @Query() query: ListDto,
+    @Param() param: ParamIdDto,
+    @GetUser() user: AuthType,
+  ) {
     try {
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.CHAPTER.LIST_CHAPTER,
-          { ...query, ...param },
+          { ...query, ...param, user: user },
         ),
       );
       return resp;

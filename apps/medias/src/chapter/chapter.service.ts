@@ -10,10 +10,11 @@ import { BaseService } from '@libs/common/services/base.service';
 import { PaginateConfig } from '@libs/common/services/paginate';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { ComicsService } from '../comics/comics.service';
 import { ListChapterDto } from '@libs/common/dtos/chapter.dto';
 import { EState } from '@libs/common/enums/common.enum';
+import { ERole } from '@libs/common/enums/role.enum';
 
 @Injectable()
 export class ChapterService extends BaseService<Chapter> {
@@ -27,7 +28,11 @@ export class ChapterService extends BaseService<Chapter> {
   async getListChapter(query: ListChapterDto) {
     const config: PaginateConfig<Chapter> = {
       sortableColumns: ['id'],
-      where: { comics: { id: query.id } },
+      where: {
+        comics: { id: query.id },
+        state:
+          query.user.role === ERole.ADMIN ? Not(EState.Deleted) : EState.Active,
+      },
     };
     return await this.listWithPage(query, config);
   }
