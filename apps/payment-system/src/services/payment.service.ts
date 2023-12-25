@@ -91,6 +91,7 @@ export class PaymentService extends BaseService<Payment> {
         package: pack,
         golds: pack.golds,
         price: pack.price,
+        discount: pack.discount,
         requestId: `REQ${dto.user.id}${date}`,
         orderId: `ORD${dto.user.id}${date}`,
       });
@@ -102,7 +103,10 @@ export class PaymentService extends BaseService<Payment> {
           const resp: IResponsePayment = await this.momoPayment.createPayment({
             requestId: payment.requestId,
             orderId: payment.orderId,
-            amount: payment.package.price,
+            amount: Math.floor(
+              payment.package.price -
+                payment.package.price * payment.package.discount,
+            ),
             orderInfo: `Thanh toán Momo`,
             ipnUrl: 'zappy://ipnpayment',
             redirectUrl: 'zappy://payment',
