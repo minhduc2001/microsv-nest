@@ -40,12 +40,12 @@ export class RegisterDto extends PickType(LoginDto, ['email', 'password']) {
   @IsNotEmpty()
   @IsString()
   @Trim()
-  phone: string;
+  phone?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @Trim()
-  address: string;
+  address?: string;
 }
 
 export class IAddUserByAdmin extends RegisterDto {

@@ -66,7 +66,7 @@ export class CreateProfileDto extends UploadAvatarDto {
   @ApiPropertyOptional({ example: false })
   @IsOptional()
   @IsBoolean()
-  @Transform(({ value }) => value?.toLowerCase?.trim() === 'true')
+  @Transform(({ value }) => value?.toLowerCase()?.trim() === 'true')
   isLocked: boolean;
 
   @ApiHideProperty()
@@ -89,7 +89,7 @@ export class CreateProfileDtoByAdmin extends UploadAvatarDto {
   @ApiPropertyOptional({ example: false })
   @IsOptional()
   @IsBoolean()
-  @Transform(({ value }) => value?.toLowerCase?.trim() === 'true')
+  @Transform(({ value }) => value?.toLowerCase()?.trim() === 'true')
   isLocked: boolean;
 
   @ApiProperty({ example: 0 })
@@ -125,6 +125,6 @@ export class UpdateProfileDto extends UploadAvatarDto {
   @ApiPropertyOptional({ example: false })
   @IsOptional()
   @IsBoolean()
-  @Transform(({ value }) => value?.toLowerCase?.trim() === 'true')
+  @Transform(({ value }) => value?.toLowerCase()?.trim() === 'true')
   isLocked: boolean;
 }
