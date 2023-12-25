@@ -12,7 +12,7 @@ import { BaseService } from '@libs/common/services/base.service';
 import { PaginateConfig } from '@libs/common/services/paginate';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Brackets, DataSource, Not, Repository } from 'typeorm';
+import { Brackets, DataSource, MoreThan, Not, Repository } from 'typeorm';
 import * as excRpc from '@libs/common/api';
 
 @Injectable()
@@ -32,7 +32,7 @@ export class PackageService extends BaseService<Package> {
       searchableColumns: ['name', 'desc'],
       where:
         query.user.role !== ERole.ADMIN
-          ? { state: EState.Active }
+          ? { state: EState.Active, endDate: MoreThan(new Date()) }
           : { state: Not(EState.Deleted) },
     };
 
