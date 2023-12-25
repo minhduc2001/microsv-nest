@@ -157,6 +157,14 @@ export class CreateChapterDto {
   @ToNumber()
   comicId: number;
 
+  @ApiPropertyOptional({
+    enum: EState,
+  })
+  @IsOptional()
+  @IsEnum(EState)
+  @ToNumber()
+  state: EState;
+
   @ApiProperty({
     required: false,
     type: 'array',

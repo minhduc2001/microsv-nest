@@ -26,7 +26,6 @@ import { Public } from '../auth/decorators/public.decorator';
 import { CreateChapterDto } from '@libs/common/dtos/comics.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { UploadService } from '@libs/upload';
-import { ComicsImageurl } from '@libs/common/interfaces/common.interface';
 
 @ApiTagsAndBearer('Chapter')
 @Controller('chapter')
@@ -89,9 +88,9 @@ export class ChapterController {
           MEDIAS_MESSAGE_PATTERN.CHAPTER.CREATE_CHAPTER,
           {
             ...payload,
-            imageUrl: urls.map((url) => ({
+            imageUrl: urls.map((url, index) => ({
               url,
-              index: Number(url.split('?')[0].split('.')[4].split('-').pop()),
+              index: index + 1,
             })),
           },
         ),
