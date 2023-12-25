@@ -72,7 +72,13 @@ export class UserService extends BaseService<User> {
 
     const user: User = await this.userRepository.findOne({
       select: {
-        profiles: { id: true, nickname: true, avatar: true, order: true },
+        profiles: {
+          id: true,
+          nickname: true,
+          avatar: true,
+          order: true,
+          onScreen: true,
+        },
       },
       where: { email },
       relations: { profiles: true },

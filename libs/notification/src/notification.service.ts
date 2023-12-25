@@ -58,7 +58,7 @@ export class NotificationService {
       json: {
         operation: 'add',
         notification_key_name: data.notification_key_name,
-        notificatin_key: data.notification_key,
+        notification_key: data.notification_key,
         registration_ids: data.registrationTokens,
       },
     };

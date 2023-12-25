@@ -58,7 +58,7 @@ export class GatewayController {
         title: 'string',
         body: 'string',
       },
-      userId: 32,
+      userId: 5,
       data: {
         message_content: 'thoong baos db',
         sender_name: 'minh duc',
