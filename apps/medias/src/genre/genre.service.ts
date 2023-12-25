@@ -102,7 +102,9 @@ export class GenreService extends BaseService<Genre> {
     } else
       for (const genre of genres) {
         for (const media of genre.medias) {
-          if (idBuys.includes(media.id)) media.isAccess = true;
+          if (idBuys.includes(media.id) || user.role === ERole.ADMIN)
+            media.isAccess = true;
+          else delete media?.url;
           if (idLike.includes(media.id)) media.isLike = true;
           if (idPlaylist.includes(media.id)) media.isPlaylist = true;
         }
