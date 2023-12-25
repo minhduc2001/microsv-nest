@@ -1,5 +1,5 @@
 import { User } from '@libs/common/entities/user/user.entity';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ICreateUser, IUserGetByUniqueKey } from './user.interface';
@@ -16,7 +16,6 @@ import { MailerService } from '@libs/mailer';
 import { EProviderLogin } from '@libs/common/enums/user.enum';
 import { CacheService } from '@libs/cache';
 import { ListDto } from '@libs/common/dtos/common.dto';
-import { ERole } from '@libs/common/enums/role.enum';
 import { RabbitServiceName } from '@libs/rabbit/enums/rabbit.enum';
 import { ClientProxy } from '@nestjs/microservices';
 import { ACTIONS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';

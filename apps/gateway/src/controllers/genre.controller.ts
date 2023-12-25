@@ -104,7 +104,7 @@ export class GenreController {
     @GetUser() user: AuthType,
   ) {
     try {
-      if (!query.type) query.type = 1;
+      if (!query.type && query?.type !== 0) query.type = 1;
       const resp = await firstValueFrom(
         this.mediaClientProxy.send<any>(
           MEDIAS_MESSAGE_PATTERN.GENRE.GET_GENRES_GR,

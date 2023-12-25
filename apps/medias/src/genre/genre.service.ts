@@ -128,14 +128,22 @@ export class GenreService extends BaseService<Genre> {
 
     const queryB = this.repository
       .createQueryBuilder('genre')
-      .leftJoinAndSelect('genre.medias', 'media')
-      .where('media.state = :state', { state: EState.Active })
       .andWhere(
         query.user.role === ERole.CHILDRENS
           ? { minAge: LessThan(this._getAge((query.user as Profile).birthday)) }
           : {},
       );
     // .andWhere('genre.type', { type: query.type as number });
+
+    if (query.type == ETypeMedia.Comics) {
+      queryB
+        .leftJoinAndSelect('genre.comics', 'comics')
+        .where('comics.state = :state', { state: EState.Active });
+    } else {
+      queryB
+        .leftJoinAndSelect('genre.medias', 'media')
+        .where('media.state = :state', { state: EState.Active });
+    }
     const results = await this.listWithPage(query, config, queryB);
 
     await this.prepareResponse(results.results, query.user, query.type);
