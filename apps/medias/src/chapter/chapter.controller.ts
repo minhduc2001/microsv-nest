@@ -4,7 +4,10 @@ import { ChapterService } from './chapter.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
 import { ListDto } from '@libs/common/dtos/common.dto';
-import { CreateChapterDto } from '@libs/common/dtos/comics.dto';
+import {
+  CreateChapterDto,
+  UpdateChapterDto,
+} from '@libs/common/dtos/comics.dto';
 import { ListChapterDto } from '@libs/common/dtos/chapter.dto';
 
 @Controller()
@@ -24,6 +27,11 @@ export class ChapterController {
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.CHAPTER.CREATE_CHAPTER)
   async createChapter(@Payload() dto: CreateChapterDto) {
     return await this.service.createChapter(dto);
+  }
+
+  @MessagePattern(MEDIAS_MESSAGE_PATTERN.CHAPTER.UPDATE_CHAPTER)
+  async updateChapter(@Payload() dto: UpdateChapterDto) {
+    return await this.service.updateChapter(dto);
   }
 
   @MessagePattern(MEDIAS_MESSAGE_PATTERN.CHAPTER.DELETE)

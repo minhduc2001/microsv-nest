@@ -61,18 +61,17 @@ export class ChapterService extends BaseService<Chapter> {
     return 'Create Chapter successful';
   }
 
-  // async updateChapter(dto: UpdateChapterDto) {
-  //   const comic = await this.comicsService.getComicById(dto.comicId);
-  //   const exists = await this.repository.findOne({
-  //     where: { chap: dto.chap, comics: { id: dto.comicId } },
-  //   });
-  //   if (!exists)
-  //     throw new excRpc.BadRequest({ message: 'Chapter không tồn tại!' });
+  async updateChapter(dto: UpdateChapterDto) {
+    // const comic = await this.comicsService.getComicById(dto.comicId);
+    const exists = await this.repository.findOne({
+      where: { id: dto.id },
+    });
+    if (!exists)
+      throw new excRpc.BadRequest({ message: 'Chapter không tồn tại!' });
 
-  //   if (dto.images) delete dto.images;
-
-  //   return this.repository
-  // }
+    exists.state = dto.state;
+    return exists.save();
+  }
 
   async bulkDelete(ids: number[]) {
     for (const id of ids) {

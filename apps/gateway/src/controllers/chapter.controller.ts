@@ -11,6 +11,7 @@ import {
   Inject,
   Param,
   Post,
+  Put,
   Query,
   UploadedFiles,
   UseInterceptors,
@@ -23,7 +24,10 @@ import { IdsDto, ListDto, ParamIdDto } from '@libs/common/dtos/common.dto';
 import { firstValueFrom } from 'rxjs';
 import { MEDIAS_MESSAGE_PATTERN } from '@libs/common/constants/rabbit-patterns.constant';
 import { Public } from '../auth/decorators/public.decorator';
-import { CreateChapterDto } from '@libs/common/dtos/comics.dto';
+import {
+  CreateChapterDto,
+  UpdateChapterDto,
+} from '@libs/common/dtos/comics.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { UploadService } from '@libs/upload';
 import { GetUser } from '../auth/decorators/get-user.decorator';
@@ -98,6 +102,30 @@ export class ChapterController {
               url,
               index: index + 1,
             })),
+          },
+        ),
+      );
+      return resp;
+    } catch (e) {
+      throw new exc.CustomError(e);
+    }
+  }
+
+  @Put(':id')
+  // @ApiConsumes('multipart/form-data')
+  // @UseInterceptors(FilesInterceptor('images', 20))
+  // @ApiCreateOperation({ summary: 'Tạo mới 1 chương truyện' })
+  async updateChapter(
+    @Param() param: ParamIdDto,
+    @Body() payload: UpdateChapterDto,
+  ) {
+    try {
+      const resp = await firstValueFrom(
+        this.mediaClientProxy.send<any>(
+          MEDIAS_MESSAGE_PATTERN.CHAPTER.UPDATE_CHAPTER,
+          {
+            state: payload.state,
+            ...param,
           },
         ),
       );

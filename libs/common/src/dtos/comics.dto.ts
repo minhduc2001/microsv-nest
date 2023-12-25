@@ -180,4 +180,10 @@ export class CreateChapterDto {
   imageUrl: ComicsImageurl[];
 }
 
-export class UpdateChapterDto extends PartialType(CreateChapterDto) {}
+export class UpdateChapterDto extends PartialType(CreateChapterDto) {
+  @ApiHideProperty()
+  @IsOptional()
+  @IsNumber()
+  @ToNumber()
+  id: number;
+}
