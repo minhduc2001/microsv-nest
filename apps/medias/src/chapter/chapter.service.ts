@@ -75,7 +75,7 @@ export class ChapterService extends BaseService<Chapter> {
 
   async bulkDelete(ids: number[]) {
     for (const id of ids) {
-      await this.repository.update({ id: id }, { state: EState.Deleted });
+      await this.repository.delete(id);
     }
     return true;
   }
