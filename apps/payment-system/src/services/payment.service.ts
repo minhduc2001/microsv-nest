@@ -105,7 +105,7 @@ export class PaymentService extends BaseService<Payment> {
             orderId: payment.orderId,
             amount: Math.floor(
               payment.package.price -
-                payment.package.price * payment.package.discount,
+                (payment.package.price * payment.package.discount) / 100,
             ),
             orderInfo: `Thanh toán Momo`,
             ipnUrl: 'zappy://ipnpayment',

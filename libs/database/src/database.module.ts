@@ -7,7 +7,6 @@ import {
 import { typeOrmOptionsGenerate } from './orm.config';
 import { LoggerModule, LoggerService } from '@libs/logger';
 import { envService } from '@libs/env';
-import { getManager } from 'typeorm';
 
 const typeOrmOptions: TypeOrmModuleAsyncOptions[] = [
   {

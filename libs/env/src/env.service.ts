@@ -52,9 +52,9 @@ export class EnvService {
   // database
   DB_TYPE = _process.env.DB_TYPE ?? 'postgres';
   DB_HOST = _process.env.DB_HOST ?? '127.0.0.1';
-  DB_PORT = parseInt(_process.env.DB_PORT ?? '5432', 10);
+  DB_PORT = parseInt(_process.env.DB_PORT ?? '6666', 10);
   DB_USERNAME = _process.env.DB_USERNAME ?? 'postgres';
-  DB_PASSWORD = _process.env.DB_PASSWORD ?? '';
+  DB_PASSWORD = _process.env.DB_PASSWORD ?? '462001';
   DB_DATABASE = _process.env.DB_DATABASE ?? '';
 
   // cors config

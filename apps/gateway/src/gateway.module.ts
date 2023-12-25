@@ -20,6 +20,7 @@ import { CacheModule } from '@libs/cache';
 import { PaymentSystemModule } from './modules/payment-system.module';
 import { MediasModule } from './modules/medias.module';
 import { ActionsModule } from './modules/actions.module';
+import { SeederModule } from '@libs/common/seeder/seeder.module';
 
 const coreModule = [
   EnvModule,
@@ -42,6 +43,7 @@ const rabbitModule = [
     PaymentSystemModule,
     MediasModule,
     ActionsModule,
+    // SeederModule,
   ],
   controllers: [GatewayController],
   providers: [GatewayService],
