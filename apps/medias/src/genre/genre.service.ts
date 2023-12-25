@@ -94,7 +94,8 @@ export class GenreService extends BaseService<Genre> {
     if (type === ETypeMedia.Comics) {
       for (const genre of genres) {
         for (const comic of genre.comics) {
-          if (idBuys.includes(comic.id)) comic.isAccess = true;
+          if (idBuys.includes(comic.id) || comic.golds === 0)
+            comic.isAccess = true;
           if (idLike.includes(comic.id)) comic.isLike = true;
           if (idPlaylist.includes(comic.id)) comic.isPlaylist = true;
         }
@@ -102,7 +103,11 @@ export class GenreService extends BaseService<Genre> {
     } else
       for (const genre of genres) {
         for (const media of genre.medias) {
-          if (idBuys.includes(media.id) || user.role === ERole.ADMIN)
+          if (
+            idBuys.includes(media.id) ||
+            user.role === ERole.ADMIN ||
+            media.golds === 0
+          )
             media.isAccess = true;
           else delete media?.url;
           if (idLike.includes(media.id)) media.isLike = true;

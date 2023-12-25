@@ -110,7 +110,11 @@ export class MediaService extends BaseService<Media> {
     });
 
     for (const media of medias) {
-      if (idBuys.includes(media.id) || user.role === ERole.ADMIN)
+      if (
+        idBuys.includes(media.id) ||
+        user.role === ERole.ADMIN ||
+        media.golds === 0
+      )
         media.isAccess = true;
       else delete media?.url;
       if (idLike.includes(media.id)) media.isLike = true;
