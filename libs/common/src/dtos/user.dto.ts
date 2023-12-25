@@ -10,13 +10,13 @@ import {
 import { Trim } from '../decorators/common.decorator';
 
 export class LoginDto {
-  @ApiProperty({ example: 'parents@doan.com' })
+  @ApiProperty({ example: 'admin@admin.com' })
   @IsEmail()
   @IsNotEmpty()
   @Trim()
   email: string;
 
-  @ApiProperty({ example: '123456' })
+  @ApiProperty({ example: '123123' })
   @IsString()
   @IsNotEmpty()
   @Trim()

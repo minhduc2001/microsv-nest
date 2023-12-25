@@ -81,7 +81,8 @@ export class ComicsService extends BaseService<Comics> {
     });
 
     for (const comic of comics) {
-      if (idBuys.includes(comic.id)) comic.isAccess = true;
+      if (idBuys.includes(comic.id) || user.role === ERole.ADMIN)
+        comic.isAccess = true;
       if (idLike.includes(comic.id)) comic.isLike = true;
       if (idPlaylist.includes(comic.id)) comic.isPlaylist = true;
     }
